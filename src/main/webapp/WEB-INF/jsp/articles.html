@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/css/articles.css" rel="stylesheet">
+
+    <script src="/js/lib/vue@2.6.0.js"></script>
+    <script src="/js/lib/axios.min.js"></script>
+    <script defer src="/js/articles.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1></h1>
+    <table>
+        <thead>
+        <tr>
+            <th class="id">Id</th>
+            <th class="label">Label</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="row" v-for="classItem in classList" v-on:click="goToFileClass(classItem)">
+            <td class="id">{{classItem.id}}</td>
+            <td class="label">{{classItem.label}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
