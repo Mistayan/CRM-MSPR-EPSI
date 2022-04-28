@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="/css/articles.css" rel="stylesheet">
+
+
+    <script defer src="/js/articles.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+<div id="app">
+    <h1></h1>
+    <table>
+        <thead>
+        <tr>
+            <th class="id">Code</th>
+            <th class="label">Label</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="row" v-for="article in articles" v-on:click="displayArticle(article)">
+            <td class="code">{{article.code}}</td>
+            <td class="label">{{article.label}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
