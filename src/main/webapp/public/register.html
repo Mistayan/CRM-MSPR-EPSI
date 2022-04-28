@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REGISTER FORM</title>
+</head>
+<body>
+<form action="/public/register" method="post">
+    <label title="email" accesskey="1" autofocus onsubmit="" oninvalid="delete this">
+        <!--
+        onsubmit: doit valider que le mail fourni est valide ! (Angular s'en chargera surement)
+        -->
+        <input name="email">
+    </label>email<br>
+    <label title="password" accesskey="2">
+        <input name="password" type="password">
+    </label>password<br>
+    <button>Send</button>
+</form>
+</body>
+</html>
