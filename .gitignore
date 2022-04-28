@@ -1,3 +1,11 @@
+#Unwanted folders
+.idea
+target
+.ecplise
+
+#Text files unwated. Only .md allowed.
+*.txt
+
 # Compiled class file
 *.class
 
