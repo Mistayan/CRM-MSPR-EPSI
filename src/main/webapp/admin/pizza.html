@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/js/pizza.js"></script>
+    <meta charset="UTF-8">
+    <title>Editez la vitrine de pizza</title>
+</head>
+<body>
+<div id="app">
+    <div class="pizza-list">
+        <div v-for="pizza in pizzas">
+            <div>
+                {{ pizza.id }}
+                {{ pizza.label }}
+                <div>
+                    Nombre d'ingrédients:
+                    {{ pizza.ingredients ? pizza.ingredients.length : 0 }}
+                </div>
+            </div>
+        </div>
+        <div>
+            <button v-on:click="create = true; newPizza = {}">
+                Ajouter une nouvelle pizza
+            </button>
+        </div>
+    </div>
+    <div class="pizza-form" v-if="create">
+        <div>
+            Nom de la Pizza:
+            <input v-model="newPizza.label">
+        </div>
+        <div>
+            <!-- v-for nous permet de récupérer la liste d'ingrédients de la nouvelle pizza-->
+            Vos Ingredients:
+            <span v-for="ingredient in newPizza.ingredients"
+                  v-if="newPizza.ingredients">
+                {{ ingredient.label }} </span>
+            <br>
+            <!-- Liste des ingrédients que l'on peut ajouter à la pizza -->
+            <select v-model="newIngredient" v-on:change="addIngredients()">
+                <option></option>
+                <!-- v-bind nous permet de récupérer l'id de l'OBJET ingredient -->
+                <option v-bind:value="ingredient"
+                        v-for="ingredient in ingredients"
+                        v-if="ingredient.label">
+                    {{ ingredient.label }}
+                </option>
+            </select>
+        </div>
+        <div>
+            <button v-on:click="createPizza()">Créer la pizza</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/index.js" defer></script>
+</head>
+<body>
+<div id="app">
+    <div class="panier">
+        Nombre de pizzas dans le panier : {{panier && panier.pizzas? panier.pizzas.length : 0}}
+    </div>
+    <div class="pizza-list">
+        <div class="pizza-item" v-for="pizza in pizzas">{{pizza.label}} <br>
+            Nombre d'ingrédients : {{pizza.ingredients.length}}<br>
+            <button v-on:click="ajouterPizza(pizza)">Ajouter</button>
+        </div>
+    </div>
+    <div><a href="/public/panier.html">Voir mon panier</a> </div>
+</div>
+</body>
+</html>

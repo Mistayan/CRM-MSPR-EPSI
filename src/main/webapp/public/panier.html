@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Panier</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/panier.js" defer></script>
+</head>
+<body>
+<div id="app">
+    <div class="panier">
+        Nombre de pizzas dans le panier : {{panier && panier.pizzas? panier.pizzas.length : 0}}
+    </div>
+    <div class="pizza-list">
+        <div class="pizza-item" v-for="pizza in pizzas">
+            {{pizza.label}} <br>
+            <button v-on:click="modifierPizza(pizza)">Ajouter pizza au panier</button>
+            <button v-on:click="enleverPizza(pizza)">Ajouter pizza au panier</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
