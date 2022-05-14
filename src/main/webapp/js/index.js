@@ -1,16 +1,17 @@
-var app = new Vue({
+const app = new Vue({
     el: '#app',
     data() {
         //le modèle de données
         return {
             pizzas: [],
             panier: {},
-            panier_id: -1
+            panier_id: 0
         }
     },
     mounted() {
         // Actions au chargement de la page
-        this.panier_id = window.localStorage.getItem('panier.id')
+        if (this.panier_id === 0)
+            this.panier_id = window.localStorage.getItem('panier.id')
         axios.get('/public/panier?panier_id=' + this.panier_id)
             .then(response => {
                 this.panier = response.data.data
