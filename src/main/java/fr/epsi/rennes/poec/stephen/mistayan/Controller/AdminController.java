@@ -6,6 +6,7 @@ import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.BusinessException;
 import fr.epsi.rennes.poec.stephen.mistayan.service.IngredientService;
 import fr.epsi.rennes.poec.stephen.mistayan.service.PizzaService;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,17 +29,19 @@ public class AdminController {
     private PizzaService pizzaService;
     @Autowired
     private IngredientService ingredientService;
+    @Autowired
+    private Logger logger;
 
     @GetMapping("/admin/ingredients")
     public Response<List<Ingredient>> getAllIngredients() {
         List<Ingredient> ingredients = ingredientService.getAllIngredients();
         for (Ingredient ingredient : ingredients) {
-            System.out.println(ingredient.getLabel());
+            logger.debug(ingredient.getLabel());
         }
 
         Response<List<Ingredient>> response = new Response<>();
         response.setData(ingredients);
-        System.out.println(response.getData());
+//        System.out.println(response.getData());
         return response;
     }
 
@@ -54,9 +57,9 @@ public class AdminController {
 
     @PostMapping("/admin/pizza/ingredient")
     public Response<Void> addIngredient(@RequestBody Pizza pizza) throws BusinessException {
-        System.out.println("ingredient");
-        System.out.println(pizza);
-        System.out.println(pizza.getLabel());
+//        System.out.println("ingredient");
+//        System.out.println(pizza);
+//        System.out.println(pizza.getLabel());
 //        System.out.println(label);
         List<Ingredient> listeI = pizza.getIngredients();
 
@@ -72,9 +75,9 @@ public class AdminController {
         if (pizza == null) {
             throw new BusinessException("createpizza.param.null");
         }
-        System.out.println("new");
-        System.out.println(pizza);
-        System.out.println(pizza.getLabel());
+//        System.out.println("new");
+//        System.out.println(pizza);
+//        System.out.println(pizza.getLabel());
         pizzaService.createPizza(pizza);
         return new Response<>();
     }

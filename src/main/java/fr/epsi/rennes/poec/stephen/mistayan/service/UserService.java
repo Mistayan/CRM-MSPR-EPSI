@@ -4,7 +4,6 @@ import fr.epsi.rennes.poec.stephen.mistayan.dao.UserDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.UserRole;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +14,7 @@ import java.sql.SQLException;
 @Service
 public class UserService implements UserDetailsService {
 
-//    private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
+    //    private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
     private final UserDAO userDAO;
 
     public UserService(UserDAO userDAO) {this.userDAO = userDAO;}

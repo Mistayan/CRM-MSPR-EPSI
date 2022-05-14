@@ -3,10 +3,6 @@ package fr.epsi.rennes.poec.stephen.mistayan.service;
 import fr.epsi.rennes.poec.stephen.mistayan.dao.pizzaDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.BusinessException;
-import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +19,7 @@ import java.util.List;
 @Service
 @Repository
 public class PizzaService {
-//    private static final Logger logger = LogManager.getLogger(String.valueOf(PizzaService.class));
+    //    private static final Logger logger = LogManager.getLogger(String.valueOf(PizzaService.class));
     private final pizzaDAO pizzadao;
 
     public PizzaService(pizzaDAO pizzadao) {this.pizzadao = pizzadao;}
