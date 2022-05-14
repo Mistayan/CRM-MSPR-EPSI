@@ -15,7 +15,15 @@
     <div class="pizza-list">
         <div class="pizza-item" v-for="pizza in pizzas">{{pizza.label}} <br>
             Nombre d'ingrédients : {{pizza.ingredients.length}}<br>
+            <div>
+                Nombre calories : {{pizza.calories}}<br>
+                Prix : {{pizza.prix}}<br>
+            </div>
             <button v-on:click="ajouterPizza(pizza)">Ajouter</button>
+        </div>
+        <div class="total commande">
+            {{ calories_total}}<br>
+            {{ prix_total}}<br>
         </div>
     </div>
     <div><a href="/public/panier.html">Voir mon panier</a></div>
