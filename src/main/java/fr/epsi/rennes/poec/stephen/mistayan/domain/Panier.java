@@ -13,56 +13,39 @@ import java.util.List;
 public class Panier {
     private int panierId;
     private List<Pizza> pizzas;
-    private double total;
-    private String userEmail;
     private int totalCalories;
     private int totalPrix;
 
     public int getId() {
         return panierId;
     }
-
+    public List<Pizza> getPizzas() {
+        return pizzas;
+    }
+    public int getTotalCalories() {
+        return totalCalories;
+    }
+    public int getTotalPrix() {
+        return totalPrix;
+    }
     public void setId(int id) {
         this.panierId = id;
     }
 
-    public List<Pizza> getPizzas() {
-        return pizzas;
+    public void setTotalCalories() {
+        totalCalories = 0;
+        for (Pizza pizza : pizzas) {
+            totalCalories += pizza.getCalories();
+        }
     }
-
+    public void setTotalPrix() {
+        totalPrix = 0;
+        for (Pizza pizza : pizzas) {
+            totalPrix += pizza.getPrix();
+        }
+    }
     public void setPizzas(List<Pizza> pizzas) {
         this.pizzas = pizzas;
     }
 
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public int getTotalCalories() {
-        return totalCalories;
-    }
-
-    public void setTotalCalories(int totalCalories) {
-        this.totalCalories = totalCalories;
-    }
-
-    public int getTotalPrix() {
-        return totalPrix;
-    }
-
-    public void setTotalPrix(int totalPrix) {
-        this.totalPrix = totalPrix;
-    }
 }
