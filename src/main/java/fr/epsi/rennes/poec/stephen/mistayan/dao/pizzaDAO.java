@@ -67,7 +67,9 @@ public class pizzaDAO {
 
     // 	id 	label 	prix    nb_calories
     public List<Pizza> getAll() throws TechnicalException {
-        String sql = "SELECT p.id as pizzaId, p.label as pizzaLabel, GROUP_CONCAT(ingredients.id, ':', ingredients.label) as ingredients " +
+        String sql = "SELECT p.id as pizzaId, p.label as pizzaLabel, " +
+                "GROUP_CONCAT(ingredients.id, ':', ingredients.label," +
+                " ':', ingredients.prix, ':', ingredients.nb_calories) as ingredients " +
                 "FROM pizza as p " +
                 "RIGHT JOIN pizza_ingredient ON pizza_ingredient.pizza_id = p.id " +
                 "LEFT JOIN ingredients ON pizza_ingredient.ingredient_id = ingredients.id " +
@@ -84,19 +86,15 @@ public class pizzaDAO {
                     Ingredient ingredientPojo = new Ingredient();
                     ingredientPojo.setId(Integer.parseInt(idAndIng[0]));
                     ingredientPojo.setLabel(idAndIng[1]);
+                    ingredientPojo.setPrix(Double.parseDouble(idAndIng[2]));
+                    ingredientPojo.setNbCalories(Integer.parseInt(idAndIng[3]));
                     ingredientsList.add(ingredientPojo);
                 }
                 pizza.setIngredients(ingredientsList);
                 pizza.setLabel(rs.getString("pizzaLabel"));
                 pizza.setId(rs.getInt("pizzaId"));
-                int pizzaPrix = 0;
-                int pizzaCalories = 0;
-                for (Ingredient ingredient : pizza.getIngredients()) {
-                    pizzaPrix += ingredient.getPrix();
-                    pizzaCalories = ingredient.getNbCalories();
-                }
-                pizza.setPrix(pizzaPrix);
-                pizza.setCalories(pizzaCalories);
+                pizza.setPrix();
+                pizza.setCalories();
                 pizzas.add(pizza);
             }
             return pizzas;
