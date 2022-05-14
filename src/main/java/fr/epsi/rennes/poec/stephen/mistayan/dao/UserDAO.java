@@ -46,11 +46,10 @@ public class UserDAO {
     }
 
     public void addUser(User user) throws SQLException {
-        //pre-encoding checks
+        // pre-encoding checks
 
-
-        //en of pre-encoding checks
-//        String password = passwordEncoder.encode(user.getPassword());
+        // en of pre-encoding checks
+        // String password = passwordEncoder.encode(user.getPassword());
 
         String sql = "INSERT INTO user ( email , password , userRole ) VALUES (?,?,?)";
         System.out.println(sql);

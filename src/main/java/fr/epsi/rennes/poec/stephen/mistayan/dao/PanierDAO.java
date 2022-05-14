@@ -3,6 +3,7 @@ package fr.epsi.rennes.poec.stephen.mistayan.dao;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +28,9 @@ import java.util.ArrayList;
 public class PanierDAO {
     @Autowired
     private DataSource ds;
+
+    @Autowired
+    private Logger logger;
 
     public void addPizza(Pizza pizza, int panier_id) {
         String sql = "insert into panier_pizza"
@@ -132,11 +136,10 @@ public class PanierDAO {
             } else {
                 ps.setInt(2, 0);
             }
-            System.out.println(ps.toString());
+            logger.debug("Reloving pizza with request : " + ps);
             ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

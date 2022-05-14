@@ -2,12 +2,12 @@
     <configuration default="false" name="SprinBoot Loader" type="SpringBootApplicationConfigurationType"
                    factoryName="Spring Boot">
         <option name="ACTIVE_PROFILES"/>
+        <option name="DEBUG_MODE" value="true"/>
         <module name="pizzApp"/>
         <option name="SPRING_BOOT_MAIN_CLASS" value="fr.epsi.rennes.poec.stephen.mistayan.PizzaApplication"/>
         <extension name="coverage" sample_coverage="false"/>
         <method v="2">
             <option name="Make" enabled="true"/>
         </method>
-
     </configuration>
 </component>
