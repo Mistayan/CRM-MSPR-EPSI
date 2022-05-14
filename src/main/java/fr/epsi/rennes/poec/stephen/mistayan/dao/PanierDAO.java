@@ -126,8 +126,8 @@ public class PanierDAO {
                 "    LIMIT 1;";
 
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, Math.max(pizza_id, 0));
-            ps.setInt(2, Math.max(panier_id, 0));
+            ps.setInt(1, Math.max(panier_id, 0));
+            ps.setInt(2, Math.max(pizza_id, 0));
             logger.error(sql);
             logger.error("Reloving pizza with request : " + ps);
             ps.executeQuery();
