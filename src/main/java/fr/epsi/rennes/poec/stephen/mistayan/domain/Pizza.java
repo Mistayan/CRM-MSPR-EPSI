@@ -22,40 +22,45 @@ public class Pizza {
     public int getId() {
         return id;
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
     public double getPrix() {
         return prix;
-    }
-
-    public void setPrix(double prix) {
-        this.prix = prix;
     }
 
     public int getCalories() {
         return calories;
     }
 
-    public void setCalories(int calories) {
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+    public void setPrix() {
+        double prix = 1.87;
+        for (Ingredient ingredient : this.ingredients) {
+            prix += ingredient.getPrix();
+        }
+        this.prix = prix;
+    }
+
+    public void setCalories() {
+
+        int calories = 0;
+        for (Ingredient ingredient : this.ingredients) {
+            calories += ingredient.getNbCalories();
+        }
         this.calories = calories;
     }
 
