@@ -2,25 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenue parmi nos clients</title>
-    <link href="/templates/header.html" rel="alternate">
+    <title>REGISTER FORM</title>
 </head>
 <body>
-<form>
-    <div>
-        Email<br>
-        <input name="email">
-    </div>
-    z
-    <div>
-        Password<br>
-        <input name="password" type="password">
-    </div>
-    <div>
-        <button>Submit</button>
-    </div>
+<form action="/public/register" method="post">
+    <label for="email">email : <input id="email" name ="email"><br></label>
+    <label for="password">password : <input id="password" name="password" type="password"><br></label>
+    <button>Send</button>
 </form>
-
-
 </body>
 </html>

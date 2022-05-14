@@ -121,22 +121,15 @@ public class PanierDAO {
 
     public void removePizza(int pizza_id, int panier_id) {
         String sql = "DELETE FROM panier_pizza" +
-                "    WHERE pizza_id = ?" +
-                "    AND panier_id = ?" +
+                "    WHERE panier_id = ?" +
+                "    AND pizza_id = ?" +
                 "    LIMIT 1;";
 
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            if (pizza_id >= 1) {
-                ps.setInt(1, pizza_id);
-            } else {
-                ps.setInt(1, 0);
-            }
-            if (panier_id >= 1) {
-                ps.setInt(2, panier_id);
-            } else {
-                ps.setInt(2, 0);
-            }
-            logger.debug("Reloving pizza with request : " + ps);
+            ps.setInt(1, Math.max(pizza_id, 0));
+            ps.setInt(2, Math.max(panier_id, 0));
+            logger.error(sql);
+            logger.error("Reloving pizza with request : " + ps);
             ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);

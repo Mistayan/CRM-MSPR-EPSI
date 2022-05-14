@@ -54,7 +54,7 @@ public class IndexController {
             pizza.setId(pizza_id);
             panier_id = panierService.addPizza(pizza, panier_id);
         } else { //pizza_id + 1 car index commence à 0 en json
-            panier_id = panierService.remPizza(pizza_id+1, panier_id);
+            panier_id = panierService.remPizza(pizza_id , panier_id);
         }
         response.setData(panier_id);
         return response;
