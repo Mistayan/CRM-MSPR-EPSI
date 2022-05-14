@@ -3,6 +3,7 @@ package fr.epsi.rennes.poec.stephen.mistayan.dao;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
+import fr.epsi.rennes.poec.stephen.mistayan.service.PizzaService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author : Stephen Mistayan
@@ -31,6 +33,9 @@ public class PanierDAO {
 
     @Autowired
     private Logger logger;
+
+    @Autowired
+    private PizzaService pizzaService;
 
     public void addPizza(Pizza pizza, int panier_id) {
         String sql = "insert into panier_pizza"
@@ -100,15 +105,18 @@ public class PanierDAO {
                 Panier panier = new Panier();
                 panier.setId(rs.getInt("panier_id"));
 
-                panier.setPizzas(new ArrayList<>());
+
                 String pizzas = rs.getString("pizzas");
 
-
+                List<Pizza> pizzaRepo = pizzaService.getAllPizzas();
+                List<Pizza> pizzaList = new ArrayList<>();
                 for (String pizza_id : pizzas.split(",")) {
-                    Pizza pizza = new Pizza();
-                    pizza.setId(Integer.parseInt(pizza_id));
-
-                    panier.getPizzas().add(pizza);
+                    for (Pizza pizza_ : pizzaRepo){
+                        if (pizza_.getId() == Integer.parseInt(pizza_id)) {
+                            pizzaList.add(pizza_);
+                        }
+                    }
+                    panier.setPizzas(pizzaList);
                 }
                 return panier;
             }
