@@ -61,12 +61,10 @@ public class Pizza {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("{\"Nom\" : \"" + this.label + "\", ")
-                .append(String.format("\"Ingredient\" : \"%s\"", ingredients)).append("\", ")
-                .append(String.format("\"Prix\" : %f\n}", prix))
-                .append(String.format("\"Nb_Calories\" : %d\n}", calories));
-
-        return sb.toString();
+        return "{\"Nom\": \"" + this.label + "\", " +
+                String.format("\"Ingredient\": \"%s\"", ingredients) + "\", " +
+                String.format("\"Prix\": %f\n}", prix) +
+                String.format("\"Nb_Calories\": %d\n}", calories);
     }
 
 }
