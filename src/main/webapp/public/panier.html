@@ -18,8 +18,12 @@
                 nom_pizza :: {{pizza.label}}<br>
                 prix_pizza :: {{pizza.prix}}<br>
                 calories_pizza :: {{pizza.calories}}<br>
+                <button v-on:click="enleverPizza(pizza.id)">Enlever la pizza</button>
             </div>
-            <button v-on:click="enleverPizza(index)">Enlever la pizza</button>
+        </div>
+        <div class="total commande">
+            {{ calories_total}}<br>
+            {{ prix_total}}<br>
         </div><br>
     </div>
 </div>
