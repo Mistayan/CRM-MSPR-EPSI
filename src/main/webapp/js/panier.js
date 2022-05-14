@@ -25,17 +25,17 @@ const app = new Vue({
         console.log(this.panier);
     },
     methods: { // Methodes interactives
-        enleverPizza(pizza_panier_index) {
-            console.log(pizza_panier_index);
+        enleverPizza(pizza_id) {
+            console.log(pizza_id);
             <!--supprimer pizza du panier-->
             axios.post('/public/panier/pizza' +
                 '?panier_id=' + this.panier_id +
-                '&pizza_id=' + pizza_panier_index +
+                '&pizza_id=' + pizza_id +
                 '&action=0')
                 .then(response => {
                     if (response.data.success) {
                         localStorage.setItem('panier.id', response.data.data);
-                        <!-- Re-Charger panier après ajout-->
+                        <!-- Re-Charger panier après suppression-->
                         axios.get('/public/panier?panier_id=' + response.data.data)
                             .then(response => {
                                 this.panier = response.data.data;
