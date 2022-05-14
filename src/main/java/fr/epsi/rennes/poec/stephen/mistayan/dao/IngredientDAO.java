@@ -36,7 +36,7 @@ public class IngredientDAO {
                 ingredient.setId(rs.getInt("id"));
                 ingredient.setLabel(rs.getString("label"));
                 ingredient.setNbCalories(rs.getInt("nb_calories"));
-                ingredient.setPrix(rs.getInt("prix"));
+                ingredient.setPrix(rs.getDouble("prix"));
                 ingredient.setType(rs.getString("type"));
                 ingredients.add(ingredient);
             }
@@ -45,5 +45,4 @@ public class IngredientDAO {
             throw new TechnicalException(e);
         }
     }
-
 }
