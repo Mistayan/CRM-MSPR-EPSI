@@ -37,16 +37,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
+
 //                .antMatchers("/admin/**").hasRole("ANY")
                 .and()
-                .csrf().disable()
                 .formLogin()
-                .defaultSuccessUrl("/user/home.html")
-                .failureForwardUrl("/public/register.html");
+                .loginPage("/login.html")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/index.html", true)
+                .failureUrl("/login.html?error=true")
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID");
+//                .failureForwardUrl("/public/register.html");
     }
 
     @Bean
