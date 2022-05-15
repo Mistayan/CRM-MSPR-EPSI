@@ -110,16 +110,18 @@ public class PanierDAO {
 
                 List<Pizza> pizzaRepo = pizzaService.getAllPizzas();
                 List<Pizza> pizzaList = new ArrayList<>();
-                for (String pizza_id : pizzas.split(",")) {
-                    for (Pizza pizza_ : pizzaRepo){
-                        if (pizza_.getId() == Integer.parseInt(pizza_id)) {
-                            pizzaList.add(pizza_);
+                if (pizzas != null) {
+                    for (String pizza_id : pizzas.split(",")) {
+                        for (Pizza pizza_ : pizzaRepo) {
+                            if (pizza_.getId() == Integer.parseInt(pizza_id)) {
+                                pizzaList.add(pizza_);
+                            }
                         }
                     }
+                    panier.setPizzas(pizzaList);
+                    panier.setTotalPrix();
+                    panier.setTotalCalories();
                 }
-                panier.setPizzas(pizzaList);
-                panier.setTotalPrix();
-                panier.setTotalCalories();
                 return panier;
             }
             return null;
