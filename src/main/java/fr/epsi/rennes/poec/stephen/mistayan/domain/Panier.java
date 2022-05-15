@@ -13,8 +13,8 @@ import java.util.List;
 public class Panier {
     private int panierId;
     private List<Pizza> pizzas;
-    private int totalCalories;
-    private int totalPrix;
+    private double totalCalories;
+    private double totalPrix;
 
     public int getId() {
         return panierId;
@@ -22,10 +22,10 @@ public class Panier {
     public List<Pizza> getPizzas() {
         return pizzas;
     }
-    public int getTotalCalories() {
+    public double getTotalCalories() {
         return totalCalories;
     }
-    public int getTotalPrix() {
+    public double getTotalPrix() {
         return totalPrix;
     }
     public void setId(int id) {
