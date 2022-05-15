@@ -24,7 +24,7 @@ public class PanierService {
         //fonction pour ajouter pizza au panier.
         boolean exists = panierDAO.doesPanierExist(panier_id);
         if (!exists) {
-            // vérifie que le panier existe avant d'en créer un
+            // vérifier que le panier existe avant d'en créer un
             panier_id = panierDAO.CreatePanier();
         }
         panierDAO.addPizza(pizza, panier_id);
@@ -32,10 +32,6 @@ public class PanierService {
     }
 
     public int remPizza(int pizza_id, int panier_id) {
-        /**
-         * Supprimer une pizza du panier
-         * @Return: l'id du panier affecté (-1 si erreur)
-         */
         boolean exists = panierDAO.doesPanierExist(panier_id);
         // vérifie que le panier existe avant action
         if (!exists) {
@@ -45,7 +41,12 @@ public class PanierService {
         return panier_id;
     }
 
-    public Panier getPanierById(int panierId) {
-        return panierDAO.getPanierById(panierId);
+    public Panier getPanierById(int panier_id) {
+        boolean exists = panierDAO.doesPanierExist(panier_id);
+        // vérifie que le panier existe avant action
+        if (!exists) {
+            return null;
+        }
+        return panierDAO.getPanierById(panier_id);
     }
 }
