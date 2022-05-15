@@ -116,8 +116,10 @@ public class PanierDAO {
                             pizzaList.add(pizza_);
                         }
                     }
-                    panier.setPizzas(pizzaList);
                 }
+                panier.setPizzas(pizzaList);
+                panier.setTotalPrix();
+                panier.setTotalCalories();
                 return panier;
             }
             return null;
