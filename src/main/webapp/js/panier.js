@@ -1,4 +1,4 @@
-const app = new Vue({
+var app = new Vue({
     el: '#app',
     data() { //le modèle de données
         return {
@@ -14,19 +14,14 @@ const app = new Vue({
             .then(response => {
                 this.pizzas = response.data.data
             });
-        console.log("Table des pizzas");
-        console.log(this.pizzas);
-        // let panier_id = localStorage.getItem('panier_id');
         axios.get('/public/panier?panier_id=' + this.panier_id)
             .then(response => {
                 this.panier = response.data.data
             });
-        console.log("Infos panier");
-        console.log(this.panier);
+
     },
     methods: { // Methodes interactives
         enleverPizza(pizza_id) {
-            console.log(pizza_id);
             <!--supprimer pizza du panier-->
             axios.post('/public/panier/pizza' +
                 '?panier_id=' + this.panier_id +
