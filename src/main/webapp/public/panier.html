@@ -24,7 +24,8 @@
         <div class="commande">
             calories total : {{panier.totalCalories}}<br>
             prix total : {{panier.totalPrix}}<br>
-            <button>Commander</button>
+            <button v-on:click="confirmAction()">Commander</button>
+            <a href="/index.html">Ajouter d'autre pizzas à ma commande</a>
         </div><br>
     </div>
 </div>

@@ -46,15 +46,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/admin/**").hasRole("ANY")
                 .and()
                 .formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/index.html", true)
+//                .loginPage("/login")
+                .loginProcessingUrl("/user/login-success.html")
+//                .defaultSuccessUrl("/index.html", true)
                 .failureUrl("/login.html?error=true")
                 .and()
                 .logout()
-                .logoutUrl("/logout")
+//                .logoutUrl("/logout")
                 .deleteCookies("JSESSIONID");
-//                .failureForwardUrl("/public/register.html");
     }
 
     @Bean

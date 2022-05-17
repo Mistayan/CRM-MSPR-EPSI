@@ -42,6 +42,9 @@ public class PanierService {
     }
 
     public Panier getPanierById(int panier_id) {
+        /**
+         * @return: panier_id.exists() ? panier : null
+         */
         boolean exists = panierDAO.doesPanierExist(panier_id);
         // vérifie que le panier existe avant action
         if (!exists) {

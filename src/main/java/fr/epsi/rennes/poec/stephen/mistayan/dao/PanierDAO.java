@@ -140,8 +140,17 @@ public class PanierDAO {
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
             ps.setInt(1, Math.max(panier_id, 0));
             ps.setInt(2, Math.max(pizza_id, 0));
-            logger.error(sql);
-            logger.error("Reloving pizza with request : " + ps);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void truncate(int panier_id) {
+        String sql = "DELETE FROM panier_pizza" +
+                "    WHERE panier_id = ?";
+        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, Math.max(panier_id, 0));
             ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);

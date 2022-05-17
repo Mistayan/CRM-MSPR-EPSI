@@ -1,5 +1,6 @@
 package fr.epsi.rennes.poec.stephen.mistayan.domain;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public class Pizza {
 
     private int id;
-
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     private String label;
     // private List<Ingredient> ingredients;
     private List<Ingredient> ingredients;
@@ -48,11 +49,11 @@ public class Pizza {
         this.ingredients = ingredients;
     }
     public void setPrix() {
-        double prix = 1.87;
+        double prix = 0;
         for (Ingredient ingredient : this.ingredients) {
             prix += ingredient.getPrix();
         }
-        this.prix = prix;
+        this.prix = Double.parseDouble(df.format(prix));
     }
 
     public void setCalories() {

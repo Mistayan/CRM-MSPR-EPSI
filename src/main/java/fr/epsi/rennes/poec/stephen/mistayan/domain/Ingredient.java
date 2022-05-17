@@ -54,4 +54,9 @@ public class Ingredient {
     public void setPrix(double prix) {
         this.prix = prix;
     }
+
+    @Override
+    public String toString(){
+        return this.label;
+    }
 }

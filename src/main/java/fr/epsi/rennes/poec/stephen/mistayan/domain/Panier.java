@@ -1,5 +1,6 @@
 package fr.epsi.rennes.poec.stephen.mistayan.domain;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -11,6 +12,8 @@ import java.util.List;
  **/
 
 public class Panier {
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+
     private int panierId;
     private List<Pizza> pizzas;
     private double totalCalories;
@@ -48,4 +51,22 @@ public class Panier {
         this.pizzas = pizzas;
     }
 
+    @Override
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        for (Pizza pizza : pizzas) {
+//            sb.append("\"pizza\": \"").append(pizza.getLabel()).append("\",");
+//            sb.append("\"prix\": \"").append(pizza.getPrix()).append("\",");
+            sb.append(pizza.getLabel()).append("\",");
+        }
+        // Substring to skip last coma and \n, then add JSON_End_Of_Object
+        return sb.substring(0, sb.length() - 2) + "}";
+    }
+
+    public Double getTVA() {
+        double TVA = 5.5;
+        double TTC = getTotalPrix();
+        double HT = TTC / (1+(TVA / 100));
+        return TTC - HT;
+    }
 }
