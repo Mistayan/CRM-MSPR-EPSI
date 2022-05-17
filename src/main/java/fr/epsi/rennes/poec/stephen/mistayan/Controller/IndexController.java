@@ -27,13 +27,13 @@ public class IndexController {
     @Autowired
     private PanierService panierService;
 
-    @GetMapping("/user/pizza")
-    public Response<List<Pizza>> getAllPizzas() {
-        List<Pizza> pizzas = pizzaService.getAllPizzas();
-        Response<List<Pizza>> response = new Response<>();
-        response.setData(pizzas);
-        return response;
-    }
+//    @GetMapping("/user/pizza")
+//    public Response<List<Pizza>> getAllPizzas() {
+//        List<Pizza> pizzas = pizzaService.getAllPizzas();
+//        Response<List<Pizza>> response = new Response<>();
+//        response.setData(pizzas);
+//        return response;
+//    }
 
     @GetMapping("/public/pizza")
     public Response<List<Pizza>> getAllPizzasPublic() {
@@ -44,7 +44,7 @@ public class IndexController {
     }
 
     @PostMapping("/public/panier/pizza")
-    public Response<Integer> addPizza(
+    public Response<Integer> actionPizza(
             @RequestParam int pizza_id,
             @RequestParam int panier_id,
             @RequestParam int action) {

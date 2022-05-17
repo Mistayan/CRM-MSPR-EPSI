@@ -49,9 +49,8 @@ var app = new Vue({
             let confirmAction;
             if (!localStorage.getItem('alconf')){
                 <!-- Confirmer la commande-->
-                confirmAction = confirm("Are you sure you want to order this cart ?");
-                //TODO
-                // localStorage.removeItem('alconf')
+                confirmAction = confirm(this.panier);
+                localStorage.removeItem('alconf')
             }
             else {
                confirmAction = true;
@@ -64,18 +63,21 @@ var app = new Vue({
                     .then(response => {
                         console.log(this.panier_id)
                         if (response.data.success) {
-                            // redirection vers la page
-                            // window.location.replace("/user/orders.html");
+                            // redirection vers la page, après succès de la commande
+                            window.location.replace("/user/orders.html");
                         } else {
                             console.log("failed. Saving auto_redirect to storage")
-                            localStorage.setItem('nav', '/user/panier.html');
+                            localStorage.setItem('nav', '/public/panier.html');
                             window.alert("Must be authenticated.\nYou'll be redirected after you successfully logged-in");
                             localStorage.setItem('alconf', '42')
+                            localStorage.setItem('last_status', 'failed');
                             window.location.replace("/login");
                         }
                     })
                     .catch(response => {
-                        console.log("HARD_failed")
+                        window.alert("HARD_failed")
+                        localStorage.setItem('last_status', 'Hard_Failed on :' +
+                            'user/order?panier_id='+ this.panier.panier_id);
                         window.location.replace("/public/contact.html");
                     });
             } else {
