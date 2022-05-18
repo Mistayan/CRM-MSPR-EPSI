@@ -10,7 +10,7 @@ const app = new Vue({
     },
     mounted() {
         // Actions au chargement de la page
-        if (!isNaN(parseInt(window.localStorage.getItem('panier.id')))){
+        if (!isNaN(parseInt(window.localStorage.getItem('panier.id')))) {
             this.panier_id = window.localStorage.getItem('panier.id');
         }
         axios.get('/public/panier?panier_id=' + this.panier_id)
