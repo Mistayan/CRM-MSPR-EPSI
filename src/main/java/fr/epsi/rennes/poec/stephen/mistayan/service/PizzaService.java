@@ -3,6 +3,7 @@ package fr.epsi.rennes.poec.stephen.mistayan.service;
 import fr.epsi.rennes.poec.stephen.mistayan.dao.pizzaDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,8 @@ import java.util.List;
 @Repository
 public class PizzaService {
     //    private static final Logger logger = LogManager.getLogger(String.valueOf(PizzaService.class));
-    private final pizzaDAO pizzadao;
-
-    public PizzaService(pizzaDAO pizzadao) {this.pizzadao = pizzadao;}
+    @Autowired
+    private pizzaDAO pizzadao;
 
     public void createPizza(Pizza pizza) throws BusinessException {
         if (pizza.getLabel() == null) {

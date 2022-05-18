@@ -2,12 +2,9 @@ package fr.epsi.rennes.poec.stephen.mistayan.service;
 
 import fr.epsi.rennes.poec.stephen.mistayan.dao.CommandeDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.dao.UserDAO;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.UserRole;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +22,7 @@ public class UserService implements UserDetailsService {
     private final UserDAO userDAO;
     private final CommandeDAO commandeDAO;
     private final PanierService panierService;
+
     @Autowired
     public UserService(UserDAO userDAO, CommandeDAO commandeDAO, PanierService panierService) {
         this.userDAO = userDAO;

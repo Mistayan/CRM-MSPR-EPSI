@@ -1,22 +1,21 @@
 package fr.epsi.rennes.poec.stephen.mistayan.Controller;
 
 
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
 import fr.epsi.rennes.poec.stephen.mistayan.service.UserService;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.HTML;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 @RestController
 public class UserController {
@@ -43,7 +42,7 @@ public class UserController {
 //                                @AuthenticationPrincipal User user) {
         Response<Long> response = new Response<>();
         try {
-            logger.info("action : ordering");
+            logger.info("########### Action : ordering");
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             long order_id = userService.userOrder(auth.getName(), panier_id);
             response.setData(order_id);
@@ -51,8 +50,9 @@ public class UserController {
             return response;
         } catch (TechnicalException e) {
             response.setSuccess(false);
+            logger.log(Level.FATAL, "user/order route userService.userOrder failed :::> " + e);
             return (response);
-//            throw new TechnicalException(new SQLException("public/register route user.service.addUser failed"));
+//            throw new TechnicalException(new SQLException(""));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

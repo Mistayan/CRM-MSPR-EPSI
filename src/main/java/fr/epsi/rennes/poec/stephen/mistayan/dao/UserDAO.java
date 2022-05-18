@@ -31,7 +31,6 @@ public class UserDAO {
             stmt.setString(1, mail);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) { // pour le premier élément de la requête:
-                System.out.println(rs);
                 User user = new User();
                 user.setEmail(rs.getString(1));
                 user.setPassword(rs.getString(2));
@@ -53,8 +52,9 @@ public class UserDAO {
             stmt.setString(3, user.getRole());
 
             int user_id = stmt.executeUpdate();
-            if (user_id == 0)
+            if (user_id == 0) {
                 throw new SQLException("error adding user.");
+            }
         } catch (SQLException e) {
             throw new SQLException(e);
         }

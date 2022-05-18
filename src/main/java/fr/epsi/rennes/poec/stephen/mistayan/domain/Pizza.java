@@ -11,8 +11,8 @@ import java.util.List;
  **/
 public class Pizza {
 
-    private int id;
     private static final DecimalFormat df = new DecimalFormat("0.00");
+    private int id;
     private String label;
     // private List<Ingredient> ingredients;
     private List<Ingredient> ingredients;
@@ -23,12 +23,25 @@ public class Pizza {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getLabel() {
         return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public List<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 
     public double getPrix() {
@@ -39,15 +52,6 @@ public class Pizza {
         return calories;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    public void setLabel(String label) {
-        this.label = label;
-    }
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
     public void setPrix() {
         double prix = 0;
         for (Ingredient ingredient : this.ingredients) {
