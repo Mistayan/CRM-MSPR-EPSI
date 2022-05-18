@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="83e46eb5-d806-4138-aa0d-a77ead7f8996" name="pizzApp@localhost (DDL) Mapping">
+      <data-sources db="86d903ab-eb15-441e-bc08-af136d27e7a9" ddl="5db29f14-0628-4d4b-b4dc-a3d547cc1c47" />
+      <scope>
+        <node kind="database" negative="1">
+          <node kind="schema" negative="1" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>
