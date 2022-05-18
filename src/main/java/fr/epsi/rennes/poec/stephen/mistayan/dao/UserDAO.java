@@ -1,7 +1,10 @@
 package fr.epsi.rennes.poec.stephen.mistayan.dao;
 
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -12,12 +15,12 @@ import java.sql.SQLException;
 
 @Repository
 public class UserDAO {
-
-    @Autowired
-    private DataSource ds;
-
+    private static final Logger logger = LogManager.getLogger(UserDAO.class);
+    private final DataSource ds;
     @Autowired(required = false)
     private PasswordEncoder passwordEncoder;
+
+    public UserDAO(DataSource ds) {this.ds = ds;}
 
     public User getUserByEmail(String mail) throws SQLException {
         //pre-encoding checks
@@ -44,7 +47,9 @@ public class UserDAO {
         }
     }
 
+    @Async
     public void addUser(User user) throws SQLException {
+        logger.info(Thread.currentThread().getName());
         String sql = "INSERT INTO user ( email , password , userRole ) VALUES (?,?,?)";
         try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());

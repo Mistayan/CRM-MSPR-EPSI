@@ -4,6 +4,7 @@ import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
 import fr.epsi.rennes.poec.stephen.mistayan.service.PizzaService;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,12 +29,9 @@ import java.util.List;
 
 @Repository
 public class PanierDAO {
+    private static final Logger logger = LogManager.getLogger(PanierDAO.class);
     @Autowired
     private DataSource ds;
-
-    @Autowired
-    private Logger logger;
-
     @Autowired
     private PizzaService pizzaService = new PizzaService();
 
@@ -74,7 +72,7 @@ public class PanierDAO {
             String date = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
             ps.setString(1, date);
             ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys(); //
+            ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -104,8 +102,6 @@ public class PanierDAO {
             if (rs.next()) {
                 Panier panier = new Panier();
                 panier.setId(rs.getInt("panier_id"));
-
-
                 String pizzas = rs.getString("pizzas");
 
                 List<Pizza> pizzaRepo = pizzaService.getAllPizzas();
