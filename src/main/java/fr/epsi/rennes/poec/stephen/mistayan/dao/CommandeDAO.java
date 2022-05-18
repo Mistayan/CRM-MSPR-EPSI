@@ -3,13 +3,13 @@ package fr.epsi.rennes.poec.stephen.mistayan.dao;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import fr.epsi.rennes.poec.stephen.mistayan.service.UserService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -26,7 +26,9 @@ import java.sql.SQLException;
 
 @Repository
 public class CommandeDAO {
-    private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
+
+
+    private static final Logger logger = LogManager.getLogger(CommandeDAO.class);
     @Autowired
     private final PanierDAO panierDAO = new PanierDAO();
     @Autowired
@@ -34,16 +36,19 @@ public class CommandeDAO {
     @Autowired
     private DataSource ds;
 
+    /**
+     * @param userName  nom de l'utilisateur
+     * @param panier_id le panier à commander
+     * @return success ? order_id : 0
+     */
+    @Transactional
     public long order(String userName, int panier_id) throws SQLException {
-        /**
-         * @param: user_name, panier_to_order
-         * @return: success ? order_id : 0
-         */
+
         Panier panier = panierDAO.getPanierById(panier_id);
         if (panier == null) {
             throw new SQLException("panier invalide");
         }
-        logger.log(Level.TRACE, panier.toString());
+        logger.trace(userName + " ordered panier : " + panier_id);
         String sql = "INSERT INTO order_ " +
                 "(mail, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?)";
@@ -66,10 +71,9 @@ public class CommandeDAO {
                 if (newOrderTable(order_id, panier) != order_id) {
                     logger.fatal("unEqual order_id from order_article & order");
                 }
-                ;
+
                 logger.debug("newUserOrderTable : " + userName + ", " + order_id);
                 if (newUserOrderTable(userName, order_id) == -1) {
-//                rollback
                     logger.fatal("should be rollbacked");
                 }
                 if (order_id > 0) {
