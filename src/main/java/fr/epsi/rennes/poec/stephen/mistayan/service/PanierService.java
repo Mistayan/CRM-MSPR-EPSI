@@ -3,7 +3,9 @@ package fr.epsi.rennes.poec.stephen.mistayan.service;
 import fr.epsi.rennes.poec.stephen.mistayan.dao.PanierDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Author : Stephen Mistayan
@@ -18,8 +20,10 @@ public class PanierService {
 
     private final PanierDAO panierDAO;
 
+    @Autowired
     public PanierService(PanierDAO panierDAO) {this.panierDAO = panierDAO;}
 
+    @Transactional
     public int addPizza(Pizza pizza, int panier_id) {
         //fonction pour ajouter pizza au panier.
         boolean exists = panierDAO.doesPanierExist(panier_id);

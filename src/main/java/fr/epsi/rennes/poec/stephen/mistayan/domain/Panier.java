@@ -57,18 +57,6 @@ public class Panier {
         }
     }
 
-    @Override
-    public final String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Pizza pizza : pizzas) {
-//            sb.append("\"pizza\": \"").append(pizza.getLabel()).append("\",");
-//            sb.append("\"prix\": \"").append(pizza.getPrix()).append("\",");
-            sb.append(pizza.getLabel()).append(", ");
-        }
-        // Substring to skip last coma and \n, then add JSON_End_Of_Object
-        return sb.substring(0, sb.length() - 2);
-    }
-
     public Double getTVA() {
         double TVA = 5.5;
         double TTC = getTotalPrix();

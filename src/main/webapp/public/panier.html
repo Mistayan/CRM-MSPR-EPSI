@@ -12,22 +12,33 @@
     <div class="panier">
         Nombre de pizzas dans le panier : {{panier && panier.pizzas? panier.pizzas.length : 0}}
     </div>
-    <div class="pizza-list">
-        <div class="pizza-item" v-for="(pizza_panier, index) in panier.pizzas">
-            <div class="association" v-for="pizza in pizzas" v-if="pizza.id == pizza_panier.id">
-                nom_pizza :: {{pizza.label}}<br>
-                prix_pizza :: {{pizza.prix}}<br>
-                calories_pizza :: {{pizza.calories}}<br>
-                <button v-on:click="enleverPizza(pizza.id)">Enlever la pizza</button>
-            </div>
-        </div>
-        <div class="commande">
-            calories total : {{panier.totalCalories}}<br>
-            prix total : {{panier.totalPrix}}<br>
-            <button v-on:click="confirmAction()">Commander</button>
-            <a href="/index.html">Ajouter d'autre pizzas à ma commande</a>
-        </div>
-        <br>
+    <div class="tg-wrap">
+        <table class="tg">
+            <thead>
+            <tr>
+                <th class="tg-ih3h">Nom pizza</th>
+                <th class="tg-ih3h">Calories</th>
+                <th class="tg-ih3h">Prix</th>
+                <th class="tg-ih3h">Quantité</th>
+                <th class="tg-ih3h">+/-</th>
+            </tr>
+            <tr class="pizza" v-for="pizza in pizzas" v-if="pizzaInPanier(pizza)">
+                <td class="tg-0pky">
+                    <a href="#">{{pizza.label}}</a>
+                </td>
+
+                <td class="tg-0pky">{{pizza.calories}}</td>
+                <td class="tg-0pky">{{pizza.prix}}</td>
+                <td class="tg-0pky">{{countPizzaInCart(pizza.id)}}</td>
+                <td class="tg-0pky">
+                    <button v-on:click="ajouterPizza(pizza.id)">+</button>
+                    <br>
+                    <button v-on:click="enleverPizza(pizza.id)">-</button>
+                </td>
+            </tr>
+            </thead>
+        </table>
+        <button v-on:click="confirmAction()">Commander</button>
     </div>
 </div>
 </body>
