@@ -14,7 +14,7 @@
     </div>
     <div class="pizza-list">
         <div class="pizza-item" v-for="(pizza_panier, index) in panier.pizzas">
-            <div class="association" v-for="pizza in pizzas"  v-if="pizza.id == pizza_panier.id">
+            <div class="association" v-for="pizza in pizzas" v-if="pizza.id == pizza_panier.id">
                 nom_pizza :: {{pizza.label}}<br>
                 prix_pizza :: {{pizza.prix}}<br>
                 calories_pizza :: {{pizza.calories}}<br>
@@ -26,7 +26,8 @@
             prix total : {{panier.totalPrix}}<br>
             <button v-on:click="confirmAction()">Commander</button>
             <a href="/index.html">Ajouter d'autre pizzas à ma commande</a>
-        </div><br>
+        </div>
+        <br>
     </div>
 </div>
 </body>

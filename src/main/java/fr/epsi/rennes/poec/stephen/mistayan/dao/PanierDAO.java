@@ -35,7 +35,7 @@ public class PanierDAO {
     private Logger logger;
 
     @Autowired
-    private PizzaService pizzaService;
+    private PizzaService pizzaService = new PizzaService();
 
     public void addPizza(Pizza pizza, int panier_id) {
         String sql = "insert into panier_pizza"

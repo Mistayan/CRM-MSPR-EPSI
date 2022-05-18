@@ -1,4 +1,7 @@
-var app = new Vue({
+// Yag (suite) aan
+// Redis BDD
+
+const app = new Vue({
     el: '#app',
     data() { //le modèle de données
         return {
@@ -47,24 +50,25 @@ var app = new Vue({
         },
         confirmAction() {
             let confirmAction;
-            if (!localStorage.getItem('alconf')){
+            if (!localStorage.getItem('alconf')) {
                 <!-- Confirmer la commande-->
-                confirmAction = confirm(this.panier);
-                localStorage.removeItem('alconf')
-            }
-            else {
-               confirmAction = true;
+                confirmAction = confirm("votre commande vous satisfait ?");
+                localStorage.setItem('alconf', '42')
+            } else {
+                confirmAction = true;
             }
             if (confirmAction) {
                 <!--alerte popup-->
                 // window.alert("confirmer votre commande");
                 <!--Commander le panier-->
+                console.log(this.panier_id)
                 axios.post('/user/order?panier_id=' + this.panier_id)
                     .then(response => {
                         console.log(this.panier_id)
                         if (response.data.success) {
+                            localStorage.removeItem('alconf')
                             // redirection vers la page, après succès de la commande
-                            window.location.replace("/user/orders.html");
+                            // window.location.replace("/user/orders.html");
                         } else {
                             console.log("failed. Saving auto_redirect to storage")
                             localStorage.setItem('nav', '/public/panier.html');
@@ -77,8 +81,9 @@ var app = new Vue({
                     .catch(response => {
                         window.alert("HARD_failed")
                         localStorage.setItem('last_status', 'Hard_Failed on :' +
-                            'user/order?panier_id='+ this.panier.panier_id);
-                        window.location.replace("/public/contact.html");
+                            'user/order?panier_id=' + this.panier.panier_id)
+                        console.timeLog(response);
+                        // window.location.replace("/public/contact.html");
                     });
             } else {
                 console.log("Action canceled by user");

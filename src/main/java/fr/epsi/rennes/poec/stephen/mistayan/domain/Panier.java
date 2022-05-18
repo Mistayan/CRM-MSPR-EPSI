@@ -22,17 +22,25 @@ public class Panier {
     public int getId() {
         return panierId;
     }
+
+    public void setId(int id) {
+        this.panierId = id;
+    }
+
     public List<Pizza> getPizzas() {
         return pizzas;
     }
+
+    public void setPizzas(List<Pizza> pizzas) {
+        this.pizzas = pizzas;
+    }
+
     public double getTotalCalories() {
         return totalCalories;
     }
+
     public double getTotalPrix() {
         return totalPrix;
-    }
-    public void setId(int id) {
-        this.panierId = id;
     }
 
     public void setTotalCalories() {
@@ -41,14 +49,12 @@ public class Panier {
             totalCalories += pizza.getCalories();
         }
     }
+
     public void setTotalPrix() {
         totalPrix = 0;
         for (Pizza pizza : pizzas) {
             totalPrix += pizza.getPrix();
         }
-    }
-    public void setPizzas(List<Pizza> pizzas) {
-        this.pizzas = pizzas;
     }
 
     @Override
@@ -66,7 +72,7 @@ public class Panier {
     public Double getTVA() {
         double TVA = 5.5;
         double TTC = getTotalPrix();
-        double HT = TTC / (1+(TVA / 100));
-        return TTC - HT;
+        double HT = TTC / (1 + (TVA / 100));
+        return Double.parseDouble(df.format(TTC - HT));
     }
 }
