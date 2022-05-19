@@ -3,13 +3,11 @@ package fr.epsi.rennes.poec.stephen.mistayan.dao;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -41,9 +39,9 @@ public class CommandeDAO {
      * @param panier_id le panier à commander
      * @return success ? order_id : 0
      */
-    @Transactional
+//    @Transactional
     public long order(String userName, int panier_id) throws SQLException {
-
+        int userId = userDAO.getUserByName(userName);
         Panier panier = panierDAO.getPanierById(panier_id);
         if (panier == null) {
             throw new SQLException("panier invalide");
@@ -52,9 +50,9 @@ public class CommandeDAO {
         String sql = "INSERT INTO order_ " +
                 "(mail, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?)";
-        logger.log(Level.FATAL, panier.toString());
+        logger.trace(panier.toString());
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, userName);
+            ps.setInt(1, userId);
             ps.setDouble(2, panier.getTVA());
             // TAUX TVA ALIMENTAIRE :: 5.5
             ps.setDouble(3, panier.getTotalPrix());
@@ -69,12 +67,12 @@ public class CommandeDAO {
                 int order_id = rs.getInt(1);
                 logger.debug("rs.next() on : " + order_id);
                 if (newOrderTable(order_id, panier) != order_id) {
-                    logger.fatal("unEqual order_id from order_article & order");
+                    throw new SQLException("unEqual order_id from order_article & order");
                 }
 
                 logger.debug("newUserOrderTable : " + userName + ", " + order_id);
-                if (newUserOrderTable(userName, order_id) == -1) {
-                    logger.fatal("should be rollbacked");
+                if (newUserOrderTable(userId, order_id) == -1) {
+                    throw new SQLException("should be rollback");
                 }
                 if (order_id > 0) {
                     logger.warn("##############\tCommandeDAO :: removing panier N°" + panier_id);
@@ -89,12 +87,11 @@ public class CommandeDAO {
         return -1;
     }
 
-    private long newUserOrderTable(String userName, int order_id) throws SQLException {
-        String sql = "INSERT INTO user_order (user_name, order_id) VALUE (?, ?)";
+    private long newUserOrderTable(int userName, int order_id) throws SQLException {
+        String sql = "INSERT INTO user_order (user_id, order_id) VALUE (?, ?)";
         logger.debug("newUserOrderTable ");
-
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            ps.setString(1, userName);
+            ps.setInt(1, userName);
             ps.setInt(2, order_id);
             if (ps.executeUpdate() == 0) {
                 throw new TechnicalException(
