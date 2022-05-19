@@ -7,7 +7,8 @@ const app = new Vue({
         return {
             pizzas: [],
             panier: {},
-            panier_id: -1
+            panier_id: -1,
+            buffer: {}
         }
     },
     mounted() {
@@ -72,6 +73,9 @@ const app = new Vue({
                 i++;
             }
             return count;
+        },
+        calc_price_pizza_panier(pizza) {
+            return pizza.prix * this.countPizzaInCart(pizza.id);
         },
         enleverPizza(pizza_id) {
             <!-- supprimer pizza du panier -->

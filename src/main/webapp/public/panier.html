@@ -8,6 +8,7 @@
     <script defer src="/js/panier.js"></script>
 </head>
 <body>
+<include src="/template/header.html"></include>
 <div id="app">
     <div class="panier">
         Nombre de pizzas dans le panier : {{panier && panier.pizzas? panier.pizzas.length : 0}}
@@ -23,23 +24,31 @@
                 <th class="tg-ih3h">+/-</th>
             </tr>
             <tr class="pizza" v-for="pizza in pizzas" v-if="pizzaInPanier(pizza)">
-                <td class="tg-0pky">
-                    <a href="#">{{pizza.label}}</a>
-                </td>
-
+                <td class="tg-0pky"><a href="#" class="ui-icon-info" title="infos" id="infos">{{pizza.label}}</a></td>
                 <td class="tg-0pky">{{pizza.calories}}</td>
-                <td class="tg-0pky">{{pizza.prix}}</td>
+                <td class="tg-0pky">{{calc_price_pizza_panier(pizza)}}</td>
                 <td class="tg-0pky">{{countPizzaInCart(pizza.id)}}</td>
-                <td class="tg-0pky">
+                <td class="tg-0pky" >
                     <button v-on:click="ajouterPizza(pizza.id)">+</button>
                     <br>
                     <button v-on:click="enleverPizza(pizza.id)">-</button>
                 </td>
             </tr>
+            <tr v-if="panier && panier.pizzas">
+                <td>TOTAL : </td>
+                <td class="tg-0pky">{{panier.totalCalories ? panier.totalCalories : 0}}</td>
+                <td class="tg-0pky"> {{ panier.totalPrix ? panier.totalPrix : 0 }} </td>
+                <td class="tg-0pky">{{panier.pizzas ? panier.pizzas.length : 0}}</td>
+            </tr>
             </thead>
         </table>
         <button v-on:click="confirmAction()">Commander</button>
     </div>
+
+    <script>
+        // <div v-for="ingredient in pizza.ingredient">{{ingredient}}</div>
+        Tooltip.bind('infos');
+    </script>
 </div>
 </body>
 </html>
