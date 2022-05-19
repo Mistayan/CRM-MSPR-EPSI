@@ -5,6 +5,8 @@ const nav = new Vue({
             let link = window.localStorage.getItem('nav');
             localStorage.removeItem('nav')
             window.location.replace(link);
+        } else {
+            window.location.replace("/index.html")
         }
     }
 });
