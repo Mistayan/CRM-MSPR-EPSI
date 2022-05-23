@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -36,17 +37,17 @@ public class CommandeDAO {
 
     /**
      * @param userName  nom de l'utilisateur
-     * @param panier_id le panier à commander
+     * @param panierId le panier à commander
      * @return success ? order_id : 0
      */
-//    @Transactional
-    public long order(String userName, int panier_id) throws SQLException {
+    @Transactional
+    public long order(String userName, int panierId) throws SQLException {
         int userId = userDAO.getUserByName(userName);
-        Panier panier = panierDAO.getPanierById(panier_id);
+        Panier panier = panierDAO.getPanierById(panierId);
         if (panier == null) {
-            throw new SQLException("panier invalide");
+            throw new SQLException("#CommandeDAO##order  ::: panier invalide");
         }
-        logger.trace(userName + " ordered panier : " + panier_id);
+        logger.trace("#CommandeDAO##order  ::: " + userName + " ordered panier : " + panierId);
         String sql = "INSERT INTO order_ " +
                 "(mail, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?)";
@@ -58,26 +59,24 @@ public class CommandeDAO {
             ps.setDouble(3, panier.getTotalPrix());
 
             if (ps.executeUpdate() == 0) {
-                logger.debug("ps.execute() failed");
+                logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
                 throw new SQLException(sql + userName + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
             }
             ResultSet rs = ps.getGeneratedKeys();
-            logger.debug("if rs.next()");
             if (rs.next()) {
-                int order_id = rs.getInt(1);
-                logger.debug("rs.next() on : " + order_id);
-                if (newOrderTable(order_id, panier) != order_id) {
-                    throw new SQLException("unEqual order_id from order_article & order");
+                int orderId = rs.getInt(1);
+                if (newOrderTable(orderId, panier) != orderId) {
+                    throw new SQLException("un-Equal orderId from order_article & order");
                 }
 
-                logger.debug("newUserOrderTable : " + userName + ", " + order_id);
-                if (newUserOrderTable(userId, order_id) == -1) {
+                logger.debug("newUserOrderTable : " + userName + ", " + orderId);
+                if (newUserOrderTable(userId, orderId) == -1) {
                     throw new SQLException("should be rollback");
                 }
-                if (order_id > 0) {
-                    logger.warn("##############\tCommandeDAO :: removing panier N°" + panier_id);
-                    panierDAO.truncate(panier_id);
-                    return order_id;
+                if (orderId > 0) {
+                    logger.trace("##############\tCommandeDAO :: emptying panier N°" + panierId);
+                    panierDAO.truncate(panierId);
+                    return orderId;
                 }
             }
         } catch (SQLException e) {
@@ -87,20 +86,19 @@ public class CommandeDAO {
         return -1;
     }
 
-    private long newUserOrderTable(int userName, int order_id) throws SQLException {
+    private long newUserOrderTable(int userId, int orderId) throws SQLException {
         String sql = "INSERT INTO user_order (user_id, order_id) VALUE (?, ?)";
         logger.debug("newUserOrderTable ");
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, userName);
-            ps.setInt(2, order_id);
+            ps.setInt(1, userId);
+            ps.setInt(2, orderId);
             if (ps.executeUpdate() == 0) {
-                throw new TechnicalException(
-                        new SQLException("##### Cannot insert user_order: " + sql + "\n" + userName + ", " + order_id));
+                throw new SQLException("##### Cannot insert user_order: " + sql + "\n" + userId + ", " + orderId);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-        return -1L;
+        return 1L;
     }
 
     private long newOrderTable(int order_id, Panier panier) throws SQLException {
@@ -113,7 +111,7 @@ public class CommandeDAO {
                 ps.setInt(2, pizza.getId());
                 int result = ps.executeUpdate();
                 if (result == 0) {
-                    logger.warn("###############" + sql + " failed");
+                    logger.warn("###############" + sql +order_id + " : " + panier.getId()+ " failed");
                     throw new SQLException(order_id + ", " + pizza.getId());
                 }
             }
