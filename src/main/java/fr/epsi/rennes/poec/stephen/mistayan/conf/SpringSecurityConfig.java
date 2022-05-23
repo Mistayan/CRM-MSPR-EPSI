@@ -2,6 +2,7 @@ package fr.epsi.rennes.poec.stephen.mistayan.conf;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +16,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
+
+@Configuration(proxyBeanMethods = true)
 @EnableWebSecurity
 @EnableAspectJAutoProxy
+@EnableAutoConfiguration
 @EnableConfigurationProperties
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
-
+    private static final Logger logger = LogManager.getLogger(GetClass);
     private final UserDetailsService userDetailsService;
 
+    //    @Lazy
     public SpringSecurityConfig(@Lazy UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -32,20 +37,21 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
+//                .notifyAll();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable()  //should be removed ?
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("/admin/**").hasRole("ANY")
+                .antMatchers("/user/**").hasAnyRole("USER")
+                .antMatchers("/admin/**", "/actuator/**", "/user/**").hasRole("ADMIN")
+//                .antMatchers("/admin/**").hasRole("ANY") // Debug only
                 .and()
                 .formLogin()
-//                .loginPage("/login")
+//                .loginPage("/login.html")
 //                .loginProcessingUrl("/user/login-success.html")
                 .defaultSuccessUrl("/user/login-success.html")
                 .failureUrl("/login.html?error=true")
