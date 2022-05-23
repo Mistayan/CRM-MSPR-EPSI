@@ -2,7 +2,6 @@ package fr.epsi.rennes.poec.stephen.mistayan.dao;
 
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
-import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
@@ -36,7 +35,7 @@ public class CommandeDAO {
     private DataSource ds;
 
     /**
-     * @param userName  nom de l'utilisateur
+     * @param userName nom de l'utilisateur
      * @param panierId le panier à commander
      * @return success ? order_id : 0
      */
@@ -111,7 +110,7 @@ public class CommandeDAO {
                 ps.setInt(2, pizza.getId());
                 int result = ps.executeUpdate();
                 if (result == 0) {
-                    logger.warn("###############" + sql +order_id + " : " + panier.getId()+ " failed");
+                    logger.warn("###############" + sql + order_id + " : " + panier.getId() + " failed");
                     throw new SQLException(order_id + ", " + pizza.getId());
                 }
             }

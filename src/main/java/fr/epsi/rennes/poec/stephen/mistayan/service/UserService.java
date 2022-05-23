@@ -21,13 +21,11 @@ public class UserService implements UserDetailsService {
     private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
     private final UserDAO userDAO;
     private final CommandeDAO commandeDAO;
-    private final PanierService panierService;
 
     @Autowired
-    public UserService(UserDAO userDAO, CommandeDAO commandeDAO, PanierService panierService) {
+    public UserService(UserDAO userDAO, CommandeDAO commandeDAO) {
         this.userDAO = userDAO;
         this.commandeDAO = commandeDAO;
-        this.panierService = panierService;
     }
 
     @Override
@@ -54,9 +52,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public long userOrder(String userName, int panier_id) throws SQLException {
+    public long userOrder(String userName, int panierId) throws SQLException {
 
-        return commandeDAO.order(userName, panier_id);
+        return commandeDAO.order(userName, panierId);
     }
 }
 

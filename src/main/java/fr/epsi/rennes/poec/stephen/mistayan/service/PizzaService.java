@@ -1,6 +1,7 @@
 package fr.epsi.rennes.poec.stephen.mistayan.service;
 
 import fr.epsi.rennes.poec.stephen.mistayan.dao.pizzaDAO;
+import fr.epsi.rennes.poec.stephen.mistayan.domain.Ingredient;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.BusinessException;
 import org.apache.logging.log4j.LogManager;
@@ -27,13 +28,14 @@ public class PizzaService {
 
     @Autowired
     private pizzaDAO pizzadao;
-    @Autowired
-    private fr.epsi.rennes.poec.stephen.mistayan.dao.pizzaDAO pizzaDAO;
 
     @Transactional
     public void createPizza(Pizza pizza) throws BusinessException {
         if (pizza.getLabel() == null) {
             throw new BusinessException("pizza.label.null");
+        }
+        for (Ingredient ingredient : pizza.getIngredients()) {
+
         }
         if (pizza.getIngredients() == null || pizza.getIngredients().size() < 3) {
             throw new BusinessException("pizza.ingredients.invalides");
@@ -53,8 +55,9 @@ public class PizzaService {
     }
 
     public List<Pizza> getAllPizzas() {
-            return pizzadao.getAll();
+        return pizzadao.getAll();
 
     }
+
 
 }

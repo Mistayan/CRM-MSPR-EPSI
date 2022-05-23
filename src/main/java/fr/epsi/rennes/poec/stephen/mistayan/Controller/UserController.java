@@ -5,7 +5,6 @@ import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
 import fr.epsi.rennes.poec.stephen.mistayan.service.UserService;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,19 +37,19 @@ public class UserController {
     }
 
     @PostMapping("/user/order")
-    public Response<Long> order(@RequestParam int panier_id) {
+    public Response<Long> order(@RequestParam int panierId) {
 //                                @AuthenticationPrincipal User user) {
         Response<Long> response = new Response<>();
         try {
-            logger.info("########### Action : ordering");
+            logger.info("########### Action : ordering cart " + panierId);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            long order_id = userService.userOrder(auth.getName(), panier_id);
-            response.setData(order_id);
+            long orderId = userService.userOrder(auth.getName(), panierId);
+            response.setData(orderId);
             response.setSuccess(true);
             return response;
         } catch (TechnicalException e) {
             response.setSuccess(false);
-            logger.log(Level.FATAL, "user/order route userService.userOrder failed :::> " + e);
+            logger.fatal("user/order route userService.userOrder failed :::> " + e);
             return (response);
 //            throw new TechnicalException(new SQLException(""));
         } catch (SQLException e) {

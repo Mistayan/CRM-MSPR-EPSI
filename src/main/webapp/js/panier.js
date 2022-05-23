@@ -7,21 +7,21 @@ const app = new Vue({
         return {
             pizzas: [],
             panier: {},
-            panier_id: -1,
+            panierId: -1,
             buffer: {}
         }
     },
     mounted() {
         // Actions au chargement de la page
-        this.panier_id = window.localStorage.getItem('panier.id');
-        if (this.panier_id === null) {
-            this.panier_id = -1;
+        this.panierId = window.localStorage.getItem('panier.id');
+        if (this.panierId === null) {
+            this.panierId = -1;
         }
         axios.get("/public/pizza")
             .then(response => {
                 this.pizzas = response.data.data
             });
-        axios.get('/public/panier?panier_id=' + this.panier_id)
+        axios.get('/public/panier?panierId=' + this.panierId)
             .then(response => {
                 this.panier = response.data.data;
                 if (this.panier)
@@ -34,14 +34,14 @@ const app = new Vue({
             if (this.panier)
                 this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
         },
-        ajouterPizza(pizza_id) {
+        ajouterPizza(pizzaId) {
             <!--Charger panier-->
-            axios.post('/public/panier/pizza?panier_id=' + this.panier_id + '&pizza_id=' + pizza_id + '&action=1')
+            axios.post('/public/panier/pizza?panierId=' + this.panierId + '&pizzaId=' + pizzaId + '&action=1')
                 .then(response => {
                     if (response.data.success) {
                         localStorage.setItem('panier.id', response.data.data);
                         <!-- Re-Charger panier après ajout-->
-                        axios.get('/public/panier?panier_id=' + response.data.data)
+                        axios.get('/public/panier?panierId=' + response.data.data)
                             .then(response => {
                                 this.setPanier(response)
                             });
@@ -59,15 +59,14 @@ const app = new Vue({
                 return true
             }
         },
-        countPizzaInCart(pizza_id) {
+        countPizzaInCart(pizzaId) {
             if (!this.panier || !this.panier.pizzas)
                 return 0;
             let i = 0;
             let count = 0;
             while (i < this.panier.pizzas.length) {
-                let pizza = Object(this.panier.pizzas.at(i))
-                let pizza2 = this.panier.pizzas.at(i)
-                if (pizza_id === pizza.id) {
+                let pizza = Object(this.panier.pizzas.at(i)) //on récupère l'objet pizza à l'index i
+                if (pizzaId === pizza.id) {
                     count++
                 }
                 i++;
@@ -77,18 +76,18 @@ const app = new Vue({
         calc_price_pizza_panier(pizza) {
             return pizza.prix * this.countPizzaInCart(pizza.id);
         },
-        enleverPizza(pizza_id) {
+        enleverPizza(pizzaId) {
             <!-- supprimer pizza du panier -->
             axios.post('/public/panier/pizza' +
-                '?panier_id=' + this.panier_id +
-                '&pizza_id=' + pizza_id +
+                '?panierId=' + this.panierId +
+                '&pizzaId=' + pizzaId +
                 '&action=0')
                 .then(response => {
                     if (response.data.success) {
                         <!-- Actualiser le localstorage -->
                         localStorage.setItem('panier.id', response.data.data);
                         <!-- Re-Charger panier après suppression -->
-                        axios.get('/public/panier?panier_id=' + response.data.data)
+                        axios.get('/public/panier?panierId=' + response.data.data)
                             .then(response => {
                                 this.setPanier(response);
                             });
@@ -96,10 +95,10 @@ const app = new Vue({
                 });
         },
         order() {
-            console.log(this.panier_id)
-            axios.post('/user/order?panier_id=' + this.panier_id)
+            console.log(this.panierId)
+            axios.post('/user/order?panierId=' + this.panierId)
                 .then(response => {
-                    console.log(this.panier_id)
+                    console.log(this.panierId)
                     if (response.data.success) {
                         localStorage.removeItem('alconf')
                         // redirection vers la page, après succès de la commande
@@ -116,7 +115,7 @@ const app = new Vue({
                 .catch(response => {
                     window.alert("HARD_failed")
                     localStorage.setItem('last_status', 'Hard_Failed on :' +
-                        'user/order?panier_id=' + this.panier.panier_id)
+                        'user/order?panierId=' + this.panier.panierId)
                     console.timeLog(response);
                     localStorage.removeItem('alconf')
                     window.location.replace("/public/contact.html");

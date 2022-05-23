@@ -25,43 +25,44 @@ public class PanierService {
     private final PizzaService pizzaService;
 
     @Autowired
-    public PanierService(PanierDAO panierDAO, PizzaService pizzaService) {this.panierDAO = panierDAO;
+    public PanierService(PanierDAO panierDAO, PizzaService pizzaService) {
+        this.panierDAO = panierDAO;
         this.pizzaService = pizzaService;
     }
 
-    public int addPizza(Pizza pizza, int panier_id) {
+    public int addPizza(Pizza pizza, int panierId) {
         //fonction pour ajouter pizza au panier.
-        boolean exists = panierDAO.doesPanierExist(panier_id);
+        boolean exists = panierDAO.doesPanierExist(panierId);
         if (!exists) {
             // vérifier que le panier existe avant d'en créer un
-            panier_id = panierDAO.CreatePanier();
+            panierId = panierDAO.CreatePanier();
         }
-        panierDAO.addPizza(pizza, panier_id);
-        return panier_id;
+        panierDAO.addPizza(pizza, panierId);
+        return panierId;
     }
 
-    public int remPizza(int pizza_id, int panier_id) {
-        boolean exists = panierDAO.doesPanierExist(panier_id);
+    public int remPizza(int pizza_id, int panierId) {
+        boolean exists = panierDAO.doesPanierExist(panierId);
         // vérifie que le panier existe avant action
         if (!exists) {
             return -1;
         }
-        panierDAO.removePizza(pizza_id, panier_id);
-        return panier_id;
+        panierDAO.removePizza(pizza_id, panierId);
+        return panierId;
     }
 
-    public Panier getPanierById(int panier_id) {
+    public Panier getPanierById(int panierId) {
         /**
-         * @return: panier_id.exists() ? panier : new Panier();
+         * @return: panierId.exists() ? panier : new Panier();
          */
-        logger.info("getPanierById(" + panier_id + ")");
-        boolean exists = panierDAO.doesPanierExist(panier_id);
+        logger.info("getPanierById(" + panierId + ")");
+        boolean exists = panierDAO.doesPanierExist(panierId);
         // vérifie que le panier existe avant action
         if (!exists) {
-            panier_id = panierDAO.CreatePanier();
+            panierId = panierDAO.CreatePanier();
         }
-        logger.info("getPanierById ? " + exists + " : " + panier_id);
-        return panierDAO.getPanierById(panier_id);
+        logger.info("getPanierById ? " + exists + " : " + panierId);
+        return panierDAO.getPanierById(panierId);
     }
 
 }

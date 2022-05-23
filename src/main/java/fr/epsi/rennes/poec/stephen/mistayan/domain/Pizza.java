@@ -61,7 +61,6 @@ public class Pizza {
     }
 
     public void setCalories() {
-
         int calories = 0;
         for (Ingredient ingredient : this.ingredients) {
             calories += ingredient.getNbCalories();

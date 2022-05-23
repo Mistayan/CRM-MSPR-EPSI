@@ -56,7 +56,7 @@ public class Ingredient {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.label;
     }
 }

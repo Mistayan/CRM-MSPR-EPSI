@@ -41,7 +41,7 @@ public class pizzaDAO {
         try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, label);
             int ctrl = stmt.executeUpdate();
-            //if (ctrl != 1) throw new BusinessException(e);
+            if (ctrl != 1) throw new SQLException("Error while inserting pizza");
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);

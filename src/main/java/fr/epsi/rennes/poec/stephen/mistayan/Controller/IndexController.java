@@ -5,6 +5,8 @@ import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
 import fr.epsi.rennes.poec.stephen.mistayan.service.PanierService;
 import fr.epsi.rennes.poec.stephen.mistayan.service.PizzaService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 
 /**
  * Author: Stephen Mistayan
@@ -22,6 +26,7 @@ import java.util.List;
 
 @RestController
 public class IndexController {
+    private static final Logger logger = LogManager.getLogger(GetClass);
     @Autowired
     private PizzaService pizzaService;
     @Autowired
@@ -45,24 +50,25 @@ public class IndexController {
 
     @PostMapping("/public/panier/pizza")
     public Response<Integer> actionPizza(
-            @RequestParam int pizza_id,
-            @RequestParam int panier_id,
+            @RequestParam int pizzaId,
+            @RequestParam int panierId,
             @RequestParam int action) {
         Response<Integer> response = new Response<>();
         if (action == 1) {
+            logger.info("##User Action :: /public/panier/pizza/?" + pizzaId + "&" + panierId + "&" + action);
             Pizza pizza = new Pizza();
-            pizza.setId(pizza_id);
-            panier_id = panierService.addPizza(pizza, panier_id);
-        } else { //pizza_id + 1 car index commence à 0 en json
-            panier_id = panierService.remPizza(pizza_id, panier_id);
+            pizza.setId(pizzaId);
+            panierId = panierService.addPizza(pizza, panierId);
+        } else { //pizzaId + 1 car index commence à 0 en json
+            panierId = panierService.remPizza(pizzaId, panierId);
         }
-        response.setData(panier_id);
+        response.setData(panierId);
         return response;
     }
 
     @GetMapping("/public/panier")
-    public Response<Panier> getPanier(@RequestParam int panier_id) {
-        Panier panier = panierService.getPanierById(panier_id);
+    public Response<Panier> getPanier(@RequestParam int panierId) {
+        Panier panier = panierService.getPanierById(panierId);
 
         Response<Panier> response = new Response<>();
         response.setData(panier);

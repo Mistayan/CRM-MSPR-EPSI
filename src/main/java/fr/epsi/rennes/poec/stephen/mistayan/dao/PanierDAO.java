@@ -7,6 +7,7 @@ import fr.epsi.rennes.poec.stephen.mistayan.service.PizzaService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -33,14 +34,15 @@ public class PanierDAO {
     @Autowired
     private DataSource ds;
     @Autowired
-    private PizzaService pizzaService = new PizzaService();
+    private PizzaService pizzaService;
 
-    public void addPizza(Pizza pizza, int panier_id) {
+    @Async
+    public void addPizza(Pizza pizza, int panierId) {
         String sql = "insert into panier_pizza"
                 + "(panier_id, pizza_id) values (?,?)";
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            if (panier_id >= 1) {
-                ps.setInt(1, panier_id);
+            if (panierId >= 1) {
+                ps.setInt(1, panierId);
             } else {
                 ps.setInt(1, 0);
             }
@@ -51,11 +53,11 @@ public class PanierDAO {
         }
     }
 
-    public boolean doesPanierExist(int panier_id) {
+    public boolean doesPanierExist(int panierId) {
         String sql = "select id from panier where id = ?";
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
 
-            ps.setInt(1, panier_id);
+            ps.setInt(1, panierId);
 
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -82,7 +84,7 @@ public class PanierDAO {
         throw new TechnicalException(new SQLException("Panier creation error"));
     }
 
-    public Panier getPanierById(int panier_id) {
+    public Panier getPanierById(int panierId) {
         String sql = "select "
                 + "panier.id as panier_id, "
                 + "panier.timestamp as panier_date, "
@@ -94,10 +96,11 @@ public class PanierDAO {
                 + "on panier_pizza.pizza_id = pizza.id "
                 + "where panier.id = ? ";
         //+ "group by panier.id ";
+        logger.info(ds);
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
 
 
-            ps.setInt(1, panier_id);
+            ps.setInt(1, panierId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 Panier panier = new Panier();
@@ -127,26 +130,26 @@ public class PanierDAO {
         }
     }
 
-    public void removePizza(int pizza_id, int panier_id) {
+    public void removePizza(int pizzaId, int panierId) {
         String sql = "DELETE FROM panier_pizza" +
                 "    WHERE panier_id = ?" +
                 "    AND pizza_id = ?" +
                 "    LIMIT 1;";
 
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, Math.max(panier_id, 0));
-            ps.setInt(2, Math.max(pizza_id, 0));
+            ps.setInt(1, Math.max(panierId, 0));
+            ps.setInt(2, Math.max(pizzaId, 0));
             ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void truncate(int panier_id) {
+    public void truncate(int panierId) {
         String sql = "DELETE FROM panier_pizza" +
                 "    WHERE panier_id = ?";
         try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, Math.max(panier_id, 0));
+            ps.setInt(1, Math.max(panierId, 0));
             ps.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
