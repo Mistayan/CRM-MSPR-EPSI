@@ -25,7 +25,7 @@
                 <th class="tg-ih3h">Prix</th>
             </tr>
             <tr class="pizza" v-for="pizza in pizzas">
-                <td class="tg-0pky" v-on:click="ajouterPizza(pizza)"><a href="#">{{pizza.label}}</a></td>
+                <td class="tg-0pky" v-on:click="ajouterPizza(pizza.id)"><a href="#">{{pizza.label}}</a></td>
                 <td class="tg-c3ow">
                     <div class="ingredients" v-for="ingredient in pizza.ingredients">
                         {{ingredient.label}}
