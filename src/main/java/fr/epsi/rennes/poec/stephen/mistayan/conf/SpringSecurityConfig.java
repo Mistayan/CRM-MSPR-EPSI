@@ -1,5 +1,6 @@
 package fr.epsi.rennes.poec.stephen.mistayan.conf;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -45,10 +46,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()  //should be removed ?
                 .authorizeRequests()
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER")
-                .antMatchers("/admin/**", "/actuator/**", "/user/**").hasRole("ADMIN")
-//                .antMatchers("/admin/**").hasRole("ANY") // Debug only
+                .antMatchers("/public/**").permitAll()//.filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")//.filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/admin/**", "/actuator/**").hasRole("ADMIN")
+//                .antMatchers("/**").hasRole("ADMIN") // Debug only
                 .and()
                 .formLogin()
 //                .loginPage("/login.html")
@@ -68,4 +69,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public Logger appLogger() {return LogManager.getLogger("app");}
+
 }

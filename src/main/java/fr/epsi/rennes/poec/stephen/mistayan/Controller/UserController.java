@@ -1,6 +1,7 @@
 package fr.epsi.rennes.poec.stephen.mistayan.Controller;
 
 
+import fr.epsi.rennes.poec.stephen.mistayan.domain.Commande;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
@@ -10,11 +11,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -56,5 +59,24 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @GetMapping("/user/orders")
+    public Response<List<Commande>> orders() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // on récupère le nom de l'utilisateur via l'application, et son token JSession
+        Response<List<Commande>> response= new Response<>();
+        try {
+            int userId = userService.getUserIdFromName(auth.getName());
+            logger.info("########### Action : fetching orders from userId : " + userId);
+            List<Commande> commandes = userService.getUserIdOrders(userId);
+            logger.info("########### Fetched Commande :  " + commandes);
+            response.setData(commandes);
+            response.setSuccess(true);
+            return response;
+        } catch (SQLException e) {
+            response.setSuccess(false);
+            throw  new RuntimeException(e);
+        }
     }
 }
