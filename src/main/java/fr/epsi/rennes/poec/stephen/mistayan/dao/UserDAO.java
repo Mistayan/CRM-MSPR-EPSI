@@ -64,4 +64,19 @@ public class UserDAO {
             throw new SQLException(e);
         }
     }
+
+    public int getUserByName(String name) throws SQLException {
+        logger.info(Thread.currentThread().getName());
+        String sql = "SELECT id FROM user WHERE  email = ?";
+        try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            if (!rs.next()) {
+                throw new SQLException("error: user not found");
+            }
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
 }
