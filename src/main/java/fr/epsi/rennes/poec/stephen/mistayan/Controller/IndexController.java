@@ -32,14 +32,6 @@ public class IndexController {
     @Autowired
     private PanierService panierService;
 
-//    @GetMapping("/user/pizza")
-//    public Response<List<Pizza>> getAllPizzas() {
-//        List<Pizza> pizzas = pizzaService.getAllPizzas();
-//        Response<List<Pizza>> response = new Response<>();
-//        response.setData(pizzas);
-//        return response;
-//    }
-
     @GetMapping("/public/pizza")
     public Response<List<Pizza>> getAllPizzasPublic() {
         List<Pizza> pizzas = pizzaService.getAllPizzas();
@@ -59,7 +51,7 @@ public class IndexController {
             Pizza pizza = new Pizza();
             pizza.setId(pizzaId);
             panierId = panierService.addPizza(pizza, panierId);
-        } else { //pizzaId + 1 car index commence à 0 en json
+        } else {
             panierId = panierService.remPizza(pizzaId, panierId);
         }
         response.setData(panierId);
