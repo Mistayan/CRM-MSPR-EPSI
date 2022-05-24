@@ -13,7 +13,7 @@ import java.util.List;
 public class Commande {
 
     private String numeroCmd;
-    private int panierId;
+    private int OrderId;
     private String clientEmail;
     private List<Pizza> pizzas;
     private double prixHT;
@@ -27,12 +27,12 @@ public class Commande {
         this.numeroCmd = numeroCmd;
     }
 
-    public int getPanierId() {
-        return panierId;
+    public int getOrderId() {
+        return OrderId;
     }
 
-    public void setPanierId(int panierId) {
-        this.panierId = panierId;
+    public void setOrderId(int OrderId) {
+        this.OrderId = OrderId;
     }
 
     public String getClientEmail() {
