@@ -27,7 +27,7 @@ public class ExceptionController {
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
     public Response<String> onBusinessException(BusinessException e) {
-        logger.debug(e.getMessage());
+        logger.fatal(e.getMessage());
         Response<String> response = new Response<>();
         response.setSuccess(false);
         response.setData(e.getCode());
@@ -37,8 +37,8 @@ public class ExceptionController {
 
     @ExceptionHandler(TechnicalException.class)
     @ResponseBody
-    public Response<Void> onTechnicalException(BusinessException e) {
-        logger.error(e.getMessage());
+    public Response<Void> onTechnicalException(TechnicalException e) {
+        logger.fatal(e.getMessage());
         Response<Void> response = new Response<>();
         response.setSuccess(false);
 
