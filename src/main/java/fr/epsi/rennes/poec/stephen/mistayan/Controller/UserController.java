@@ -34,7 +34,7 @@ public class UserController {
             user.setPassword(password);
             userService.addUser(user);
         } catch (TechnicalException e) {
-            throw new TechnicalException(new SQLException("public/register route user.service.addUser failed"));
+            throw new RuntimeException("public/register route user.service.addUser failed");
         }
 
     }
@@ -46,26 +46,23 @@ public class UserController {
         try {
             logger.info("########### Action : ordering cart " + panierId);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            long orderId = userService.userOrder(auth.getName(), panierId);
-            response.setData(orderId);
+            userService.userOrder(auth.getName(), panierId);
             response.setSuccess(true);
             return response;
         } catch (TechnicalException e) {
             response.setSuccess(false);
             logger.fatal("user/order route userService.userOrder failed :::> " + e);
-            return (response);
-//            throw new TechnicalException(new SQLException(""));
+            throw new RuntimeException("order failed. See logs for more details");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
-
     }
 
     @GetMapping("/user/orders")
     public Response<List<Commande>> orders() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         // on récupère le nom de l'utilisateur via l'application, et son token JSession
-        Response<List<Commande>> response= new Response<>();
+        Response<List<Commande>> response = new Response<>();
         try {
             int userId = userService.getUserIdFromName(auth.getName());
             logger.info("########### Action : fetching orders from userId : " + userId);
@@ -76,7 +73,7 @@ public class UserController {
             return response;
         } catch (SQLException e) {
             response.setSuccess(false);
-            throw  new RuntimeException(e);
+            throw new RuntimeException("Could not load user's orders");
         }
     }
 }
