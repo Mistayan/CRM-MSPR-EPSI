@@ -53,25 +53,27 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public long userOrder(String userName, int panierId) throws SQLException {
+    public int userOrder(String userName, int panierId) throws SQLException {
         try {
-            return commandeDAO.order(userName, panierId);
-        }  catch (SQLException e) {
+            commandeDAO.order(userName, panierId);
+            return 1;
+        } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
+
     public int getUserIdFromName(String userName) throws SQLException {
         try {
             return userDAO.getUserByName(userName); // on assumera que springboot ne nous ment pas ?
-        }  catch (SQLException e) {
+        } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
 
     public List<Commande> getUserIdOrders(int userId) throws SQLException {
-        try{
+        try {
             return commandeDAO.getOrdersFromUserId(userId);
-        }  catch (SQLException e) {
+        } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }

@@ -47,7 +47,7 @@ public class IndexController {
             @RequestParam int action) {
         Response<Integer> response = new Response<>();
         if (action == 1) {
-            logger.info("##User Action :: /public/panier/pizza/?" + pizzaId + "&" + panierId + "&" + action);
+            logger.info("##User Action :: /public/panier/pizza/? " + pizzaId + " & " + panierId + " & " + action);
             Pizza pizza = new Pizza();
             pizza.setId(pizzaId);
             panierId = panierService.addPizza(pizza, panierId);

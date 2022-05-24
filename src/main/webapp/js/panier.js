@@ -27,15 +27,15 @@ const app = new Vue({
                 if (this.panier) {
                     this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
                     this.panierId = this.panier.id;
-                    }
+                }
             });
     },
     methods: { // Methodes interactives
         setPanier(response) {
             this.panier = response.data.data;
-            if (this.panier){
+            if (this.panier) {
                 this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
-                if (this.panier.id){
+                if (this.panier.id >= 1) {
                     this.panierId = this.panier.id
                 }
             }
