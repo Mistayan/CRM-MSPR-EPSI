@@ -5,8 +5,54 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta charset="UTF-8">
     <title>Commander</title>
+    <script defer src="/js/order.js"></script>
+
 </head>
 <body>
+<div class="order" id="order">
+    <div v-for="order in orders">
+        <div class="order_infos" v-if="order.orderId">
+            <!--            {{order.orderId}}-->
+            <br>Commande N° : {{order.numeroCmd}}<br>
+            <details>
+                Prix TTC : {{order.prixTTC}}<br>
+                Prix HT : {{order.prixHT}}
+            <div class="panier-order">
+                Nombre de pizzas dans la commande : {{ order && order.pizzas ? order.pizzas.length : 0 }}<br>
+            </div>
+                <details>les pizzas de la commande.</details>
+<!--                <details class="order-details" v-for="pizzas in order.pizzas">-->
+<!--                    <div class="tg-wrap">-->
+<!--                        <table class="tg">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th class="tg-ih3h">Nom pizza</th>-->
+<!--                                <th class="tg-ih3h">Calories</th>-->
+<!--                                <th class="tg-ih3h">Prix</th>-->
+<!--                                <th class="tg-ih3h">Quantité</th>-->
+<!--                            </tr>-->
+<!--                            <tr class="pizza" v-if="pizzas" v-for="pizza in pizzas" v-if="pizza">-->
+<!--                                <td class="tg-0pky"><a class="ui-icon-info" href="#" id="infos" title="infos">{{ pizza.label }}</a></td>-->
+<!--                                <td class="tg-0pky">{{ pizza.calories }}</td>-->
+<!--                                <td class="tg-0pky">{{ calc_price_pizzas_order(pizza) }}</td>-->
+<!--                                <td class="tg-0pky">{{ pizzas.length }}</td>-->
+<!--                            </tr>-->
 
+<!--                            </thead>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </details>-->
+            </details>
+        </div>
+    </div>
+    <tr v-if="pizzas">
+        <td>TOTAL :</td>
+        <!--                            <td class="tg-0pky">{{ totalCalories ? totalCalories : 0 }}</td>-->
+        <td class="tg-0pky">pizzas:{{ totalPizza }}</td>
+        <td class="tg-0pky">HT: {{ totalPrixHT }}</td>
+        <td class="tg-0pky">TTC: {{ totalPrixTTC }}</td>
+    </tr>
+
+</div>
 </body>
 </html>
