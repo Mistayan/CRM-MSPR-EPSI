@@ -9,12 +9,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,7 +38,8 @@ public class PanierDAO {
     public void addPizza(Pizza pizza, int panierId) {
         String sql = "insert into panier_pizza"
                 + "(panier_id, pizza_id) values (?,?)";
-        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             if (panierId >= 1) {
                 ps.setInt(1, panierId);
             } else {
@@ -49,14 +48,14 @@ public class PanierDAO {
             ps.setInt(2, pizza.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("could not add pizza to DB :: Panier: " + panierId + " & pizzaId: " + pizza.getId());
         }
     }
 
     public boolean doesPanierExist(int panierId) {
         String sql = "select id from panier where id = ?";
-        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, panierId);
 
             ResultSet rs = ps.executeQuery();
@@ -69,19 +68,20 @@ public class PanierDAO {
     //Créer un panier => service et controller
     public int CreatePanier() {
         String sql = "insert into panier (timestamp) values(?)";
-        try (PreparedStatement ps = ds.getConnection()
-                .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             String date = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
             ps.setString(1, date);
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
+            conn.close();
             if (rs.next()) {
                 return rs.getInt(1);
             }
+            return -1;
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
-        throw new TechnicalException(new SQLException("Panier creation error"));
     }
 
     public Panier getPanierById(int panierId) {
@@ -95,13 +95,12 @@ public class PanierDAO {
                 + "left join pizza "
                 + "on panier_pizza.pizza_id = pizza.id "
                 + "where panier.id = ? ";
-        //+ "group by panier.id ";
-        logger.info(ds);
-        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
-
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, panierId);
             ResultSet rs = ps.executeQuery();
+            conn.close();
             if (rs.next()) {
                 Panier panier = new Panier();
                 panier.setId(rs.getInt("panier_id"));
@@ -136,7 +135,8 @@ public class PanierDAO {
                 "    AND pizza_id = ?" +
                 "    LIMIT 1;";
 
-        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, Math.max(panierId, 0));
             ps.setInt(2, Math.max(pizzaId, 0));
             ps.executeQuery();
@@ -145,10 +145,13 @@ public class PanierDAO {
         }
     }
 
+    @Async
+    @Transactional
     public void truncate(int panierId) {
         String sql = "DELETE FROM panier_pizza" +
                 "    WHERE panier_id = ?";
-        try (PreparedStatement ps = ds.getConnection().prepareStatement(sql)) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, Math.max(panierId, 0));
             ps.executeQuery();
         } catch (SQLException e) {

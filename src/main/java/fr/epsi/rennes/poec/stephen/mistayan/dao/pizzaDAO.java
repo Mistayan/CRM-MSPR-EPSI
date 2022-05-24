@@ -49,7 +49,7 @@ public class pizzaDAO {
         } catch (TechnicalException | SQLException e) {
             throw new TechnicalException(e);
         }
-        throw new TechnicalException(new SQLException("Pizza create Error"));
+        return -1;
     }
 
     public void addIngredientToPizza(int pizzaId, int ingredientId) throws TechnicalException {

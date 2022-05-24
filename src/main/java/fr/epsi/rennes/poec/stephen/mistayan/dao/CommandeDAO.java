@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +47,9 @@ public class CommandeDAO {
      * @param panierId le panier à commander
      * @return success ? order_id : 0
      */
-//    @Transactional
-    public long order(String userName, int panierId) throws SQLException {
+    @Async
+    @Transactional
+    public void order(String userName, int panierId) throws SQLException {
         int userId = userDAO.getUserByName(userName);
         Panier panier = panierDAO.getPanierById(panierId);
         if (panier == null) {
@@ -82,14 +84,12 @@ public class CommandeDAO {
                 if (orderId > 0) {
                     logger.trace("##############\tCommandeDAO :: emptying panier N°" + panierId);
                     panierDAO.truncate(panierId);
-                    return orderId;
                 }
             }
         } catch (SQLException e) {
             logger.fatal("##############\tCommandeDAO :: " + e);
             throw new SQLException(e);
         }
-        return -1;
     }
 
     private long newUserOrderTable(int userId, int orderId) throws SQLException {
@@ -109,7 +109,7 @@ public class CommandeDAO {
 
     /**
      * @param order_id id de la commande en cours
-     * @param panier l'objet panier à commander
+     * @param panier   l'objet panier à commander
      * @return success ? order_id : 0
      */
     private long newOrderTable(int order_id, Panier panier) throws SQLException {
@@ -134,12 +134,9 @@ public class CommandeDAO {
     }
 
     /**
-     *
      * @param userId le userId de l'utilisateur dont on veut querry les commandes
      * @return Une liste des commandes prises par l'utilisateur, avec date, prix ttc, prix ht,
      * numero de commande et son contenu
-     *
-     *
      */
     public List<Commande> getOrdersFromUserId(int userId) throws SQLException {
         String sql = "select * "
@@ -154,13 +151,15 @@ public class CommandeDAO {
             List<Commande> commandeList = new ArrayList<>();
             while (rs.next()) {
                 Commande commande = new Commande();
-                commande.setPanierId(rs.getInt(1));
+                commande.setOrderId(rs.getInt(1));
                 commande.setNumeroCmd(rs.getString(5));
                 commande.setPrixHT(rs.getInt(4) - rs.getInt(3));
-                commande.setPrixTTC(rs.getInt(3));
+                commande.setPrixTTC(rs.getInt(4));
                 commande.setPizzas(this.getArticlesFromOrderId(conn, rs.getInt(1)));
+                //TODO GetStatus from id_status
                 commandeList.add(commande);
             }
+            conn.close();
             return commandeList;
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -184,7 +183,7 @@ public class CommandeDAO {
                 }
             }
             return pizzas;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new SQLException(e);
         }
     }
