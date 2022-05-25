@@ -48,6 +48,7 @@ public class Panier {
         for (Pizza pizza : pizzas) {
             totalCalories += pizza.getCalories();
         }
+        totalCalories = Double.parseDouble(df.format(totalCalories));
     }
 
     public void setTotalPrix() {
@@ -55,6 +56,7 @@ public class Panier {
         for (Pizza pizza : pizzas) {
             totalPrix += pizza.getPrix();
         }
+        totalPrix = Double.parseDouble(df.format(totalPrix));
     }
 
     public Double getTVA() {
