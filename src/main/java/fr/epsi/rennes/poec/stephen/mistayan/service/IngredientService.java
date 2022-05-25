@@ -4,6 +4,7 @@ import fr.epsi.rennes.poec.stephen.mistayan.dao.IngredientDAO;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Ingredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class IngredientService {
     @Autowired
     private IngredientDAO ingredientDAO;
 
+    @Transactional(readOnly = true)
     public List<Ingredient> getAllIngredients() {
         return ingredientDAO.getAllIngredients();
     }

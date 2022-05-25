@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -31,6 +32,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             UserDetails user = userDAO.getUserByEmail(username);
@@ -43,6 +45,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public void addUser(User user) {
         try {
             user.setRole(UserRole.ROLE_USER.name());
@@ -52,16 +55,15 @@ public class UserService implements UserDetailsService {
             throw new TechnicalException(e);
         }
     }
-
-    public int userOrder(String userName, int panierId) throws SQLException {
+    @Transactional
+    public void userOrder(String userName, int panierId) throws SQLException {
         try {
             commandeDAO.order(userName, panierId);
-            return 1;
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
-
+    @Transactional(readOnly = true)
     public int getUserIdFromName(String userName) throws SQLException {
         try {
             return userDAO.getUserByName(userName); // on assumera que springboot ne nous ment pas ?
@@ -70,6 +72,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Commande> getUserIdOrders(int userId) throws SQLException {
         try {
             return commandeDAO.getOrdersFromUserId(userId);

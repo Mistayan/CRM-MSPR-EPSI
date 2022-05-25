@@ -47,6 +47,7 @@ public class PizzaService {
         }
     }
 
+    @Transactional
     public void addIngredientToPizza(int pizzaId, int ingredientsId) throws BusinessException {
         if (pizzaId < 0 || ingredientsId < 0) {
             throw new BusinessException("addingredient.value.invalid");
@@ -54,9 +55,9 @@ public class PizzaService {
         pizzadao.addIngredientToPizza(pizzaId, ingredientsId);
     }
 
+    @Transactional(readOnly = true)
     public List<Pizza> getAllPizzas() {
         return pizzadao.getAll();
-
     }
 
 

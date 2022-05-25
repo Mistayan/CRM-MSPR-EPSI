@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 
@@ -30,6 +31,7 @@ public class PanierService {
         this.pizzaService = pizzaService;
     }
 
+    @Transactional
     public int addPizza(Pizza pizza, int panierId) {
         //fonction pour ajouter pizza au panier.
         boolean exists = panierDAO.doesPanierExist(panierId);
@@ -41,6 +43,7 @@ public class PanierService {
         return panierId;
     }
 
+    @Transactional
     public int remPizza(int pizza_id, int panierId) {
         boolean exists = panierDAO.doesPanierExist(panierId);
         // vérifie que le panier existe avant action
@@ -51,6 +54,7 @@ public class PanierService {
         return panierId;
     }
 
+    @Transactional(readOnly = true)
     public Panier getPanierById(int panierId) {
         /**
          * @return: panierId.exists() ? panier : new Panier();
