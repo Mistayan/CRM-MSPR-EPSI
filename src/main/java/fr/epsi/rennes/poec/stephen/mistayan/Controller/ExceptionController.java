@@ -38,7 +38,7 @@ public class ExceptionController {
     @ExceptionHandler(TechnicalException.class)
     @ResponseBody
     public Response<Void> onTechnicalException(TechnicalException e) {
-        logger.fatal(e.getMessage());
+        logger.fatal(e.getMessage(), e);
         Response<Void> response = new Response<>();
         response.setSuccess(false);
 
@@ -48,7 +48,7 @@ public class ExceptionController {
     @ExceptionHandler(SQLException.class)
     @ResponseBody
     public Response<String> onSQLException(BusinessException e) {
-        logger.debug(e.getMessage());
+        logger.debug(e.getCode());
         Response<String> response = new Response<>();
         response.setSuccess(false);
         response.setData(e.getCode());
