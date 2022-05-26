@@ -15,47 +15,47 @@
         <table class="tg">
             <thead>
             <tr>
-                <th class="tg-ih3h"> N° Commande </th>
-                <th class="tg-ih3h"> Nombre d'articles </th>
-                <th class="tg-ih3h"> Prix TTC </th>
-                <th class="tg-ih3h"> Prix HT </th>
+                <th class="tg-ih3h"> N° Commande</th>
+                <th class="tg-ih3h"> Nombre d'articles</th>
+                <th class="tg-ih3h"> Prix TTC</th>
+                <th class="tg-ih3h"> Prix HT</th>
             </tr>
-            <tr  v-for="order in orders" v-if="order.orderId">
-                <th class="tg-ih3h"> {{ order.numeroCmd }} </th>
-                <th class="tg-ih3h"> {{ order && order.pizzas ? order.pizzas.length : 0 }} </th>
-                <th class="tg-ih3h"> {{ order.prixTTC }} </th>
-                <th class="tg-ih3h"> {{ order.prixHT }} </th>
+            <tr v-for="order in orders" v-if="order.orderId">
+                <th class="tg-ih3h"> {{ order.numeroCmd }}</th>
+                <th class="tg-ih3h"> {{ order && order.pizzas ? order.pizzas.length : 0 }}</th>
+                <th class="tg-ih3h"> {{ order.prixTTC }}</th>
+                <th class="tg-ih3h"> {{ order.prixHT }}</th>
                 <th class="tg-ih3h">
                     <details class="tg-wrap" id="order-details" v-if="order.pizzas">
-                                    <table class="tg">
-                                        <thead>
-                                        <tr>
-                                            <th class="tg-ih3h">Nom pizza</th>
-                                            <th class="tg-ih3h">Calories</th>
-                                            <th class="tg-ih3h">Prix</th>
-                                            <th class="tg-ih3h">Quantité</th>
-                                        </tr>
-                                        <tr v-for="pizza in pizzasRepo" v-if="countPizzaInOrder(pizza.id, order)">
-                                            <td class="tg-0pky"> {{ pizza.label }} </td>
-                                            <td class="tg-0pky"> {{ pizza.calories * countPizzaInOrder(pizza.id, order)}} </td>
-                                            <td class="tg-0pky"> {{ calc_price_pizzas_order(pizza, order) }} </td>
-                                            <td class="tg-0pky"> {{ countPizzaInOrder(pizza.id, order) }} </td>
-                                        </tr>
-                                        </thead>
-                                    </table>
+                        <table class="tg">
+                            <thead>
+                            <tr>
+                                <th class="tg-ih3h">Nom pizza</th>
+                                <th class="tg-ih3h">Calories</th>
+                                <th class="tg-ih3h">Prix</th>
+                                <th class="tg-ih3h">Quantité</th>
+                            </tr>
+                            <tr v-for="pizza in pizzasRepo" v-if="countPizzaInOrder(pizza.id, order)">
+                                <td class="tg-0pky"> {{ pizza.label }}</td>
+                                <td class="tg-0pky"> {{ pizza.calories * countPizzaInOrder(pizza.id, order)}}</td>
+                                <td class="tg-0pky"> {{ calc_price_pizzas_order(pizza, order) }}</td>
+                                <td class="tg-0pky"> {{ countPizzaInOrder(pizza.id, order) }}</td>
+                            </tr>
+                            </thead>
+                        </table>
                     </details>
                 </th>
             </tr>
             <tr v-if="orders">
                 <td>TOTAL :</td>
                 <td class="tg-0pky">{{ totalPizza }}</td>
-                <td class="tg-0pky">{{ totalPrixTTC }}</td>
-                <td class="tg-0pky">{{ totalPrixHT }}</td>
+                <td class="tg-0pky">{{ totalPrixTTC.toFixed(2) }}</td>
+                <td class="tg-0pky">{{ totalPrixHT.toFixed(2) }}</td>
             </tr>
             </thead>
         </table>
     </div> <!-- Tg-wrap -->
-        <br>
+    <br>
 
 </div>
 
