@@ -59,7 +59,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void userOrder(String userName, int panierId) throws SQLException {
         try {
-            commandeDAO.order(userName, panierId);
+            int userId = userDAO.getUserByName(userName);
+            commandeDAO.order(userId, panierId);
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
