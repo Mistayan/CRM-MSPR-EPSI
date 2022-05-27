@@ -59,6 +59,7 @@ public class pizzaDAO {
             ps.setInt(1, pizzaId);
             ps.setInt(2, ingredientId);
             int ctrl = ps.executeUpdate();
+            conn.close();
             if (ctrl != 1) throw new SQLException("could not add ingredient to pizza");
         } catch (TechnicalException | SQLException e) {
             throw new TechnicalException(e);

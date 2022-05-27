@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -145,8 +144,6 @@ public class PanierDAO {
         }
     }
 
-    @Async
-    @Transactional
     public void truncate(int panierId) {
         String sql = "DELETE FROM panier_pizza" +
                 "    WHERE panier_id = ?";

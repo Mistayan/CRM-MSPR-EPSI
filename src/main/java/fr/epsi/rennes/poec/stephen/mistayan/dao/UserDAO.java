@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,9 +31,11 @@ public class UserDAO {
         String sql = "SELECT email, password, userRole" +
                 " FROM user" +
                 " WHERE email = ?";
-        try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, mail);
-            ResultSet rs = stmt.executeQuery();
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, mail);
+            ResultSet rs = ps.executeQuery();
+            conn.close();
             if (rs.next()) { // pour le premier élément de la requête:
                 User user = new User();
                 user.setEmail(rs.getString(1));
@@ -51,12 +54,14 @@ public class UserDAO {
     public void addUser(User user) throws SQLException {
         logger.info(Thread.currentThread().getName());
         String sql = "INSERT INTO user ( email , password , userRole ) VALUES (?,?,?)";
-        try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, user.getEmail());
-            stmt.setString(2, passwordEncoder.encode(user.getPassword()));
-            stmt.setString(3, user.getRole());
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, user.getEmail());
+            ps.setString(2, passwordEncoder.encode(user.getPassword()));
+            ps.setString(3, user.getRole());
 
-            int user_id = stmt.executeUpdate();
+            int user_id = ps.executeUpdate();
+            conn.close();
             if (user_id == 0) {
                 throw new SQLException("error adding user.");
             }
@@ -68,9 +73,11 @@ public class UserDAO {
     public int getUserByName(String name) throws SQLException {
         logger.info(Thread.currentThread().getName());
         String sql = "SELECT id FROM user WHERE  email = ?";
-        try (PreparedStatement stmt = ds.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, name);
-            ResultSet rs = stmt.executeQuery();
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            conn.close();
             if (!rs.next()) {
                 throw new SQLException("error: user not found");
             }

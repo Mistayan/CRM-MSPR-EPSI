@@ -37,8 +37,6 @@ public class CommandeDAO {
     @Autowired
     private pizzaDAO pizzaDAO;
     @Autowired
-    private UserDAO userDAO;
-    @Autowired
     private DataSource ds;
 
     /**
@@ -47,18 +45,15 @@ public class CommandeDAO {
      * FOREACH pizza in panier, insert into order_articles (panierId, pizzaId)
      * insert into user_order (iserId, panierId)
      *
-     * @param userName nom de l'utilisateur
-     * @param panierId le panier à commander
-     * @return success ? order_id : 0
+     * @return success ? order_id : -1
      */
-    public int order(String userName, int panierId) throws SQLException {
+    public int order(int userId, int panierId) throws SQLException {
         int orderId = -1;
-        int userId = userDAO.getUserByName(userName);
         Panier panier = panierDAO.getPanierById(panierId);
         if (panier == null) {
             throw new SQLException("#CommandeDAO##order  ::: panier invalide");
         }
-        logger.trace("#CommandeDAO##order  ::: " + userName + " ordered panier : " + panierId);
+        logger.trace("#CommandeDAO##order  ::: " + userId + " ordered panier : " + panierId);
         String sql = "INSERT INTO order_ " +
                 "(user_id, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?)";
@@ -72,26 +67,28 @@ public class CommandeDAO {
 
             if (ps.executeUpdate() == 0) {
                 logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
-                throw new SQLException(sql + userName + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
+                throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
             }
             ResultSet rs = ps.getGeneratedKeys();
+            conn.close();
             if (rs.next()) {
                 orderId = rs.getInt(1);
                 if (newOrderArticlesTable(orderId, panier) != orderId) {
                     throw new SQLException("un-Equal orderId from order_article & order");
                 }
 
-                logger.debug("newUserOrderTable : " + userName + ", " + orderId);
+                logger.debug("newUserOrderTable : " + userId + ", " + orderId);
                 if (newUserOrderTable(userId, orderId, conn) == -1) {
                     conn.rollback();
-                    throw new SQLException("should be rollback");
+                    throw new SQLException("should be rollback : n'a pas pu ajouter dans user_order");
                 }
                 if (orderId > 0) {
-                    logger.trace("##############\tCommandeDAO :: emptying panier N°" + panierId);
+                    logger.trace("##############\tCommandeDAO :: vidange du pannier N°" + panierId);
                     panierDAO.truncate(panierId);
                 }
             }
             conn.commit();
+            conn.close();
             return rs.getInt(1); //orderId
         } catch (SQLException e) {
             logger.fatal("##############\tCommandeDAO :: " + e);
@@ -108,6 +105,7 @@ public class CommandeDAO {
             if (ps.executeUpdate() == 0) {
                 throw new SQLException("##### Cannot insert user_order: " + sql + "\n" + userId + ", " + orderId);
             }
+            conn.close();
         } catch (SQLException e) {
             throw new SQLException(e);
         }
@@ -134,6 +132,7 @@ public class CommandeDAO {
                     throw new SQLException(order_id + ", " + pizza.getId());
                 }
             }
+            conn.close();
             logger.info("created order:" + order_id);
             return order_id;
         } catch (SQLException e) {
@@ -156,6 +155,7 @@ public class CommandeDAO {
             ps.setInt(1, userId);
 
             ResultSet rs = ps.executeQuery();
+            conn.close();
             List<Commande> commandeList = new ArrayList<>();
             while (rs.next()) {
                 Commande commande = new Commande();
@@ -181,6 +181,7 @@ public class CommandeDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
+            conn.close();
             List<Pizza> pizzas = new ArrayList<>();
             List<Pizza> pizzaRepo = pizzaDAO.getAll();
             while (rs.next()) {
