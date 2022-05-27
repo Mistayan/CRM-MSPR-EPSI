@@ -5,9 +5,16 @@
         <option name="ALTERNATIVE_JRE_PATH" value="17"/>
         <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true"/>
         <option name="DEBUG_MODE" value="true"/>
-        <module name="pizzApp"/>
+        <module name="pizzahut"/>
         <option name="SPRING_BOOT_MAIN_CLASS" value="fr.epsi.rennes.poec.stephen.mistayan.PizzaApplication"/>
-        <extension name="coverage" sample_coverage="false">
+        <extension name="coverage" sample_coverage="true">
+            <include resource="org/springframework/boot/logging/logback/default.xml"/>
+            <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+            <root level="INFO">
+                <appender-ref ref="CONSOLE"/>
+            </root>
+            <logger name="org.springframework.web" level="DEBUG"/>
+
             <pattern>
                 <option name="PATTERN" value="fr.epsi.rennes.poec.stephen.mistayan.dao.*"/>
                 <option name="ENABLED" value="true"/>

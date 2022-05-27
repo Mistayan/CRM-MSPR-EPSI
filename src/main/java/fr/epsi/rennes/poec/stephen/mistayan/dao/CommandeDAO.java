@@ -46,6 +46,7 @@ public class CommandeDAO {
      * insert into order_ (userId, panierId)
      * FOREACH pizza in panier, insert into order_articles (panierId, pizzaId)
      * insert into user_order (iserId, panierId)
+     *
      * @param userName nom de l'utilisateur
      * @param panierId le panier à commander
      * @return success ? order_id : 0
@@ -64,32 +65,32 @@ public class CommandeDAO {
         logger.trace(panier.toString());
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setInt(1, userId);
-                ps.setDouble(2, panier.getTVA());
-                // TAUX TVA ALIMENTAIRE :: 5.5
-                ps.setDouble(3, panier.getTotalPrix());
+            ps.setInt(1, userId);
+            ps.setDouble(2, panier.getTVA());
+            // TAUX TVA ALIMENTAIRE :: 5.5
+            ps.setDouble(3, panier.getTotalPrix());
 
-                if (ps.executeUpdate() == 0) {
-                    logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
-                    throw new SQLException(sql + userName + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
+            if (ps.executeUpdate() == 0) {
+                logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
+                throw new SQLException(sql + userName + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
+            }
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                orderId = rs.getInt(1);
+                if (newOrderArticlesTable(orderId, panier) != orderId) {
+                    throw new SQLException("un-Equal orderId from order_article & order");
                 }
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    orderId = rs.getInt(1);
-                    if (newOrderArticlesTable(orderId, panier) != orderId) {
-                        throw new SQLException("un-Equal orderId from order_article & order");
-                    }
 
-                    logger.debug("newUserOrderTable : " + userName + ", " + orderId);
-                    if (newUserOrderTable(userId, orderId, conn) == -1) {
-                        conn.rollback();
-                        throw new SQLException("should be rollback");
-                    }
-                    if (orderId > 0) {
-                        logger.trace("##############\tCommandeDAO :: emptying panier N°" + panierId);
-                        panierDAO.truncate(panierId);
-                    }
+                logger.debug("newUserOrderTable : " + userName + ", " + orderId);
+                if (newUserOrderTable(userId, orderId, conn) == -1) {
+                    conn.rollback();
+                    throw new SQLException("should be rollback");
                 }
+                if (orderId > 0) {
+                    logger.trace("##############\tCommandeDAO :: emptying panier N°" + panierId);
+                    panierDAO.truncate(panierId);
+                }
+            }
             conn.commit();
             return rs.getInt(1); //orderId
         } catch (SQLException e) {

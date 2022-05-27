@@ -10,4 +10,21 @@
       </scope>
     </mapping>
   </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="ce196b2b-253c-4466-bc8d-a6dfcf0d5a70" />
+          <option name="name" value="pizzappDDL@localhost (DDL)" />
+          <option name="languageId" value="MariaDB" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/conf/pizzapp.sql" />
+              <option value="file://$PROJECT_DIR$/conf" />
+            </array>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
 </project>

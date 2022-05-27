@@ -36,7 +36,7 @@ public class AdminController {
     public Response<List<Ingredient>> getAllIngredients() {
         List<Ingredient> ingredients = ingredientService.getAllIngredients();
         for (Ingredient ingredient : ingredients) {
-            logger.debug(ingredient.getLabel());
+            logger.debug(ingredient.getLabel()); //should filter every strings
         }
 
         Response<List<Ingredient>> response = new Response<>();

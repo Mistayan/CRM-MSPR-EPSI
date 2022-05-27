@@ -16,18 +16,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
-
 @Configuration(proxyBeanMethods = true)
 @EnableWebSecurity
 @EnableAspectJAutoProxy
 @EnableAutoConfiguration
 @EnableConfigurationProperties
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final Logger logger = LogManager.getLogger(GetClass);
+    private static final Logger logger = LogManager.getLogger(SpringSecurityConfig.class);
     private final UserDetailsService userDetailsService;
 
-    //    @Lazy
     public SpringSecurityConfig(@Lazy UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -45,8 +42,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()  //should be removed ?
                 .authorizeRequests()
-                .antMatchers("/public/**").permitAll()//.filterSecurityInterceptorOncePerRequest(true)
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")//.filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/public/**").permitAll().filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
                 .antMatchers("/admin/**", "/actuator/**").hasRole("ADMIN")
 //                .antMatchers("/**").hasRole("ADMIN") // Debug only
                 .and()

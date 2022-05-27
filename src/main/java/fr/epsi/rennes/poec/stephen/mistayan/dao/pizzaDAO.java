@@ -4,9 +4,7 @@ import fr.epsi.rennes.poec.stephen.mistayan.domain.Ingredient;
 import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
 import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.*;

@@ -55,6 +55,7 @@ public class UserService implements UserDetailsService {
             throw new TechnicalException(e);
         }
     }
+
     @Transactional
     public void userOrder(String userName, int panierId) throws SQLException {
         try {
@@ -63,6 +64,7 @@ public class UserService implements UserDetailsService {
             throw new TechnicalException(e);
         }
     }
+
     @Transactional(readOnly = true)
     public int getUserIdFromName(String userName) throws SQLException {
         try {
