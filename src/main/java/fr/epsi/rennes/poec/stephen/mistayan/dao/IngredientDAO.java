@@ -26,8 +26,10 @@ import java.util.List;
 @Repository
 public class IngredientDAO {
     private static final Logger logger = LogManager.getLogger(IngredientDAO.class);
+    private final DataSource ds;
+
     @Autowired
-    private DataSource ds;
+    public IngredientDAO(DataSource ds) {this.ds = ds;}
 
     public List<Ingredient> getAllIngredients() {
         String sql = "select * from ingredients";

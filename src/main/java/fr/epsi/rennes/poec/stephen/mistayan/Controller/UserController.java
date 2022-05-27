@@ -22,8 +22,10 @@ import java.util.List;
 @RestController
 public class UserController {
     private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {this.userService = userService;}
 
     @PostMapping("/public/register")
     public void addUser(@RequestParam String email,
@@ -52,7 +54,7 @@ public class UserController {
         } catch (TechnicalException e) {
             response.setSuccess(false);
             logger.fatal("user/order route userService.userOrder failed :::> " + e);
-            throw new RuntimeException("order failed. See logs for more details");
+            throw new RuntimeException("order failed. See logs for more details", e);
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }

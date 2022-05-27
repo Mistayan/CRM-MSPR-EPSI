@@ -27,10 +27,14 @@ import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 @RestController
 public class IndexController {
     private static final Logger logger = LogManager.getLogger(GetClass);
+    private final PizzaService pizzaService;
+    private final PanierService panierService;
+
     @Autowired
-    private PizzaService pizzaService;
-    @Autowired
-    private PanierService panierService;
+    public IndexController(PizzaService pizzaService, PanierService panierService) {
+        this.pizzaService = pizzaService;
+        this.panierService = panierService;
+    }
 
     @GetMapping("/public/pizza")
     public Response<List<Pizza>> getAllPizzasPublic() {

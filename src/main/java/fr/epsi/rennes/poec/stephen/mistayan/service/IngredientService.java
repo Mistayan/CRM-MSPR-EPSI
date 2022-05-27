@@ -18,8 +18,10 @@ import java.util.List;
 
 @Service
 public class IngredientService {
+    private final IngredientDAO ingredientDAO;
+
     @Autowired
-    private IngredientDAO ingredientDAO;
+    public IngredientService(IngredientDAO ingredientDAO) {this.ingredientDAO = ingredientDAO;}
 
     @Transactional(readOnly = true)
     public List<Ingredient> getAllIngredients() {

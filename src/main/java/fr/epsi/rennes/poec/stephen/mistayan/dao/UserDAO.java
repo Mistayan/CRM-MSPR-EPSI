@@ -18,10 +18,13 @@ import java.sql.SQLException;
 public class UserDAO {
     private static final Logger logger = LogManager.getLogger(UserDAO.class);
     private final DataSource ds;
-    @Autowired(required = false)
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDAO(DataSource ds) {this.ds = ds;}
+    @Autowired
+    public UserDAO(DataSource ds, PasswordEncoder passwordEncoder) {
+        this.ds = ds;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User getUserByEmail(String mail) throws SQLException {
         //pre-encoding checks

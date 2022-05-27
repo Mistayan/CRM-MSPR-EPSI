@@ -20,6 +20,8 @@ import java.util.List;
 
 /**
  * Author : Stephen Mistayan
+ * Last modified by:
+ * Last modified date:
  * Created on : 5/10/2022 : 9:24 AM:34
  * IDE : IntelliJ IDEA
  * Original package : fr.epsi.rennes.poec.stephen.mistayan.domain
@@ -32,18 +34,22 @@ public class CommandeDAO {
 
 
     private static final Logger logger = LogManager.getLogger(CommandeDAO.class);
+    private final PanierDAO panierDAO;
+    private final pizzaDAO pizzaDAO;
+    private final DataSource ds;
+
     @Autowired
-    private PanierDAO panierDAO;
-    @Autowired
-    private pizzaDAO pizzaDAO;
-    @Autowired
-    private DataSource ds;
+    public CommandeDAO(PanierDAO panierDAO, pizzaDAO pizzaDAO, DataSource ds) {
+        this.panierDAO = panierDAO;
+        this.pizzaDAO = pizzaDAO;
+        this.ds = ds;
+    }
 
     /**
      * Le but de ces fonctions est de créer une commande. Celles ci ce décompose comme suit:
      * insert into order_ (userId, panierId)
-     * FOREACH pizza in panier, insert into order_articles (panierId, pizzaId)
-     * insert into user_order (iserId, panierId)
+     * pour chaque article dans panier: insert into order_articles (panierId, pizzaId)
+     * insert into user_order (userId, panierId)
      *
      * @return success ? order_id : -1
      */
@@ -70,7 +76,6 @@ public class CommandeDAO {
                 throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
             }
             ResultSet rs = ps.getGeneratedKeys();
-            conn.close();
             if (rs.next()) {
                 orderId = rs.getInt(1);
                 if (newOrderArticlesTable(orderId, panier) != orderId) {
@@ -87,7 +92,6 @@ public class CommandeDAO {
                     panierDAO.truncate(panierId);
                 }
             }
-            conn.commit();
             conn.close();
             return rs.getInt(1); //orderId
         } catch (SQLException e) {
@@ -105,18 +109,12 @@ public class CommandeDAO {
             if (ps.executeUpdate() == 0) {
                 throw new SQLException("##### Cannot insert user_order: " + sql + "\n" + userId + ", " + orderId);
             }
-            conn.close();
         } catch (SQLException e) {
             throw new SQLException(e);
         }
         return 1L;
     }
 
-    /**
-     * @param order_id id de la commande en cours
-     * @param panier   l'objet panier à commander
-     * @return success ? order_id : 0
-     */
     private long newOrderArticlesTable(int order_id, Panier panier) throws SQLException {
 
         logger.debug("newOrderTable ");
@@ -132,7 +130,6 @@ public class CommandeDAO {
                     throw new SQLException(order_id + ", " + pizza.getId());
                 }
             }
-            conn.close();
             logger.info("created order:" + order_id);
             return order_id;
         } catch (SQLException e) {

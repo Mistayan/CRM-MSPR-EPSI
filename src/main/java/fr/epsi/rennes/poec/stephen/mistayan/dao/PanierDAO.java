@@ -28,10 +28,14 @@ import java.util.List;
 @Repository
 public class PanierDAO {
     private static final Logger logger = LogManager.getLogger(PanierDAO.class);
+    private final DataSource ds;
+    private final PizzaService pizzaService;
+
     @Autowired
-    private DataSource ds;
-    @Autowired
-    private PizzaService pizzaService;
+    public PanierDAO(DataSource ds, PizzaService pizzaService) {
+        this.ds = ds;
+        this.pizzaService = pizzaService;
+    }
 
     @Async
     public void addPizza(Pizza pizza, int panierId) {

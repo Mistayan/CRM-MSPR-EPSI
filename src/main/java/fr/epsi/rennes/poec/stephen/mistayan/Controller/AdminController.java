@@ -25,12 +25,16 @@ import java.util.List;
 @RestController
 public class AdminController {
 
+    private final PizzaService pizzaService;
+    private final IngredientService ingredientService;
+    private final Logger logger;
+
     @Autowired
-    private PizzaService pizzaService;
-    @Autowired
-    private IngredientService ingredientService;
-    @Autowired
-    private Logger logger;
+    public AdminController(PizzaService pizzaService, IngredientService ingredientService, Logger logger) {
+        this.pizzaService = pizzaService;
+        this.ingredientService = ingredientService;
+        this.logger = logger;
+    }
 
     @GetMapping("/admin/ingredients")
     public Response<List<Ingredient>> getAllIngredients() {

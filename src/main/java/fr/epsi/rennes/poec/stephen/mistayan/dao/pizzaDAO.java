@@ -19,8 +19,10 @@ import java.util.List;
  **/
 @Repository
 public class pizzaDAO {
+    private final DataSource ds;
+
     @Autowired
-    private DataSource ds;
+    public pizzaDAO(DataSource ds) {this.ds = ds;}
 
     /**
      * int id;

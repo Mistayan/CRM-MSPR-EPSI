@@ -26,8 +26,10 @@ import java.util.List;
 public class PizzaService {
     private static final Logger logger = LogManager.getLogger(PizzaService.class);
 
+    private final pizzaDAO pizzadao;
+
     @Autowired
-    private pizzaDAO pizzadao;
+    public PizzaService(pizzaDAO pizzadao) {this.pizzadao = pizzadao;}
 
     @Transactional
     public void createPizza(Pizza pizza) throws BusinessException {
