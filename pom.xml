@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.epsi.rennes.poec.stephen.mistayan</groupId>
-    <artifactId>pizzahut</artifactId>
+    <groupId>fr.epsi.rennes.poec.evoli.mspr</groupId>
+    <artifactId>acme</artifactId>
     <version>0.1.1.7</version>
     <packaging>jar</packaging>
 
-    <name>pizza</name>
+    <name>acme</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -36,7 +36,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.epsi.rennes.poec.stephen.mistayan.PizzaApplication</mainClass>
+                            <mainClass>fr.epsi.rennes.poec.evoli.mspr.AcmeApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -129,6 +129,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
@@ -145,6 +151,12 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.17.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.2</version>
         </dependency>
 
         <!--Nous utilisons mariadb pour ne pas avoir à payer de royalties à mysql.-->

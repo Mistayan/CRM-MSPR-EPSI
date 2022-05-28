@@ -1,8 +1,8 @@
-package fr.epsi.rennes.poec.stephen.mistayan.Controller;
+package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
-import fr.epsi.rennes.poec.stephen.mistayan.exception.BusinessException;
-import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
+import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,8 +15,8 @@ import java.sql.SQLException;
  * Author : Stephen Mistayan
  * Created on : 5/19/2022 : 4:38 PM:11
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.Controller
- * Project name : pizzaHut
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.Controller
+ * Project name : Evoli-Acme
  **/
 
 @ControllerAdvice

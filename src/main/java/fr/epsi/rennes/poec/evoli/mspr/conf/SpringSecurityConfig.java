@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.conf;
+package fr.epsi.rennes.poec.evoli.mspr.conf;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

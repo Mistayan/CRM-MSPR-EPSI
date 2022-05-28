@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.exception;
+package fr.epsi.rennes.poec.evoli.mspr.exception;
 
 import java.io.Serial;
 
