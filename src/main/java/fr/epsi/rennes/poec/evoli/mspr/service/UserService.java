@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
     private final CommandeDAO commandeDAO;
 
     @Autowired
-    public UserService(UserDAO userDAO, CommandeDAO commandeDAO) {
+    private UserService(UserDAO userDAO, CommandeDAO commandeDAO) {
         this.userDAO = userDAO;
         this.commandeDAO = commandeDAO;
     }
@@ -58,8 +58,7 @@ public class UserService implements UserDetailsService {
         try {
             logger.info("UserService ::: user : " + userName + "is ordering : \nPanierId : " + panierId);
             int userId = userDAO.getUserByName(userName);
-            int orderId = commandeDAO.order(userId, panierId);
-            return orderId;
+            return commandeDAO.order(userId, panierId);
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
