@@ -1,6 +1,6 @@
-package fr.epsi.rennes.poec.stephen.mistayan.service;
+package fr.epsi.rennes.poec.evoli.mspr.service;
 
-import fr.epsi.rennes.poec.stephen.mistayan.dao.PanierDAO;
+import fr.epsi.rennes.poec.evoli.mspr.dao.PanierDAO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Author : Stephen Mistayan
  * Created on : 5/19/2022 : 9:16 AM:14
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.service
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.service
  * Project name : pizzaHut
  **/
 
@@ -27,29 +27,29 @@ public class PanierServiceTest {
     void getPanierById() {
 //        //given
 //        Panier panier = new Panier();
-//        List<Pizza> pizzas = new ArrayList<>();
-//        Pizza pizza = new Pizza();
+//        List<Article> articles = new ArrayList<>();
+//        Article pizza = new Article();
 //        pizza.setIngredients(new ArrayList<>());
 //        pizza.setLabel("une_pizza");
-//        Ingredient ingredient = new Ingredient();
+//        Property ingredient = new Property();
 //        ingredient.setId(0);
 //        ingredient.setLabel("ingred");
 //        ingredient.setNbCalories(0);
 //        ingredient.setPrix(0);
 //        pizza.getIngredients().add(ingredient);
-//        Ingredient ingredient2 = new Ingredient();
+//        Property ingredient2 = new Property();
 //        ingredient2.setId(1);
 //        ingredient2.setLabel("ingred2");
 //        ingredient2.setNbCalories(1298);
 //        ingredient2.setPrix(0);
 //        pizza.getIngredients().add(ingredient2);
 //
-//        Pizza pizza2 = new Pizza();
+//        Article pizza2 = new Article();
 //        pizza2.setLabel("plop");
 //        pizza2.setIngredients(new ArrayList<>());
 //        pizza2.getIngredients().add(ingredient);
-//        pizzas.add(pizza);
-//        pizzas.add(pizza2);
+//        articles.add(pizza);
+//        articles.add(pizza2);
 //
 //        final int PANIER_ID = 1;
 //        Mockito.when(panierDAOMock.getPanierById(PANIER_ID)).thenReturn(panier);
