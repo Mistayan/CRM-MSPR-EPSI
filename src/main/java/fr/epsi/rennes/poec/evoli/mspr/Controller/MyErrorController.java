@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.Controller;
+package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
 /**
  * Author: Stephen Mistayan
