@@ -5,7 +5,7 @@ const app = new Vue({
     el: '#panier',
     data() { //le modèle de données
         return {
-            pizzas: [],
+            articles: [],
             panier: {},
             panierId: -1,
             buffer: {}
@@ -17,9 +17,9 @@ const app = new Vue({
         if (this.panierId === null) {
             this.panierId = -1;
         }
-        axios.get("/public/pizza")
+        axios.get("/public/article")
             .then(response => {
-                this.pizzas = response.data.data;
+                this.articles = response.data.data;
             });
         axios.get('/public/panier?panierId=' + this.panierId)
             .then(response => {
@@ -41,9 +41,29 @@ const app = new Vue({
             }
 
         },
-        ajouterPizza(pizzaId) {
+        articleInPanier(article_) {
+            return this.countArticleInCart(article_.id) > 0
+        },
+        countArticleInCart(articleId) {
+            if (!this.panier || !this.panier.articles)
+                return 0
+            let i = 0;
+            let count = 0;
+            while (i < this.panier.articles.length) {
+                let article = Object(this.panier.articles.at(i)) //on récupère l'objet article à l'index i
+                if (articleId === article.id) {
+                    count++
+                }
+                i++;
+            }
+            return count;
+        },
+        calc_price_article_panier(article) {
+            return (article.prix * this.countArticleInCart(article.id)).toFixed(2);
+        },
+        ajouterArticle(articleId) {
             <!--Charger panier-->
-            axios.post('/public/panier/pizza?panierId=' + this.panierId + '&pizzaId=' + pizzaId + '&action=1')
+            axios.post('/public/panier/article?panierId=' + this.panierId + '&articleId=' + articleId + '&action=1')
                 .then(response => {
                     if (response.data.success) {
                         localStorage.setItem('panierId', response.data.data);
@@ -55,37 +75,11 @@ const app = new Vue({
                     }
                 });
         },
-        panierContainsPizza() {
-            return !!(this.panier && this.panier.pizzas && this.panier.pizzas.length > 0);
-
-        },
-        pizzaInPanier(pizza_) {
-            if (this.countPizzaInCart(pizza_.id) > 0) {
-                return true
-            }
-        },
-        countPizzaInCart(pizzaId) {
-            if (!this.panier || !this.panier.pizzas)
-                return 0
-            let i = 0;
-            let count = 0;
-            while (i < this.panier.pizzas.length) {
-                let pizza = Object(this.panier.pizzas.at(i)) //on récupère l'objet pizza à l'index i
-                if (pizzaId === pizza.id) {
-                    count++
-                }
-                i++;
-            }
-            return count;
-        },
-        calc_price_pizza_panier(pizza) {
-            return (pizza.prix * this.countPizzaInCart(pizza.id)).toFixed(2);
-        },
-        enleverPizza(pizzaId) {
-            <!-- supprimer pizza du panier -->
-            axios.post('/public/panier/pizza' +
+        enleverArticle(articleId) {
+            <!-- supprimer article du panier -->
+            axios.post('/public/panier/article' +
                 '?panierId=' + this.panierId +
-                '&pizzaId=' + pizzaId +
+                '&articleId=' + articleId +
                 '&action=0')
                 .then(response => {
                     if (response.data.success) {

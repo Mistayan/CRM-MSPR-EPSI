@@ -1,8 +1,8 @@
-package fr.epsi.rennes.poec.stephen.mistayan.service;
+package fr.epsi.rennes.poec.evoli.mspr.service;
 
-import fr.epsi.rennes.poec.stephen.mistayan.dao.PanierDAO;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
+import fr.epsi.rennes.poec.evoli.mspr.dao.PanierDAO;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,42 +15,42 @@ import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
  * Author : Stephen Mistayan
  * Created on : 5/12/2022 : 11:24 AM:25
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.service
- * Project name : pizzaHut
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.service
+ * Project name : Evoli-Acme
  **/
 
 @Service
 public class PanierService {
     private static final Logger logger = LogManager.getLogger(GetClass);
     private final PanierDAO panierDAO;
-    private final PizzaService pizzaService;
+    private final ArticleService articleService;
 
     @Autowired
-    public PanierService(PanierDAO panierDAO, PizzaService pizzaService) {
+    public PanierService(PanierDAO panierDAO, ArticleService articleService) {
         this.panierDAO = panierDAO;
-        this.pizzaService = pizzaService;
+        this.articleService = articleService;
     }
 
-    @Transactional
-    public int addPizza(Pizza pizza, int panierId) {
-        //fonction pour ajouter pizza au panier.
+    public int addArticle(Article article, int panierId) {
+        //fonction pour ajouter article au panier.
         boolean exists = panierDAO.doesPanierExist(panierId);
         if (!exists) {
             // vérifier que le panier existe avant d'en créer un
             panierId = panierDAO.CreatePanier();
         }
-        panierDAO.addPizza(pizza, panierId);
+        panierDAO.addArticle(article, panierId);
         return panierId;
     }
 
+
     @Transactional
-    public int remPizza(int pizza_id, int panierId) {
+    public int remArticle(int articleId, int panierId) {
         boolean exists = panierDAO.doesPanierExist(panierId);
         // vérifie que le panier existe avant action
         if (!exists) {
             return -1;
         }
-        panierDAO.removePizza(pizza_id, panierId);
+        panierDAO.removeArticle(articleId, panierId);
         return panierId;
     }
 

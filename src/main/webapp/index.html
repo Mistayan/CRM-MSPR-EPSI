@@ -6,12 +6,12 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script defer src="/js/panier.js"></script>
-    <link href="/css/liste-pizza.css" rel="stylesheet">
+    <link href="/css/liste-article.css" rel="stylesheet">
 </head>
 <body>
 <div id="panier">
     <div class="panier">
-        Nombre de pizzas dans le panier : {{panier && panier.pizzas? panier.pizzas.length : 0}} <br>
+        Nombre de articles dans le panier : {{panier && panier.articles? panier.articles.length : 0}} <br>
         Prix du panier : {{panier ? panier.totalPrix : 0}} <br>
         <div><a href="/public/panier.html">Voir mon panier</a></div>
     </div>
@@ -19,22 +19,19 @@
         <table class="tg">
             <thead>
             <tr>
-                <th class="tg-ih3h">Nom pizza</th>
-                <th class="tg-ih3h">Ingrédients</th>
-                <th class="tg-ih3h">Calories</th>
+                <th class="tg-ih3h">Article</th>
+                <th class="tg-ih3h">Catégorie</th>
+                <th class="tg-ih3h">Description</th>
                 <th class="tg-ih3h">Prix</th>
+
             </tr>
-            <tr class="pizza" v-for="pizza in pizzas">
-                <td class="tg-0pky" v-on:click="ajouterPizza(pizza.id)"><a href="#">{{pizza.label}}</a></td>
+            <tr class="article" v-for="article in articles">
+                <td class="tg-0pky" v-on:click="ajouterArticle(article.id)"><a href="#">{{article.label}}</a></td>
+                <td class="tg-0pky">{{article.category}}</td>
+                <td class="tg-0pky">{{article.description}}</td>
+                <td class="tg-0pky">{{article.prix}}</td>
                 <td class="tg-c3ow">
-                    <div class="ingredients" v-for="ingredient in pizza.ingredients">
-                        {{ingredient.label}}
-                    </div>
-                </td>
-                <td class="tg-0pky">{{pizza.calories}}</td>
-                <td class="tg-0pky">{{pizza.prix}}</td>
-                <td class="tg-ih3h">
-                    <button v-on:click="ajouterPizza(pizza.id)">Ajouter</button>
+                    <button v-on:click="ajouterArticle(article.id)">Ajouter</button>
                 </td>
             </tr>
             </thead>
