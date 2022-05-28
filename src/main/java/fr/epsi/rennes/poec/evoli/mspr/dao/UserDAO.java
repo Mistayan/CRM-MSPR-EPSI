@@ -9,7 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Repository
 public class UserDAO {
@@ -18,7 +21,8 @@ public class UserDAO {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserDAO(DataSource ds, PasswordEncoder passwordEncoder) {this.ds = ds;
+    public UserDAO(DataSource ds, PasswordEncoder passwordEncoder) {
+        this.ds = ds;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,7 +35,7 @@ public class UserDAO {
                 " FROM user" +
                 " WHERE email = ?";
         try (Connection conn = ds.getConnection();
-             PreparedStatement stmt  = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mail);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) { // pour le premier élément de la requête:
@@ -43,7 +47,7 @@ public class UserDAO {
                 user.setNickname(rs.getString(4));
                 user.setDateCreated(rs.getString(5));
                 logger.debug("getUserByEmail Result : " +
-                        user.getRole() + " " + user.getNickname() +" " + user.getDateCreated());
+                        user.getRole() + " " + user.getNickname() + " " + user.getDateCreated());
                 return user;
             } else {
                 return null;
@@ -58,7 +62,7 @@ public class UserDAO {
         logger.info(Thread.currentThread().getName());
         String sql = "INSERT INTO user ( email , password , user_role ) VALUES (?,?,?)";
         try (Connection conn = ds.getConnection();
-             PreparedStatement stmt  = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
             stmt.setString(2, passwordEncoder.encode(user.getPassword()));
             stmt.setString(3, user.getRole());
@@ -81,8 +85,7 @@ public class UserDAO {
             if (!rs.next()) {
                 throw new SQLException("error: user not found");
             }
-            int userId = rs.getInt(1);
-            return userId;
+            return rs.getInt(1);
         } catch (SQLException e) {
             throw new SQLException(e);
         }

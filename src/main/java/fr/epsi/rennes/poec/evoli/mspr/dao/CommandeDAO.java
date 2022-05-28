@@ -73,7 +73,7 @@ public class CommandeDAO {
 
             try {
                 ps.executeUpdate();
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
                 throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix(), e);
             }
