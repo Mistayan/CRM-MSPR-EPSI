@@ -1,11 +1,11 @@
-package fr.epsi.rennes.poec.stephen.mistayan.Controller;
+package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
 
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Commande;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Response;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.User;
-import fr.epsi.rennes.poec.stephen.mistayan.exception.TechnicalException;
-import fr.epsi.rennes.poec.stephen.mistayan.service.UserService;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
+import fr.epsi.rennes.poec.evoli.mspr.domain.User;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
+import fr.epsi.rennes.poec.evoli.mspr.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ public class UserController {
                         @RequestParam String password) {
         try {
             User user = new User();
+            logger.info("user is registering : \nmail : " + email + "\npassword : ");
             user.setEmail(email);
             user.setPassword(password);
             userService.addUser(user);
@@ -42,13 +43,14 @@ public class UserController {
     }
 
     @PostMapping("/user/order")
-    public Response<Long> order(@RequestParam int panierId) {
+    public Response<Commande> order(@RequestParam int panierId) {
 //                                @AuthenticationPrincipal User user) {
-        Response<Long> response = new Response<>();
+        Response<Commande> response = new Response<>();
         try {
             logger.info("########### Action : ordering cart " + panierId);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            userService.userOrder(auth.getName(), panierId);
+            int orderId = userService.userOrder(auth.getName(), panierId);
+            response.setData(userService.getOrderByOrderId(orderId));
             response.setSuccess(true);
             return response;
         } catch (TechnicalException e) {
@@ -68,7 +70,7 @@ public class UserController {
         try {
             int userId = userService.getUserIdFromName(auth.getName());
             logger.info("########### Action : fetching orders from userId : " + userId);
-            List<Commande> commandes = userService.getUserIdOrders(userId);
+            List<Commande> commandes = userService.getOrdersFromUserId(userId);
             logger.info("########### Fetched Commande :  " + commandes);
             response.setData(commandes);
             response.setSuccess(true);

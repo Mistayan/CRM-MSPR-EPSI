@@ -1,11 +1,11 @@
-package fr.epsi.rennes.poec.stephen.mistayan.domain;
+package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 /**
  * Author : Stephen Mistayan
  * Created on : 5/10/2022 : 9:48 AM:55
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.domain
- * Project name : pizzaHut
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.domain
+ * Project name : Evoli-Acme
  **/
 
 public class UserAddresse {

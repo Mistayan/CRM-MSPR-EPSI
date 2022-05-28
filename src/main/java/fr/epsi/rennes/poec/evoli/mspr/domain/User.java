@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.domain;
+package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +12,9 @@ public class User implements UserDetails {
     private final boolean checked = true;
     private String email;
     private String password;
+    private String nickname;
+    private String dateCreated;
+
     private String role;
 
     public String getEmail() {
@@ -74,4 +77,19 @@ public class User implements UserDetails {
         return this.checked;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 }

@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.domain;
+package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
