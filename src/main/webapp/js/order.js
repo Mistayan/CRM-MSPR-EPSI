@@ -3,11 +3,10 @@ const order = new Vue({
     data() { //le modèle de données
         return {
             orders: [],
-            pizzasRepo: [],
-            totalPizza: 0,
-            totalPrixHT: 0.00,
-            totalPrixTTC: 0.00,
-            totalCalories: 0
+            articlesRepo: [],
+            totalArticles: 0,
+            totalPrixHT: 0.0,
+            totalPrixTTC: 0.0
         }
     },
     mounted() {
@@ -20,29 +19,29 @@ const order = new Vue({
                     let order = this.orders.at(i) // pour l'objet 'order' à l'index en cours
                     this.totalPrixTTC += order.prixTTC;
                     this.totalPrixHT += order.prixHT;
-                    this.totalPizza += order.pizzas.length;
+                    this.totalArticles += order.articles.length;
                     i++
                 }
             });
-        axios.get("/public/pizza")
+        axios.get("/public/article")
             .then(response => {
-                this.pizzasRepo = response.data.data
+                this.articlesRepo = response.data.data
             });
     },
     methods: {
-        countPizzaInOrder(pizzaId, order) {
+        countArticleInOrder(articleId, order) {
             let count = 0
             let i = 0;
-            while (i < Object(order.pizzas).length) { // on ne peut pas appeler length sans Object()
-                let pid = Object(order.pizzas.at(i)).id // on ne peut pas appeler id sans Object()
-                if (pid === pizzaId)
+            while (i < Object(order.articles).length) { // on ne peut pas appeler length sans Object()
+                let pid = Object(order.articles.at(i)).id // on ne peut pas appeler id sans Object()
+                if (pid === articleId)
                     count += 1
                 i++
             }
             return count
         },
-        calc_price_pizzas_order(pizza, order) {
-            return (pizza.prix * this.countPizzaInOrder(pizza.id, order)).toFixed(2)
+        calc_price_articles_order(article, order) {
+            return (article.prix * this.countArticleInOrder(article.id, order)).toFixed(2)
         }
     }
 })

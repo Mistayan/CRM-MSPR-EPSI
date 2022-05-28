@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.stephen.mistayan.domain;
+package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import java.util.List;
  * Author : Stephen Mistayan
  * Created on : 5/10/2022 : 9:24 AM:34
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.domain
- * Project name : pizzaHut
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.domain
+ * Project name : Evoli-Acme
  **/
 
 public class Commande {
@@ -15,7 +15,7 @@ public class Commande {
     private String numeroCmd;
     private int OrderId;
     private String clientEmail;
-    private List<Pizza> pizzas;
+    private List<Article> articles;
     private double prixHT;
     private double prixTTC;
 
@@ -43,12 +43,12 @@ public class Commande {
         this.clientEmail = clientEmail;
     }
 
-    public List<Pizza> getPizzas() {
-        return pizzas;
+    public List<Article> getArticles() {
+        return articles;
     }
 
-    public void setPizzas(List<Pizza> pizzas) {
-        this.pizzas = pizzas;
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 
     public double getPrixHT() {

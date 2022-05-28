@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <title>Vos Commandes</title>
     <script defer src="/js/order.js"></script>
-    <link href="/css/liste-pizza.css" rel="stylesheet">
+    <link href="/css/liste-article.css" rel="stylesheet">
 
 </head>
 <body>
@@ -20,26 +20,24 @@
                 <th class="tg-ih3h"> Prix TTC</th>
                 <th class="tg-ih3h"> Prix HT</th>
             </tr>
-            <tr v-for="order in orders" v-if="order.orderId && order.pizzas">
+            <tr v-for="order in orders" v-if="order.orderId && order.articles">
                 <td class="tg-ih3h"> {{ order.numeroCmd }}</td>
-                <td class="tg-ih3h"> {{ order.pizzas.length }}</td>
+                <td class="tg-ih3h"> {{ order.articles.length }}</td>
                 <td class="tg-ih3h"> {{ order.prixTTC }}</td>
                 <td class="tg-ih3h"> {{ order.prixHT }}</td>
                 <td class="tg-ih3h">
-                    <details class="tg-wrap" id="order-details" v-if="order.pizzas">
+                    <details class="tg-wrap" id="order-details" v-if="order.articles">
                         <table class="tg">
                             <thead>
                             <tr>
-                                <th class="tg-ih3h">Nom pizza</th>
-                                <th class="tg-ih3h">Calories</th>
-                                <th class="tg-ih3h">Prix</th>
+                                <th class="tg-ih3h">Nom article</th>
                                 <th class="tg-ih3h">Quantité</th>
+                                <th class="tg-ih3h">Prix</th>
                             </tr>
-                            <tr v-for="pizza in pizzasRepo" v-if="countPizzaInOrder(pizza.id, order)">
-                                <td class="tg-0pky"> {{ pizza.label }}</td>
-                                <td class="tg-0pky"> {{ pizza.calories * countPizzaInOrder(pizza.id, order)}}</td>
-                                <td class="tg-0pky"> {{ calc_price_pizzas_order(pizza, order) }}</td>
-                                <td class="tg-0pky"> {{ countPizzaInOrder(pizza.id, order) }}</td>
+                            <tr v-for="article in articlesRepo" v-if="countArticleInOrder(article.id, order)">
+                                <td class="tg-0pky"> {{ article.label }}</td>
+                                <td class="tg-0pky"> {{ countArticleInOrder(article.id, order) }}</td>
+                                <td class="tg-0pky"> {{ calc_price_articles_order(article, order) }}</td>
                             </tr>
                             </thead>
                         </table>
@@ -48,7 +46,7 @@
             </tr>
             <tr v-if="orders">
                 <td class="tg-ih3h">TOTAL :</td>
-                <td class="tg-ih3h">{{ totalPizza }}</td>
+                <td class="tg-ih3h">{{ totalArticles }}</td>
                 <td class="tg-ih3h">{{ totalPrixTTC.toFixed(2) }}</td>
                 <td class="tg-ih3h">{{ totalPrixHT.toFixed(2) }}</td>
             </tr>
@@ -59,6 +57,5 @@
 
 </div>
 
-</div>
 </body>
 </html>

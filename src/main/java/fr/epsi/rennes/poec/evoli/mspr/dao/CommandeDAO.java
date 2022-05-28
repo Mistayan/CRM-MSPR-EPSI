@@ -1,8 +1,8 @@
-package fr.epsi.rennes.poec.stephen.mistayan.dao;
+package fr.epsi.rennes.poec.evoli.mspr.dao;
 
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Commande;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Panier;
-import fr.epsi.rennes.poec.stephen.mistayan.domain.Pizza;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
@@ -24,76 +24,79 @@ import java.util.List;
  * Last modified date:
  * Created on : 5/10/2022 : 9:24 AM:34
  * IDE : IntelliJ IDEA
- * Original package : fr.epsi.rennes.poec.stephen.mistayan.domain
- * Project name : pizzaHut
+ * Original package : fr.epsi.rennes.poec.evoli.mspr.domain
+ * Project name : Evoli-Acme
  **/
 
 @Repository
 @Transactional
 public class CommandeDAO {
-
-
     private static final Logger logger = LogManager.getLogger(CommandeDAO.class);
     private final PanierDAO panierDAO;
-    private final pizzaDAO pizzaDAO;
+    private final ArticleDAO articleDAO;
     private final DataSource ds;
 
     @Autowired
-    public CommandeDAO(PanierDAO panierDAO, pizzaDAO pizzaDAO, DataSource ds) {
+    public CommandeDAO(PanierDAO panierDAO, ArticleDAO articleDAO, DataSource ds) {
         this.panierDAO = panierDAO;
-        this.pizzaDAO = pizzaDAO;
+        this.articleDAO = articleDAO;
         this.ds = ds;
     }
 
     /**
      * Le but de ces fonctions est de créer une commande. Celles ci ce décompose comme suit:
      * insert into order_ (userId, panierId)
-     * pour chaque article dans panier: insert into order_articles (panierId, pizzaId)
+     * pour chaque article dans panier: insert into order_articles (panierId, articleId)
      * insert into user_order (userId, panierId)
      *
      * @return success ? order_id : -1
      */
+    @Transactional
     public int order(int userId, int panierId) throws SQLException {
+
         int orderId = -1;
         Panier panier = panierDAO.getPanierById(panierId);
         if (panier == null) {
             throw new SQLException("#CommandeDAO##order  ::: panier invalide");
         }
         logger.trace("#CommandeDAO##order  ::: " + userId + " ordered panier : " + panierId);
+        logger.trace(userId + " ordered panier : " + panierId);
         String sql = "INSERT INTO order_ " +
                 "(user_id, TVA, prix_ttc) VALUES " +
-                "(?, ?, ?)";
+                "(?, ?, ?);";
         logger.trace(panier.toString());
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, userId);
             ps.setDouble(2, panier.getTVA());
-            // TAUX TVA ALIMENTAIRE :: 5.5
             ps.setDouble(3, panier.getTotalPrix());
 
-            if (ps.executeUpdate() == 0) {
+            try {
+                ps.executeUpdate();
+            } catch (SQLException e){
                 logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
-                throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix());
+                throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix(), e);
             }
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 orderId = rs.getInt(1);
                 if (newOrderArticlesTable(orderId, panier) != orderId) {
-                    throw new SQLException("un-Equal orderId from order_article & order");
+                    conn.rollback();
+                    throw new SQLException("Rollback : un-Equal orderId from order_article & order");
                 }
 
                 logger.debug("newUserOrderTable : " + userId + ", " + orderId);
                 if (newUserOrderTable(userId, orderId, conn) == -1) {
                     conn.rollback();
-                    throw new SQLException("should be rollback : n'a pas pu ajouter dans user_order");
+                    throw new SQLException("Rollback : n'a pas pu ajouter dans user_order");
                 }
-                if (orderId > 0) {
-                    logger.trace("##############\tCommandeDAO :: vidange du pannier N°" + panierId);
-                    panierDAO.truncate(panierId);
-                }
+                logger.trace("##############\tCommandeDAO :: vidange du pannier N°" + panierId);
+                panierDAO.truncate(panierId);
+            } else {
+                conn.rollback();
             }
             conn.close();
-            return rs.getInt(1); //orderId
+            return orderId;
         } catch (SQLException e) {
             logger.fatal("##############\tCommandeDAO :: " + e);
             throw new SQLException(e);
@@ -101,8 +104,8 @@ public class CommandeDAO {
     }
 
     private long newUserOrderTable(int userId, int orderId, Connection conn) throws SQLException {
-        String sql = "INSERT INTO user_order (user_id, order_id) VALUE (?, ?)";
-        logger.debug("newUserOrderTable ");
+        String sql = "INSERT INTO user_has_order (user_id, order_id) VALUE (?, ?)";
+        logger.trace("newUserOrderTable ");
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, orderId);
@@ -117,17 +120,17 @@ public class CommandeDAO {
 
     private long newOrderArticlesTable(int order_id, Panier panier) throws SQLException {
 
-        logger.debug("newOrderTable ");
-        String sql = "INSERT INTO order_articles (order_id, pizza_id) VALUES(?,?)";
+        logger.trace("newOrderTable ");
+        String sql = "INSERT INTO  order_has_article (order_id, article_id) VALUES(?,?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            for (Pizza pizza : panier.getPizzas()) {
+            for (Article article : panier.getArticles()) {
                 ps.setInt(1, order_id);
-                ps.setInt(2, pizza.getId());
+                ps.setInt(2, article.getId());
                 int result = ps.executeUpdate();
                 if (result == 0) {
                     logger.warn("###############" + sql + order_id + " : " + panier.getId() + " failed");
-                    throw new SQLException(order_id + ", " + pizza.getId());
+                    throw new SQLException(order_id + ", " + article.getId());
                 }
             }
             logger.info("created order:" + order_id);
@@ -142,25 +145,27 @@ public class CommandeDAO {
      * @return Une liste des commandes prises par l'utilisateur, avec date, prix ttc, prix ht,
      * numero de commande et son contenu
      */
-    public List<Commande> getOrdersFromUserId(int userId) throws SQLException {
+    public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
         String sql = "select * "
                 + "from order_ "
-                + "where order_.user_id = ? ";
+                + "where user_id = ? "
+                + "ORDER BY date_created %s ".formatted(limit <= 500 ? "DESC" : "ASC")
+                + "LIMIT ? ";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
-
+            ps.setInt(2, limit);
             ResultSet rs = ps.executeQuery();
             conn.close();
             List<Commande> commandeList = new ArrayList<>();
             while (rs.next()) {
                 Commande commande = new Commande();
                 commande.setOrderId(rs.getInt(1));
-                commande.setNumeroCmd(rs.getString(5));
-                commande.setPrixHT(rs.getDouble(4) - rs.getInt(3));
-                commande.setPrixTTC(rs.getDouble(4));
-                commande.setPizzas(this.getArticlesFromOrderId(rs.getInt(1)));
+                commande.setNumeroCmd(rs.getString(2));
+                commande.setPrixHT(rs.getDouble(5) - rs.getInt(4));
+                commande.setPrixTTC(rs.getDouble(5));
+                commande.setArticles(this.getArticlesFromOrderId(rs.getInt(1)));
                 //TODO GetStatus from id_status
                 commandeList.add(commande);
             }
@@ -170,26 +175,60 @@ public class CommandeDAO {
         }
     }
 
-    private List<Pizza> getArticlesFromOrderId(int orderId) throws SQLException {
+    private List<Article> getArticlesFromOrderId(int orderId) throws SQLException {
         String sql = "SELECT * " +
-                "FROM order_articles " +
+                "FROM order_has_article " +
                 "WHERE order_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
             conn.close();
-            List<Pizza> pizzas = new ArrayList<>();
-            List<Pizza> pizzaRepo = pizzaDAO.getAll();
+            List<Article> articles = new ArrayList<>();
+            List<Article> articleRepo = articleDAO.getAll();
             while (rs.next()) {
                 int pid = rs.getInt(2);
-                for (int i = 0; i < pizzaRepo.size(); i++) {
-                    if (pid == pizzaRepo.get(i).getId()) {
-                        pizzas.add(pizzaRepo.get(i));
+                for (Article article : articleRepo) {
+                    if (pid == article.getId()) {
+                        articles.add(article);
                     }
                 }
             }
-            return pizzas;
+            return articles;
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    public Commande getOrderById(int orderId) throws SQLException {
+        String sql = "SELECT *, group_concat(order_has_article.article_id) as articles " +
+                "FROM order_, order_has_article " +
+                "WHERE order_.order_id = ? AND order_has_article.order_id = order_.order_id ";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+            conn.close();
+            Commande commande = new Commande();
+            if (rs.next()) {
+                commande.setOrderId(rs.getInt("order_.order_id"));
+                commande.setNumeroCmd(rs.getString("date_created"));
+                commande.setPrixTTC(rs.getDouble("prix_ttc"));
+                commande.setPrixHT(rs.getDouble("prix_ttc") - rs.getDouble("TVA"));
+                List<Article> articlesREPO = articleDAO.getAll();
+                List<Article> articles = new ArrayList<>();
+                for (String _tmp : rs.getString("articles").split(",")) {
+                    for (Article article : articlesREPO) {
+                        if (article.getId() == Integer.parseInt(_tmp)) {
+                            articles.add(article);
+                        }
+                    }
+                }
+                commande.setArticles(articles);
+            }
+            return commande;
         } catch (SQLException e) {
             throw new SQLException(e);
         }
