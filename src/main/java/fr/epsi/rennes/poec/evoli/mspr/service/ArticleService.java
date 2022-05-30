@@ -36,14 +36,14 @@ public class ArticleService {
             throw new BusinessException("article.label.null");
         }
         int articleId = this.articleDAO.createArticle(article.getLabel(), article.getPrix(),
-                article.getCategoryId(), article.getCodeArticle(), article.getDescription());
+                article.getCategory(), article.getCodeArticle(),
+                article.getDescription(), article.getProperties());
 
     }
 
     @Transactional(readOnly = true)
-    public List<Article> getAllArticles() {
-        return articleDAO.getAll();
+    public List<Article> getAllPokemons() {
+        return articleDAO.getAllPokemons();
     }
-
 
 }

@@ -105,7 +105,7 @@ public class PanierDAO {
                 panier.setId(rs.getInt("panier_id"));
                 String articles = rs.getString("articles");
 
-                List<Article> articleRepo = articleService.getAllArticles();
+                List<Article> articleRepo = articleService.getAllPokemons();
                 List<Article> articleList = new ArrayList<>();
                 if (articles != null) {
                     for (String articleId : articles.split(",")) {

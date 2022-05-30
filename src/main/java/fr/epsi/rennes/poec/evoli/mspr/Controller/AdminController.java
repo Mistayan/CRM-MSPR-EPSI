@@ -1,7 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
-import fr.epsi.rennes.poec.evoli.mspr.domain.Property;
+import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.service.ArticleService;
@@ -37,20 +37,20 @@ public class AdminController {
     }
 
     @GetMapping("/admin/properties")
-    public Response<List<Property>> getAllProperties() {
-        List<Property> properties = propertiesService.getAllProperties();
-        for (Property property : properties) {
-            logger.debug(property.getLabel()); //should filter every strings
+    public Response<List<PokemonProperties>> getAllProperties() {
+        List<PokemonProperties> properties = propertiesService.getAllPokemonsProperties();
+        for (PokemonProperties PokemonProperties : properties) {
+            logger.debug(PokemonProperties.getLabel()); //should filter every strings
         }
 
-        Response<List<Property>> response = new Response<>();
+        Response<List<PokemonProperties>> response = new Response<>();
         response.setData(properties);
         return response;
     }
 
     @GetMapping("/admin/article")
     public Response<List<Article>> getAllArticles() {
-        List<Article> articles = articleService.getAllArticles();
+        List<Article> articles = articleService.getAllPokemons();
 
         Response<List<Article>> response = new Response<>();
         response.setData(articles);

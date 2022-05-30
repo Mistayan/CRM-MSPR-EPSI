@@ -31,13 +31,13 @@ public class PanierServiceTest {
 //        Article pizza = new Article();
 //        pizza.setIngredients(new ArrayList<>());
 //        pizza.setLabel("une_pizza");
-//        Property ingredient = new Property();
+//        PokemonProperties ingredient = new PokemonProperties();
 //        ingredient.setId(0);
 //        ingredient.setLabel("ingred");
 //        ingredient.setNbCalories(0);
 //        ingredient.setPrix(0);
 //        pizza.getIngredients().add(ingredient);
-//        Property ingredient2 = new Property();
+//        PokemonProperties ingredient2 = new PokemonProperties();
 //        ingredient2.setId(1);
 //        ingredient2.setLabel("ingred2");
 //        ingredient2.setNbCalories(1298);

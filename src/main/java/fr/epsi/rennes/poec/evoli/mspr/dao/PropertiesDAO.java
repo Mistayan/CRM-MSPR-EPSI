@@ -1,6 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.dao;
 
-import fr.epsi.rennes.poec.evoli.mspr.domain.Property;
+import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
+import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonStats;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,20 +32,30 @@ public class PropertiesDAO {
     @Autowired
     public PropertiesDAO(DataSource ds) {this.ds = ds;}
 
-    public List<Property> getAllProps() {
-        String sql = "select * from article_properties";
+    public List<PokemonProperties> getAllPokeProps() {
+        String sql = "select * from pokemon_properties";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            List<Property> props = new ArrayList<>();
+            List<PokemonProperties> props = new ArrayList<>();
             ResultSet rs = stmt.executeQuery();
             conn.close();
             while (rs.next()) {
-                Property prop = new Property();
+                PokemonProperties prop = new PokemonProperties();
                 prop.setId(rs.getInt("id"));
-                prop.setLabel(rs.getString("label"));
-                prop.setNbCalories(rs.getInt("nb_calories"));
-                prop.setPrix(rs.getDouble("prix"));
-                prop.setType(rs.getString("type"));
+                prop.setLabel(rs.getString("type"));
+                prop.setTaille(rs.getDouble("taille"));
+                prop.setPoids(rs.getInt("poids"));
+                prop.setLvl(rs.getInt("level"));
+                prop.setExp(rs.getInt("exp"));
+                PokemonStats stats = new PokemonStats();
+                stats.setAtk(rs.getInt("ATK"));
+                stats.setDef(rs.getInt("DEF"));
+                stats.setSpd(rs.getInt("SPD"));
+                stats.setAtkspe(rs.getInt("ATKSPE"));
+                stats.setDefspe(rs.getInt("DEFSPE"));
+                stats.setPv(rs.getInt("PV"));
+                stats.setPp(rs.getInt("PP"));
+                prop.setStats(stats);
                 props.add(prop);
             }
             return props;

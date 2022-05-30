@@ -39,7 +39,7 @@ public class IndexController {
 
     @GetMapping("/public/article")
     public Response<List<Article>> getAllArticles() {
-        List<Article> articles = articleService.getAllArticles();
+        List<Article> articles = articleService.getAllPokemons();
         Response<List<Article>> response = new Response<>();
         response.setData(articles);
         return response;

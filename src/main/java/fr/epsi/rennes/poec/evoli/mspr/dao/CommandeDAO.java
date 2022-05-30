@@ -185,7 +185,7 @@ public class CommandeDAO {
             ResultSet rs = ps.executeQuery();
             conn.close();
             List<Article> articles = new ArrayList<>();
-            List<Article> articleRepo = articleDAO.getAll();
+            List<Article> articleRepo = articleDAO.getAllPokemons();
             while (rs.next()) {
                 int pid = rs.getInt(2);
                 for (Article article : articleRepo) {
@@ -217,7 +217,7 @@ public class CommandeDAO {
                 commande.setNumeroCmd(rs.getString("date_created"));
                 commande.setPrixTTC(rs.getDouble("prix_ttc"));
                 commande.setPrixHT(rs.getDouble("prix_ttc") - rs.getDouble("TVA"));
-                List<Article> articlesREPO = articleDAO.getAll();
+                List<Article> articlesREPO = articleDAO.getAllPokemons();
                 List<Article> articles = new ArrayList<>();
                 for (String _tmp : rs.getString("articles").split(",")) {
                     for (Article article : articlesREPO) {

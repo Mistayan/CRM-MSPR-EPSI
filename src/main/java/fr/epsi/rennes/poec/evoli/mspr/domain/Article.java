@@ -1,5 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.domain;
 
+import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleCategory;
+
 import java.text.DecimalFormat;
 
 /**
@@ -21,8 +23,8 @@ public class Article {
     private String label;
     private double prix;
     private String dateCreated;
-    private String category;
-    private int categoryId;
+    private ArticleCategory category;
+    private PokemonProperties properties;
     private String description;
 
     public String getDateCreated() {
@@ -33,20 +35,20 @@ public class Article {
         this.dateCreated = dateCreated;
     }
 
-    public String getCategory() {
+    public ArticleCategory getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(ArticleCategory category) {
         this.category = category;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public PokemonProperties getProperties() {
+        return properties;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setProperties(PokemonProperties properties) {
+        this.properties = properties;
     }
 
     public String getCodeArticle() {
@@ -86,7 +88,7 @@ public class Article {
     }
 
     public void setPrix(double prix) {
-        this.prix = Double.parseDouble(df.format(prix));
+        this.prix = prix;
     }
 
     @Override

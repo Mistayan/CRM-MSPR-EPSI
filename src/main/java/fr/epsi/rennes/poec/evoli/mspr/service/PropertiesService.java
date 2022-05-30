@@ -1,7 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.service;
 
 import fr.epsi.rennes.poec.evoli.mspr.dao.PropertiesDAO;
-import fr.epsi.rennes.poec.evoli.mspr.domain.Property;
+import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class PropertiesService {
     public PropertiesService(PropertiesDAO propertiesDAO) {this.propertiesDAO = propertiesDAO;}
 
     @Transactional(readOnly = true)
-    public List<Property> getAllProperties() {
-        return propertiesDAO.getAllProps();
+    public List<PokemonProperties> getAllPokemonsProperties() {
+        return propertiesDAO.getAllPokeProps();
     }
 }

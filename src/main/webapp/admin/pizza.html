@@ -19,7 +19,7 @@
                 {{ article.label }}
                 <div>
                     Nombre d'ingrédients:
-                    {{ article.property ? article.property.length : 0 }}
+                    {{ article.PokemonProperties ? article.PokemonProperties.length : 0 }}
                 </div>
             </div>
         </div>
@@ -36,19 +36,19 @@
         <div>
             <!-- v-for nous permet de récupérer la liste d'ingrédients de la nouvelle article-->
             Vos Ingredients:
-            <span v-for="property in newArticle.property"
-                  v-if="newArticle.property">
-                {{ property.label }} </span>
+            <span v-for="PokemonProperties in newArticle.PokemonProperties"
+                  v-if="newArticle.PokemonProperties">
+                {{ PokemonProperties.label }} </span>
             <br>
             <!-- Liste des ingrédients que l'on peut ajouter à la article -->
             <label>
                 <select v-model="newIngredient" v-on:change="addIngredients()">
                     <option></option>
-                    <!-- v-bind nous permet de récupérer l'id de l'OBJET property -->
-                    <option v-bind:value="property"
-                            v-for="property in property"
-                            v-if="property.label">
-                        {{ property.label }}
+                    <!-- v-bind nous permet de récupérer l'id de l'OBJET PokemonProperties -->
+                    <option v-bind:value="PokemonProperties"
+                            v-for="PokemonProperties in PokemonProperties"
+                            v-if="PokemonProperties.label">
+                        {{ PokemonProperties.label }}
                     </option>
                 </select>
             </label>

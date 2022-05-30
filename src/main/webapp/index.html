@@ -8,6 +8,7 @@
     <script defer src="/js/panier.js"></script>
     <link href="/css/liste-article.css" rel="stylesheet">
 </head>
+
 <body>
 <div id="panier">
     <div class="panier">
@@ -22,14 +23,18 @@
                 <th class="tg-ih3h">Article</th>
                 <th class="tg-ih3h">Catégorie</th>
                 <th class="tg-ih3h">Description</th>
+                <th class="tg-ih3h">Caractéristiques</th>
+                <th class="tg-ih3h">Stats</th>
                 <th class="tg-ih3h">Prix</th>
 
             </tr>
             <tr class="article" v-for="article in articles">
-                <td class="tg-0pky" v-on:click="ajouterArticle(article.id)"><a href="#">{{article.label}}</a></td>
-                <td class="tg-0pky">{{article.category}}</td>
-                <td class="tg-0pky">{{article.description}}</td>
-                <td class="tg-0pky">{{article.prix}}</td>
+                <td class="tg-0pky" v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a></td>
+                <td class="tg-0pky">{{ article.category }}</td>
+                <td class="tg-0pky">{{ article.description }}</td>
+                <th class="tg-c3ow">{{ article.properties }}</th>
+                <th class="tg-c3ow">{{ article.properties.stats }}</th>
+                <td class="tg-0pky">{{ article.prix }}</td>
                 <td class="tg-c3ow">
                     <button v-on:click="ajouterArticle(article.id)">Ajouter</button>
                 </td>

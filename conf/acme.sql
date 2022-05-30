@@ -108,7 +108,7 @@ TRUNCATE TABLE `article_has_props`;
 -- Structure de la table `article_properties`
 --
 
-DROP TABLE IF EXISTS `article_properties`;
+DROP TABLE IF EXISTS pokemon_properties;
 CREATE TABLE IF NOT EXISTS `article_properties`
 (
     `prop_id` int          NOT NULL AUTO_INCREMENT,
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `article_properties`
 -- Tronquer la table avant d'insérer `article_properties`
 --
 
-TRUNCATE TABLE `article_properties`;
+TRUNCATE TABLE pokemon_properties;
 -- --------------------------------------------------------
 
 --
