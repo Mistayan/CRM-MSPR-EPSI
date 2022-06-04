@@ -9,39 +9,72 @@
     <link href="/css/liste-article.css" rel="stylesheet">
 </head>
 
-<body>
+<body id="app">
 <div id="panier">
-    <div class="panier">
-        Nombre de articles dans le panier : {{panier && panier.articles? panier.articles.length : 0}} <br>
-        Prix du panier : {{panier ? panier.totalPrix : 0}} <br>
+    <div class="panier" v-if="panier">
+        Nombre de articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
+        Prix du panier : {{ panier ? panier.totalPrix : 0 }} <br>
         <div><a href="/public/panier.html">Voir mon panier</a></div>
     </div>
+    <!--  BARRE DE RECHERCHE  -->
+        <label title="Chercher dans les articles">
+            <input type="text" v-model="input" v-on:change="filterList()" placeholder="Trouver un article" />
+        </label>
+<!--        <div class="item" v-for="article in filteredList" :key="article">-->
+<!--            <p>{{ article }}</p>-->
+<!--        </div>-->
+<!--        <div class="item error" v-if="input&&!filteredList.length">-->
+<!--            <p>No results found!</p>-->
+<!--        </div>-->
+    <!--  FIN BARRE DE RECHERCHE  -->
     <div class="tg-wrap">
         <table class="tg">
             <thead>
-            <tr>
-                <th class="tg-ih3h">Article</th>
-                <th class="tg-ih3h">Catégorie</th>
-                <th class="tg-ih3h">Description</th>
-                <th class="tg-ih3h">Caractéristiques</th>
-                <th class="tg-ih3h">Stats</th>
-                <th class="tg-ih3h">Prix</th>
+            <tr> <!--TABLE HEADER -->
+                <th class="tg-ih3h"> Article </th>
+                <th class="tg-ih3h"> Catégorie </th>
+                <th class="tg-ih3h"> Description </th>
+                <th class="tg-ih3h"> Caractéristiques </th>
+                <th class="tg-ih3h"> Stats </th>
+                <th class="tg-ih3h"> Prix </th>
 
             </tr>
             <tr class="article" v-for="article in articles">
-                <td class="tg-0pky" v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a></td>
-                <td class="tg-0pky">{{ article.category }}</td>
+                <!--pour afficher une image liée au 'key' de l'objet json-->
+                <!-- <img v-bind:src="'/imgs/articles/' + article.label + '.png'" alt=""/>-->
+                <th class="tg-ih3h" v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a></th>
+                <td class="tg-0pky">{{ article.category.label }}<br>{{ article.category.taxes + "% TVA" }}</td>
                 <td class="tg-0pky">{{ article.description }}</td>
-                <th class="tg-c3ow">{{ article.properties }}</th>
-                <th class="tg-c3ow">{{ article.properties.stats }}</th>
-                <td class="tg-0pky">{{ article.prix }}</td>
+
+<!-- PROPERTIES -->
+                <td class="tg-0pky"><span class="values" v-for="(value, key, index) in article.properties"
+                                          v-if="key && value && index > 1">
+                    <span v-if="index % 2"><br></span>
+                    <span class="tg-0pky">
+                        <!-- <img v-bind:src="'/imgs/props/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        {{ key + " : " + displayValue(key, value) }}
+                    </span>
+                </span></td>
+<!-- PROPS END -->
+<!-- STATS -->
+                <td class="tg-0pky">
+                    <details about="voir les stats" class="stats" id="stats" accesskey="s" title="stats" content="stats">
+                    <span class="values" v-for="(value, key, index) in article.stats"
+                                          v-if="key && value">
+                        <span v-if="index >= 1"><br></span>
+                        <!--<img v-bind:src="'/imgs/stats/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        {{ key + " : " + value }}
+                    </span>
+                    </details>
+                </td>
+<!-- STATS END -->
+                <td class="tg-c3ow">{{ article.prix }}</td>
                 <td class="tg-c3ow">
                     <button v-on:click="ajouterArticle(article.id)">Ajouter</button>
                 </td>
             </tr>
             </thead>
         </table>
-
     </div>
 </div>
 </body>

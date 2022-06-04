@@ -1,14 +1,15 @@
-// Yag (suite) aan
-// Redis BDD
-
 const app = new Vue({
     el: '#panier',
     data() { //le modèle de données
+
         return {
+            customerId: -1,
             articles: [],
-            panier: {},
             panierId: -1,
-            buffer: {}
+            panier: {},
+            filtered: {},
+            buffer: {},
+            input: ""
         }
     },
     mounted() {
@@ -94,8 +95,10 @@ const app = new Vue({
                 });
         },
         order() {
+            if (!Object(this.panier).length)
+                return false
             console.log(this.panierId)
-            axios.post('/user/order?panierId=' + this.panierId)
+            axios.post('/user/order?panierId=' + this.panierId + '&customerId=' + this.customerId)
                 .then(response => {
                     console.log(this.panierId)
                     if (response.data.success) {
@@ -137,6 +140,30 @@ const app = new Vue({
             } else {
                 console.log("Action canceled by user");
             }
-        }
+        },
+        displayValue(key, value) {
+
+            switch (key) {
+                case "id":
+                    return
+                case "taille" || "distance":
+                    if (value < 1) return value < 0.1 ? value * 1000 + "mm" : value * 100 + "cm"
+                    else return value >= 1000 ? value / 1000 + "Km" : value + "m"
+                case "poids" || "masse":
+                    if (value < 1000) return value < 0.1 ? value * 100 + "mg" : value + "g"
+                    else return value > 1000 ? value / 1000 + "Kg" : value > 1000000 ? value / 1000000 + "T" : value + "g"
+                case "taxes":
+                    return value + "% TVA"
+                case "pourcentage":
+                    return value + '%'
+            }
+            return value
+        },
+        filterList() {
+            return this.articles.filter((article) =>
+                article.label.toLowerCase().includes(input.value.toLowerCase())
+            );
+        },//methods end
     }
 });
+

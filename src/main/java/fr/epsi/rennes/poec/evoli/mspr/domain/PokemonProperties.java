@@ -18,13 +18,11 @@ public class PokemonProperties {
     private double poids; //gen
     private int lvl; //specifique à la classe
     private int exp; //...
-    private PokemonStats stats; //...
 
     public PokemonProperties() {
         id = lvl = exp = 0; //gen => appeler super() pour init
         taille = poids = 0; //gen
         type = label = ""; //gen
-        stats = null;
     }
     // ======================== SPECIAL DAO (get from DB) ===========================
 
@@ -98,14 +96,6 @@ public class PokemonProperties {
 
     public void setExp(int exp) {
         this.exp = exp;
-    }
-
-    public PokemonStats getStats() {
-        return stats;
-    }
-
-    public void setStats(PokemonStats stats) {
-        this.stats = stats;
     }
 
     @Override
