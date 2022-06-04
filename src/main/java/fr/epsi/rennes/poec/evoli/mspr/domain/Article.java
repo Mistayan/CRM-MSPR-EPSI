@@ -17,15 +17,15 @@ import java.text.DecimalFormat;
 
 public class Article {
 
-    private static final DecimalFormat df = new DecimalFormat("0.00");
     private int id;
     private String codeArticle;
     private String label;
     private double prix;
+    private String description;
     private String dateCreated;
     private ArticleCategory category;
     private PokemonProperties properties;
-    private String description;
+    private PokemonStats stats;
 
     public String getDateCreated() {
         return dateCreated;
@@ -89,6 +89,14 @@ public class Article {
 
     public void setPrix(double prix) {
         this.prix = prix;
+    }
+
+    public PokemonStats getStats() {
+        return stats;
+    }
+
+    public void setStats(PokemonStats stats) {
+        this.stats = stats;
     }
 
     @Override
