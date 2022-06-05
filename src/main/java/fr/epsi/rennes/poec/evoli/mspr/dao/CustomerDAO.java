@@ -50,7 +50,7 @@ public class CustomerDAO {
             address.setCity(rs.getString("city"));
             address.setPostalCode(rs.getString("postal_code"));
             address.setWayNumber(rs.getInt("way_number"));
-            address.setWayType(rs.getString("way_name"));
+            address.setWayType(rs.getString("way_type"));
             address.setWayName(rs.getString("way_name"));
             customer.setAddress(address);
             customers.add(customer);
@@ -64,7 +64,7 @@ public class CustomerDAO {
         String sql = "INSERT INTO customer " +
                 "(first_name, last_name, email, phone," +
                 " country, city, postal_code," +
-                " way_number, street_type_id, way_name) " +
+                " way_number, way_type, way_name) " +
                 "VALUES " +
                 "(?,?,?,?,?,?,?,?,?,?) " + // 10
                 "";
@@ -84,7 +84,6 @@ public class CustomerDAO {
 
             int ctrl = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
-            conn.close();
             if (rs.next())
                 return rs.getInt(1);
         } catch (SQLException e) {
@@ -103,7 +102,7 @@ public class CustomerDAO {
                 "first_name = ?, last_name = ?, " +
                 "email = ?, phone = ?, " +
                 "country = ?, city = ?, postal_code = ?, " +
-                "way_number = ?, street_type_id = ?, way_name = ? " + // 10
+                "way_number = ?, way_type = ?, way_name = ? " + // 10
                 "WHERE customer_id = ? " + // 11
                 ";";
 
