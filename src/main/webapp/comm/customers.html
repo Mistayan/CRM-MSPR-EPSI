@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/js/customer.js"></script>
+    <meta charset="UTF-8">
+    <title>Ajouter un client chez ACME</title>
+</head>
+<body>
+<div id="customerApp">
+    <div class="customer-list">
+        <div>
+            <button v-on:click="create = true; modify = false; resetValues()">
+                Ajouter un nouveau client
+            </button>
+        </div>
+        <div v-for="customer in customers">
+            <div>
+                {{ customer.id + " : " }}
+                <a href="#" v-on:click="newCustomer = Object(customer);
+                                        modify = true; create = false; select = false">{{ customer.firstName + " " + customer.lastName }}</a>
+            </div>
+        </div>
+        <div>
+            <button v-on:click="create = true; modify = false; resetValues()">Ajouter un nouveau client</button>
+        </div>
+    </div>
+    <div class="article-form" v-if="create || modify">
+        <div id="client-basics">
+            <h1>Informations du client :</h1>
+            <label for="nom">Nom:</label><input id="nom" size="45" type="text" v-model="newCustomer.firstName"><br>
+            <label for="prénom">Prénom :</label><input id="prénom" type="text" v-model="newCustomer.lastName"><br>
+            <label for="contact">N° tel :</label><input id="contact" type="text" v-model="newCustomer.phone"><br>
+            <label for="email">email :</label><input id="email" type="text" v-model="newCustomer.email"><br>
+        </div>
+        <div id="client-address">
+            <h2>Addresse complète :</h2> <br>
+            <label for="country">pays :</label><input id="country" type="text" v-model="newCustomer.address.country"><br>
+            <label for="city">ville :</label><input id="city" type="text" v-model="newCustomer.address.city">
+            <label for="postal">Code Postal :</label><input id="postal" type="number" v-model="newCustomer.address.postalCode">
+            <table>
+                <thead>
+                <tr>
+                    <th><label for="way-number">Numéro de voie</label></th>
+                    <th><label for="streetType">type de rue</label></th>
+                    <th><label for="address">addresse</label></th>
+                </tr>
+                <tr>
+                    <td><input id="way-number" type="number" v-model="newCustomer.address.wayNumber"></td>
+                    <td><input id="streetType" type="text" v-model="newCustomer.address.wayType"></td>
+                    <td><input id="address" type="text" v-model="newCustomer.address.wayName"></td>
+                </tr>
+                </thead>
+            </table>
+        </div> <!--client-address END-->
+        <div>
+            <!--debug : {{newCustomer}}<br> -->
+            <button v-if="create" v-on:click="createCustomer()">Créer le client</button>
+            <button v-if="modify" v-on:click="modifyCustomer()">Changer les informations du client</button>
+            <br>
+        </div>
+    </div>
+</div>
+</body>
+</html>
