@@ -29,12 +29,10 @@ import java.util.List;
 public class AdminController {
     private static final Logger logger = LogManager.getLogger(AdminController.class);
     private final ArticleService articleService;
-    private final PropertiesService propertiesService;
 
     @Autowired
-    public AdminController(ArticleService articleService, PropertiesService propertiesService) {
+    public AdminController(ArticleService articleService) {
         this.articleService = articleService;
-        this.propertiesService = propertiesService;
     }
 
 //    @GetMapping("/admin/properties")
