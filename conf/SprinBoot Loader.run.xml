@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="17" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="DEBUG_MODE" value="true" />
-    <module name="pizzahut" />
+    <module name="acme MSPR" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="fr.epsi.rennes.poec.evoli.mspr.AcmeApplication" />
     <extension name="coverage">
       <pattern>
