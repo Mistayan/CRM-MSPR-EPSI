@@ -66,8 +66,8 @@ public class IndexController {
     }
 
     @GetMapping("/public/panier")
-    public Response<Panier> getPanier(@RequestParam int panierId) {
-        Panier panier = panierService.getPanierById(panierId);
+    public Response<Panier> getPanier(@RequestParam int panierId, @RequestParam int customerId) {
+        Panier panier = panierService.getPanierById(panierId, customerId);
 
         Response<Panier> response = new Response<>();
         response.setData(panier);
