@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
 
     public void addUser(User user) {
         try {
-            user.setRole(UserRole.ROLE_USER.name());
+//            user.setRole(UserRole.ROLE_USER.name());
             logger.info("UserService ::: user role : " + user.getRole());
             userDAO.addUser(user);
         } catch (SQLException e) {

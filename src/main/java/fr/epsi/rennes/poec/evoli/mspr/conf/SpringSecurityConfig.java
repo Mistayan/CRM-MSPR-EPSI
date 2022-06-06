@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration(proxyBeanMethods = true)
+@Configuration
 @EnableWebSecurity
 @EnableAspectJAutoProxy
 @EnableAutoConfiguration
@@ -43,7 +43,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()  //should be removed ?
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll().filterSecurityInterceptorOncePerRequest(true)
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/user/**").hasAnyRole("USER","COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/comm/**").hasAnyRole("COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
                 .antMatchers("/admin/**", "/actuator/**").hasRole("ADMIN")
 //                .antMatchers("/**").hasRole("ADMIN") // Debug only
                 .and()

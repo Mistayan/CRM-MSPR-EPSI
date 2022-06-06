@@ -3,15 +3,18 @@ package fr.epsi.rennes.poec.evoli.mspr.Controller;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
 import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
+import fr.epsi.rennes.poec.evoli.mspr.domain.User;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import fr.epsi.rennes.poec.evoli.mspr.service.ArticleService;
 import fr.epsi.rennes.poec.evoli.mspr.service.PropertiesService;
+import fr.epsi.rennes.poec.evoli.mspr.service.UserService;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,16 +27,16 @@ import java.util.List;
 
 @RestController
 public class AdminController {
-
+private static final Logger logger = LogManager.getLogger(AdminController.class);
     private final ArticleService articleService;
     private final PropertiesService propertiesService;
-    private final Logger logger;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(ArticleService articleService, PropertiesService propertiesService, Logger logger) {
+    public AdminController(ArticleService articleService, PropertiesService propertiesService, UserService userService) {
         this.articleService = articleService;
         this.propertiesService = propertiesService;
-        this.logger = logger;
+        this.userService = userService;
     }
 
     @GetMapping("/admin/properties")
@@ -65,6 +68,20 @@ public class AdminController {
         }
         articleService.createArticle(article);
         return new Response<>();
+    }
+
+    @PostMapping("/admin/register")
+    public void addUser(@RequestBody User user){
+        String uName = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.info("userName " + uName + " ajoute un user");
+
+        try {
+            //
+            logger.debug(user);
+            userService.addUser(user);
+        } catch (TechnicalException e){
+            throw new RuntimeException("admin/register route user.service.addUser failed");
+        }
     }
 
 }
