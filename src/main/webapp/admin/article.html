@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml"
       xmlns:v-on="http://www.w3.org/1999/xhtml"
 >
 <head>
@@ -21,7 +20,8 @@
         <div v-for="article in articles">
             <div>
                 {{ article.id + " : " }}
-                <a href="#" v-on:click="newArticle = Object(article); modify = true; create = false; select = false">{{ article.label }}</a>
+                <a href="#" v-on:click="newArticle = Object(article); modify = true; create = false; select = false">{{
+                    article.label }}</a>
             </div>
         </div>
         <div>
@@ -32,50 +32,58 @@
         <div class="categories-list" id="categories-list" v-if="create">
             <!-- v-for nous permet de récupérer les catégories d'article-->
             <label for="category">catégorie :</label>
-            <select  v-model="newCat" id="category">
-                <option v-on:click="select = v; newArticle.category.id = v.id"
-                       v-for="(v, key, index) in categories" :key="index">{{v.id}} : {{v.label}}</option>
+            <select id="category" v-model="newCat">
+                <option :key="index"
+                        v-for="(v, key, index) in categories" v-on:click="select = v; newArticle.category.id = v.id">{{v.id}} : {{v.label}}
+                </option>
             </select>
         </div>
     </div>
-<!--    <div class="article-form" v-if="(create && select) || modify">-->
+    <!--    <div class="article-form" v-if="(create && select) || modify">-->
     <div class="article-form" v-if="Object(newArticle.category).id > 0">
         <div v-if="create">Taux d'imposition : {{Object(select).taxes}}%</div>
         <div v-if="modify">Taux d'imposition : {{newArticle.category.taxes}}%</div>
         <div>
-            <label for="label">Nom de l'article:</label><input id="label" size="45" type="text" v-model="newArticle.label">
+            <label for="label">Nom de l'article:</label><input id="label" size="45" type="text"
+                                                               v-model="newArticle.label">
         </div>
         <div>
-            <label for="prix">Prix :</label><input id="prix" type="number" aria-valuemin="0" v-model="newArticle.prix">
+            <label for="prix">Prix :</label><input aria-valuemin="0" id="prix" type="number" v-model="newArticle.prix">
         </div>
         <div>
-            <label for="description">description :</label><input id="description" type="text" v-model="newArticle.description">
+            <label for="description">description :</label><input id="description" type="text"
+                                                                 v-model="newArticle.description">
         </div>
         <div>
-            taille (m): <label for="taille"><input type="number"  id="taille" v-model="newArticle.properties.taille"></label><br>
-            poids (g): <label for="poids"><input type="number"  id="poids" v-model="newArticle.properties.poids"></label><br>
+            taille (m): <label for="taille"><input id="taille" type="number"
+                                                   v-model="newArticle.properties.taille"></label><br>
+            poids (g): <label for="poids"><input id="poids" type="number" v-model="newArticle.properties.poids"></label><br>
         </div>
         <!---->
         <!---->
         <!--START Pokemons ONLY START-->
         <div v-if="newArticle.category.id === 1">
             <label for="type">Element</label> : <input id="type" v-model="newArticle.properties.label"><br>
-            <label for="lvl">Level</label> : <input type="number" id="lvl" v-model="newArticle.properties.lvl"><br>
-            <label for="exp">Exp</label> : <input type="number" id="exp" v-model="newArticle.properties.exp"><br>
-            <label for="pv">points de vie</label> : <input type="number" id="pv" v-model="newArticle.stats.pv"><br>
-            <label for="pp">points de puissance</label> : <input type="number" id="pp" v-model="newArticle.stats.pp"><br>
-            <label for="atk">attaque</label> : <input type="number" id="atk" v-model="newArticle.stats.atk"><br>
-            <label for="def">defense</label> : <input type="number" id="def" v-model="newArticle.stats.def"><br>
-            <label for="spd">vitesse</label> : <input type="number" id="spd" v-model="newArticle.stats.spd"><br>
-            <label for="atkspe">atk spé.</label> : <input type="number" id="atkspe" v-model="newArticle.stats.atkspe"><br>
-            <label for="defspe">def spé.</label> : <input type="number" id="defspe" v-model="newArticle.stats.defspe"><br>
+            <label for="lvl">Level</label> : <input id="lvl" type="number" v-model="newArticle.properties.lvl"><br>
+            <label for="exp">Exp</label> : <input id="exp" type="number" v-model="newArticle.properties.exp"><br>
+            <label for="pv">points de vie</label> : <input id="pv" type="number" v-model="newArticle.stats.pv"><br>
+            <label for="pp">points de puissance</label> : <input id="pp" type="number"
+                                                                 v-model="newArticle.stats.pp"><br>
+            <label for="atk">attaque</label> : <input id="atk" type="number" v-model="newArticle.stats.atk"><br>
+            <label for="def">defense</label> : <input id="def" type="number" v-model="newArticle.stats.def"><br>
+            <label for="spd">vitesse</label> : <input id="spd" type="number" v-model="newArticle.stats.spd"><br>
+            <label for="atkspe">atk spé.</label> : <input id="atkspe" type="number"
+                                                          v-model="newArticle.stats.atkspe"><br>
+            <label for="defspe">def spé.</label> : <input id="defspe" type="number"
+                                                          v-model="newArticle.stats.defspe"><br>
         </div>
         <!--END of Pokemons Only END-->
         <!---->
         <div>
             {{newArticle}}<br>
             <button v-if="create" v-on:click="createArticle()">Créer l'article</button>
-            <button v-if="modify" v-on:click="modifyArticle()">Changer l'article</button><br>
+            <button v-if="modify" v-on:click="modifyArticle()">Changer l'article</button>
+            <br>
             <button v-if="modify" v-on:click="removeArticle()">Supprimer l'article (et ses propriétés)</button>
         </div>
     </div>

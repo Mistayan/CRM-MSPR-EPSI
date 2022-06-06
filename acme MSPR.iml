@@ -51,6 +51,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="vue" level="application" />
+    <orderEntry type="library" name="axios" level="application" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.6.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.6.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.6.7" level="project" />
@@ -147,6 +149,36 @@
     <orderEntry type="library" name="Maven: org.iq80.snappy:snappy:0.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.tukaani:xz:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars:vue:2.6.14" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__server-renderer:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__compiler-ssr:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__compiler-dom:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__compiler-core:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__shared:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__runtime-dom:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__runtime-core:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__reactivity:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:csstype:3.0.0-beta.4" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__compiler-sfc:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:source-map:0.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:postcss:8.4.14" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:nanoid:3.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:picocolors:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:source-map-js:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:babel__parser:7.18.4" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:magic-string:0.25.9" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:sourcemap-codec:1.4.8" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:estree-walker:2.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:vue__reactivity-transform:3.2.36" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:axios:0.27.2" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:follow-redirects:1.15.1" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:form-data:4.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:asynckit:0.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:combined-stream:1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:delayed-stream:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:mime-types:2.1.35" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:mime-db:1.52.0" level="project" />
     <orderEntry type="library" name="Maven: org.mariadb.jdbc:mariadb-java-client:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.29" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-actuator:2.6.7" level="project" />

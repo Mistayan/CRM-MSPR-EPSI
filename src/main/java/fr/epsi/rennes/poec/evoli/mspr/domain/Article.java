@@ -2,8 +2,6 @@ package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleCategory;
 
-import java.text.DecimalFormat;
-
 /**
  * Author: Stephen Mistayan
  * Created on : 5/9/2022 : 7:30 AM:28

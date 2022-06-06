@@ -17,15 +17,15 @@
         <div><a href="/public/panier.html">Voir mon panier</a></div>
     </div>
     <!--  BARRE DE RECHERCHE  -->
-        <label title="Chercher dans les articles">
-            <input type="text" v-model="input" v-on:change="filterList()" placeholder="Trouver un article" />
-        </label>
-<!--        <div class="item" v-for="article in filteredList" :key="article">-->
-<!--            <p>{{ article }}</p>-->
-<!--        </div>-->
-<!--        <div class="item error" v-if="input&&!filteredList.length">-->
-<!--            <p>No results found!</p>-->
-<!--        </div>-->
+    <label title="Chercher dans les articles">
+        <input placeholder="Trouver un article" type="text" v-model="input" v-on:change="filterList()"/>
+    </label>
+    <!--        <div class="item" v-for="article in filteredList" :key="article">-->
+    <!--            <p>{{ article }}</p>-->
+    <!--        </div>-->
+    <!--        <div class="item error" v-if="input&&!filteredList.length">-->
+    <!--            <p>No results found!</p>-->
+    <!--        </div>-->
     <!--  FIN BARRE DE RECHERCHE  -->
     <div class="tg-wrap">
         <table class="tg">
@@ -46,7 +46,7 @@
                 <td class="tg-0pky">{{ article.category.label }}<br>{{ article.category.taxes + "% TVA" }}</td>
                 <td class="tg-0pky">{{ article.description }}</td>
 
-<!-- PROPERTIES -->
+                <!-- PROPERTIES -->
                 <td class="tg-0pky"><span class="values" v-for="(value, key, index) in article.properties"
                                           v-if="key && value && index > 1">
                     <span v-if="index % 2"><br></span>
@@ -55,19 +55,20 @@
                         {{ key + " : " + displayValue(key, value) }}
                     </span>
                 </span></td>
-<!-- PROPS END -->
-<!-- STATS -->
+                <!-- PROPS END -->
+                <!-- STATS -->
                 <td class="tg-0pky">
-                    <details about="voir les stats" class="stats" id="stats" accesskey="s" title="stats" content="stats">
+                    <details about="voir les stats" accesskey="s" class="stats" content="stats" id="stats"
+                             title="stats">
                     <span class="values" v-for="(value, key, index) in article.stats"
-                                          v-if="key && value">
+                          v-if="key && value">
                         <span v-if="index >= 1"><br></span>
                         <!--<img v-bind:src="'/imgs/stats/' + key + '.png'" v-bind:alt="key" alt=""/>-->
                         {{ key + " : " + value }}
                     </span>
                     </details>
                 </td>
-<!-- STATS END -->
+                <!-- STATS END -->
                 <td class="tg-c3ow">{{ article.prix }}</td>
                 <td class="tg-c3ow">
                     <button v-on:click="ajouterArticle(article.id)">Ajouter</button>

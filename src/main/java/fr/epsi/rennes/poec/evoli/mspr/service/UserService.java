@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
 
     public void addUser(User user) {
         try {
-            user.setRole(UserRole.ROLE_USER.name());
+//            user.setRole(UserRole.ROLE_USER.name());
             logger.info("UserService ::: user role : " + user.getRole());
             userDAO.addUser(user);
         } catch (SQLException e) {
@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService {
         try {
             logger.info("UserService ::: user : " + userName + "is ordering : \nPanierId : " + panierId);
             int userId = userDAO.getUserByName(userName);
-            return commandeDAO.order(userId, panierId);
+            return commandeDAO.doCustomerOrder(userId, panierId);
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -73,10 +73,10 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Commande> getOrdersFromUserId(int userId) throws SQLException {
+    public List<Commande> getOrdersFromCustomerId(int userId, int limit) throws SQLException {
         try {
             logger.info("UserService ::: getUserIdOrders : " + userId);
-            return commandeDAO.getOrdersFromUserId(userId, 501); //todo? set minimumLimit as superGlobal
+            return commandeDAO.getOrdersFromCustomerId(userId, limit); //todo? set minimumLimit as superGlobal
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -88,6 +88,11 @@ public class UserService implements UserDetailsService {
         } catch (SQLException e) {
             throw new SQLException(e);
         }
+    }
+
+    public List<Commande> getOrdersFromUserId(int userId) {
+        logger.debug("getOrdersFromUserId: not implemented yet.");
+        return null;
     }
 }
 

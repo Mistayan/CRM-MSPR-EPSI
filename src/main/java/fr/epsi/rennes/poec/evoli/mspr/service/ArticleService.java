@@ -43,19 +43,27 @@ public class ArticleService {
             throw new BusinessException("createArticle ::: Something went wrong, could not add");
         }
     }
+
     @Transactional(readOnly = true)
     public List<Article> getAllPokemons() {
         return articleDAO.getAllPokemons();
     }
     @Transactional(readOnly = true)
+    public Article getPokemonById(int id) {
+        return articleDAO.getPokemonById(id);
+    }
+    @Transactional(readOnly = true)
     public List<ArticleCategory> getAllCategories() {
         return articleDAO.getAllCategories();
     }
+
     @Transactional
     public void removeArticle(int id) throws BusinessException {
-        if (!articleDAO.disableArticle(id))
+        if (!articleDAO.disableArticle(id)) {
             throw new BusinessException("removeArticle ::: Something went wrong, could not modify enabled status");
+        }
     }
+
     @Transactional
     public void modifyArticle(Article newArticle) throws BusinessException {
         if (!articleDAO.modifyArticle(newArticle)) {

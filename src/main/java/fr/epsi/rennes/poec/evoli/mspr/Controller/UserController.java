@@ -23,6 +23,7 @@ import java.util.List;
 public class UserController {
     private static final Logger logger = LogManager.getLogger(String.valueOf(UserService.class));
     private final UserService userService;
+    int limit = 501;
 
     @Autowired
     public UserController(UserService userService) {this.userService = userService;}
@@ -39,7 +40,6 @@ public class UserController {
         } catch (TechnicalException e) {
             throw new RuntimeException("public/register route user.service.addUser failed");
         }
-
     }
 
     @PostMapping("/user/order")
@@ -62,14 +62,32 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/orders")
-    public Response<List<Commande>> orders() {
+    @GetMapping("/customer/orders")
+    public Response<List<Commande>> customerOrders(@RequestParam int customerId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         // on récupère le nom de l'utilisateur via l'application, et son token JSession
         Response<List<Commande>> response = new Response<>();
         try {
             int userId = userService.getUserIdFromName(auth.getName());
-            logger.info("########### Action : fetching orders from userId : " + userId);
+            logger.info("########### Action : fetching orders from customerId : " + customerId);
+            List<Commande> commandes = userService.getOrdersFromCustomerId(userId, this.limit);
+//            logger.info("########### Fetched Commande :  " + commandes);
+            response.setData(commandes);
+            response.setSuccess(true);
+            return response;
+        } catch (SQLException e) {
+            response.setSuccess(false);
+            throw new RuntimeException("Could not load user's orders");
+        }
+    }
+    @GetMapping("/user/orders")
+    public Response<List<Commande>> getUserOrders(int userId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // on récupère le nom de l'utilisateur via l'application, et son token JSession
+        Response<List<Commande>> response = new Response<>();
+        try {
+            int requesterId = userService.getUserIdFromName(auth.getName());
+            logger.info("########### Action : requesterId: %d fetching orders from userId : %d".formatted(requesterId, userId));
             List<Commande> commandes = userService.getOrdersFromUserId(userId);
             logger.info("########### Fetched Commande :  " + commandes);
             response.setData(commandes);

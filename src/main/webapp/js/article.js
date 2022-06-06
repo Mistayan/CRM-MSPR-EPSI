@@ -45,7 +45,7 @@ const app = new Vue({
                     if (response.data.success) {
                         this.newArticle = {
                             category: {id: -1},
-                            properties:{id: -1},
+                            properties: {id: -1},
                             stats: {id: -1}
                         };
                         this.create = this.modify = this.select = false;
@@ -56,7 +56,7 @@ const app = new Vue({
                     }
                 });
         },
-        modifyArticle: function() {
+        modifyArticle: function () {
             console.log(this.newArticle)
 
             axios.post('/admin/article/modify', this.newArticle)
@@ -85,10 +85,10 @@ const app = new Vue({
                     }
                 });
         },
-        resetValues(){
-            this.newArticle= {
+        resetValues() {
+            this.newArticle = {
                 category: {id: -1},
-                properties:{id: -1},
+                properties: {id: -1},
                 stats: {id: -1}
             }
         }
