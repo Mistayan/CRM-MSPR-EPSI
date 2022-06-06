@@ -37,17 +37,17 @@ public class AdminController {
         this.propertiesService = propertiesService;
     }
 
-    @GetMapping("/admin/properties")
-    public Response<List<PokemonProperties>> getAllProperties() {
-        List<PokemonProperties> properties = propertiesService.getAllPokemonsProperties();
-        for (PokemonProperties PokemonProperties : properties) {
-            logger.debug(PokemonProperties.getLabel()); //should filter every strings
-        }
-
-        Response<List<PokemonProperties>> response = new Response<>();
-        response.setData(properties);
-        return response;
-    }
+//    @GetMapping("/admin/properties")
+//    public Response<List<PokemonProperties>> getAllProperties() {
+//        List<PokemonProperties> properties = propertiesService.getAllPokemonsProperties();
+//        for (PokemonProperties PokemonProperties : properties) {
+//            logger.debug(PokemonProperties.getLabel()); //should filter every strings
+//        }
+//
+//        Response<List<PokemonProperties>> response = new Response<>();
+//        response.setData(properties);
+//        return response;
+//    }
 
     @GetMapping("/admin/article")
     public Response<List<Article>> getAllArticles() {
