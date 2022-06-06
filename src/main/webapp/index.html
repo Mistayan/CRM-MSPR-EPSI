@@ -10,6 +10,17 @@
 </head>
 
 <body id="app">
+<div class="customer-select">
+    <div>
+    </div>
+    <div v-for="customer in customers">
+        <div>
+            {{ customer.id + " : " }}
+            <a href="#" v-on:click="customerId = Object(customer).id;select = true">{{ customer.firstName + " " + customer.lastName }}</a>
+        </div>
+    </div>
+</div>
+<!-- Customers-select END-->
 <div id="panier">
     <div class="panier" v-if="panier">
         Nombre de articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
@@ -20,10 +31,10 @@
     <label title="Chercher dans les articles">
         <input placeholder="Trouver un article" type="text" v-model="input" v-on:change="filterList()"/>
     </label>
-    <!--        <div class="item" v-for="article in filteredList" :key="article">-->
+    <!--        <div class="item" v-for="article in filteredList()" :key="article">-->
     <!--            <p>{{ article }}</p>-->
     <!--        </div>-->
-    <!--        <div class="item error" v-if="input&&!filteredList.length">-->
+    <!--        <div class="item error" v-if="input&&!filteredList().length">-->
     <!--            <p>No results found!</p>-->
     <!--        </div>-->
     <!--  FIN BARRE DE RECHERCHE  -->

@@ -5,6 +5,7 @@ const app = new Vue({
         return {
             customerId: -1,
             articles: [],
+            customers: [],
             panierId: -1,
             panier: {},
             filtered: {},
@@ -18,18 +19,38 @@ const app = new Vue({
         if (this.panierId === null) {
             this.panierId = -1;
         }
-        axios.get("/public/article")
-            .then(response => {
-                this.articles = response.data.data;
-            });
-        axios.get('/public/panier?panierId=' + this.panierId)
-            .then(response => {
-                this.panier = response.data.data;
-                if (this.panier) {
-                    this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
-                    this.panierId = this.panier.id;
-                }
-            });
+        this.customerId = window.localStorage.getItem('currentCustomerId');
+        if (this.customerId === null) {
+            this.customerId = -1;
+        }
+        // Si un customer a précédemment été selectionné par l'utilisateur,
+        // on chargera le contenu nécessaire pour faire une commande
+        // (on lui laisse la possibilité de changer de client)
+        if (this.customerId !== -1) {
+            axios.get("/public/article")
+                .then(response => {
+                    this.articles = response.data.data;
+                });
+            axios.get('/public/panier?panierId=' + this.panierId)
+                .then(response => {
+                    this.panier = response.data.data;
+                    if (this.panier) {
+                        this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
+                        this.panierId = this.panier.id;
+                        window.localStorage.setItem('panierId', this.panierId);
+                    }
+                });
+            axios.get("/public/customers")
+                .then(response => {
+                    this.customers = response.data.data;
+                });
+        } else {
+            // Sinon, seule la liste des clients sera chargée.
+            axios.get("/public/customers")
+                .then(response => {
+                    this.customers = response.data.data;
+                });
+        }
     },
     methods: { // Methodes interactives
         setPanier(response) {
@@ -38,6 +59,7 @@ const app = new Vue({
                 this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
                 if (this.panier.id >= 1) {
                     this.panierId = this.panier.id
+                    window.localStorage.setItem('panierId', this.panierId);
                 }
             }
 

@@ -1,9 +1,11 @@
 package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
+import fr.epsi.rennes.poec.evoli.mspr.domain.Customer;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
 import fr.epsi.rennes.poec.evoli.mspr.service.ArticleService;
+import fr.epsi.rennes.poec.evoli.mspr.service.CustomerService;
 import fr.epsi.rennes.poec.evoli.mspr.service.PanierService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,11 +31,13 @@ public class IndexController {
     private static final Logger logger = LogManager.getLogger(GetClass);
     private final ArticleService articleService;
     private final PanierService panierService;
+    private final CustomerService customerService;
 
     @Autowired
-    public IndexController(ArticleService articleService, PanierService panierService) {
+    public IndexController(ArticleService articleService, PanierService panierService, CustomerService customerService) {
         this.articleService = articleService;
         this.panierService = panierService;
+        this.customerService = customerService;
     }
 
 
@@ -53,9 +57,7 @@ public class IndexController {
         Response<Integer> response = new Response<>();
         logger.info("##User Action :: /public/panier/article/? " + articleId + " & " + panierId + " & " + action);
         if (action == 1) {
-            Article article = new Article();
-            article.setId(articleId);
-            panierId = panierService.addArticle(article, panierId);
+            panierId = panierService.addArticle(articleId, panierId);
         } else {
             panierId = panierService.remArticle(articleId, panierId);
         }
@@ -69,6 +71,14 @@ public class IndexController {
 
         Response<Panier> response = new Response<>();
         response.setData(panier);
+        return response;
+    }
+    @GetMapping("/public/customers")
+    public Response<List<Customer>> getCustomers() {
+        List<Customer> customers = customerService.getAllCustomersPublic();
+        Response<List<Customer>> response = new Response<>();
+
+        response.setData(customers);
         return response;
     }
 }

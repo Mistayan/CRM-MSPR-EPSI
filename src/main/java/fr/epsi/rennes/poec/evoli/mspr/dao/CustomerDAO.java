@@ -5,14 +5,10 @@ import fr.epsi.rennes.poec.evoli.mspr.domain.CustomerAddress;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.jni.Address;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +53,7 @@ public class CustomerDAO {
         }
         return customers;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
     }
     public int addCustomer(Customer c) {
@@ -87,13 +83,22 @@ public class CustomerDAO {
             if (rs.next())
                 return rs.getInt(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
         return -1;
     }
 
-    public int disableCustomer(int customerId) {
-
+    public int switchCustomer(int customerId, boolean _switch) {
+        String sql = "UPDATE customer SET " +
+                "enabled = ? " +
+                "WHERE customer_id = ?";
+        try (Connection conn = ds.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, _switch);
+            ps.setInt(2, customerId);
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
         return -1;
     }
 
@@ -127,8 +132,34 @@ public class CustomerDAO {
             if (rs.next())
                 return rs.getInt(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
         return -1;
+    }
+
+    /**
+     * La requête étant de type 'publique', on filtrera au maximum les infos sorties. (customerId, fullName, city)
+     **/
+    public List<Customer> getAllCustomersPublic() {
+        String sql = "SELECT (customer_id, first_name, last_name, city) " +
+                "FROM customer;";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            List<Customer> customers = new ArrayList<>();
+            while (rs.next()) {
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.getAddress().setCity(rs.getString("city"));
+                customers.add(customer);
+            }
+            return customers;
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+
     }
 }

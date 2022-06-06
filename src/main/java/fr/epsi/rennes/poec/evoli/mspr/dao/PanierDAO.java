@@ -37,7 +37,7 @@ public class PanierDAO {
     }
 
     @Async
-    public void addArticle(Article article, int panierId) {
+    public void addArticle(int articleId, int panierId) {
         String sql = "insert into cart_has_article"
                 + "(cart_id, article_id) values (?,?)";
         try (Connection conn = ds.getConnection();
@@ -47,29 +47,36 @@ public class PanierDAO {
             } else {
                 ps.setInt(1, 0);
             }
-            ps.setInt(2, article.getId());
+            ps.setInt(2, articleId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("could not add article to DB :: Panier: " + panierId + " & pizzaId: " + article.getId());
+            throw new RuntimeException("could not add article to DB :: Panier: " + panierId + " & pizzaId: " + articleId);
         }
     }
 
-    public boolean doesPanierExist(int panierId) {
-        String sql = "select cart_id from cart where cart_id = ?";
+    public Panier doesPanierExist(int panierId) {
+        String sql = "select cart_id, customer_id from cart where cart_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, panierId);
-
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            Panier panier = new Panier();
+            if (rs.next()) {
+                panier.setId(rs.getInt("cart_id"));
+                panier.setCustomerId(rs.getInt("customer_id"));
+            } else {
+                panier.setId(-1);
+                panier.setCustomerId(-1);
+            }
+            return panier;
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
 
     //Créer un panier => service et controller
-    public int CreatePanier() {
-        String sql = "insert into cart () values()";
+    public int CreatePanier(int customerId) {
+        String sql = "insert into cart (customer_id) values(?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.executeUpdate();
@@ -86,6 +93,7 @@ public class PanierDAO {
     public Panier getPanierById(int panierId) {
         String sql = "select "
                 + "cart.cart_id as panier_id, "
+                + "cart.customer_id as customer_id, "
 //                + "cart.date_created as panier_date, "
                 + "group_concat(article.article_id) as articles "
                 + "from cart "
@@ -93,7 +101,7 @@ public class PanierDAO {
                 + "on panier_.cart_id = cart.cart_id "
                 + "left join article "
                 + "on panier_.article_id = article.article_id "
-                + "where cart.cart_id = ? ";
+                + "where cart.cart_id = ?;";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -103,6 +111,7 @@ public class PanierDAO {
             if (rs.next()) {
                 Panier panier = new Panier();
                 panier.setId(rs.getInt("panier_id"));
+                panier.setCustomerId(rs.getInt("customer_id"));
                 String articles = rs.getString("articles");
 
                 List<Article> articleRepo = articleService.getAllPokemons();

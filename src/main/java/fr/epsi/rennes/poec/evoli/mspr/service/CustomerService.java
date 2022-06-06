@@ -33,7 +33,7 @@ public class CustomerService {
 
     @Transactional
     public int remCustomer(int customerId) {
-        return customerDAO.disableCustomer(customerId);
+        return customerDAO.switchCustomer(customerId, false);
     }
 
     @Transactional
@@ -43,5 +43,9 @@ public class CustomerService {
 
     public List<Customer> getAllCustomers() {
         return customerDAO.getAllCustomers();
+    }
+
+    public List<Customer> getAllCustomersPublic() {
+        return customerDAO.getAllCustomersPublic();
     }
 }
