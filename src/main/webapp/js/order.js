@@ -6,22 +6,28 @@ const order = new Vue({
             articlesRepo: [],
             totalArticles: 0,
             totalPrixHT: 0.0,
-            totalPrixTTC: 0.0
+            totalPrixTTC: 0.0,
+            customerId: null
         }
     },
     mounted() {
         // Actions au chargement de la page
-        axios.get("/user/orders")
-            .then(response => {
-                this.orders = Object(response.data.data)
-                let i = 0;
-                while (i < this.orders.length) { // pour chaque commande de la liste
-                    let order = this.orders.at(i) // pour l'objet 'order' à l'index en cours
-                    this.totalPrixTTC += order.prixTTC;
-                    this.totalPrixHT += order.prixHT;
-                    this.totalArticles += order.articles.length;
-                    i++
-                }
+        if (window.localStorage.getItem('customerId'))
+            this.customerId = window.localStorage.getItem('customerId')
+        else
+            this.customerId = -1
+        if (customerId !== -1)
+            axios.get("/user/orders?customerId=" + this.customerId)
+                .then(response => {
+                    this.orders = Object(response.data.data)
+                    let i = 0;
+                    while (i < this.orders.length) { // pour chaque commande de la liste
+                        let order = this.orders.at(i) // pour l'objet 'order' à l'index en cours
+                        this.totalPrixTTC += order.prixTTC;
+                        this.totalPrixHT += order.prixHT;
+                        this.totalArticles += order.articles.length;
+                        i++
+                    }
             });
         axios.get("/public/article")
             .then(response => {

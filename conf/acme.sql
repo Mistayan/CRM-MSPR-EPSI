@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 30 mai 2022 à 12:59
+-- Généré le : lun. 30 mai 2022 à 14:56
 -- Version du serveur : 8.0.27
 -- Version de PHP : 7.4.26
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -21,13 +20,13 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `acme`
 --
+CREATE DATABASE IF NOT EXISTS `acme` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `acme`;
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `article`
---
--- Création : dim. 29 mai 2022 à 08:25
 --
 
 DROP TABLE IF EXISTS `article`;
@@ -58,8 +57,6 @@ INSERT INTO `article` (`article_id`, `code_article`, `label`, `prix`, `date_crea
 --
 -- Structure de la table `article_comment`
 --
--- Création : mer. 11 mai 2022 à 18:55
---
 
 DROP TABLE IF EXISTS `article_comment`;
 CREATE TABLE IF NOT EXISTS `article_comment` (
@@ -76,8 +73,6 @@ CREATE TABLE IF NOT EXISTS `article_comment` (
 --
 -- Structure de la table `article_has_category`
 --
--- Création : dim. 29 mai 2022 à 08:27
---
 
 DROP TABLE IF EXISTS `article_has_category`;
 CREATE TABLE IF NOT EXISTS `article_has_category` (
@@ -90,8 +85,6 @@ CREATE TABLE IF NOT EXISTS `article_has_category` (
 
 --
 -- Structure de la table `article_has_props`
---
--- Création : dim. 29 mai 2022 à 08:28
 --
 
 DROP TABLE IF EXISTS `article_has_props`;
@@ -114,9 +107,6 @@ INSERT INTO `article_has_props` (`article_id`, `property_id`) VALUES
 
 --
 -- Structure de la table `cart`
---
--- Création : ven. 27 mai 2022 à 20:37
--- Dernière modification : lun. 30 mai 2022 à 12:08
 --
 
 DROP TABLE IF EXISTS `cart`;
@@ -176,8 +166,6 @@ INSERT INTO `cart` (`cart_id`, `date_created`) VALUES
 --
 -- Structure de la table `cart_has_article`
 --
--- Création : ven. 27 mai 2022 à 23:13
---
 
 DROP TABLE IF EXISTS `cart_has_article`;
 CREATE TABLE IF NOT EXISTS `cart_has_article` (
@@ -213,8 +201,6 @@ INSERT INTO `cart_has_article` (`cart_id`, `article_id`) VALUES
 --
 -- Structure de la table `category`
 --
--- Création : dim. 29 mai 2022 à 09:17
---
 
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE IF NOT EXISTS `category` (
@@ -241,8 +227,6 @@ INSERT INTO `category` (`category_id`, `label`, `taxes`) VALUES
 --
 -- Structure de la table `customer_address`
 --
--- Création : mer. 11 mai 2022 à 18:55
---
 
 DROP TABLE IF EXISTS `customer_address`;
 CREATE TABLE IF NOT EXISTS `customer_address` (
@@ -260,8 +244,6 @@ CREATE TABLE IF NOT EXISTS `customer_address` (
 
 --
 -- Structure de la table `order_`
---
--- Création : sam. 28 mai 2022 à 18:31
 --
 
 DROP TABLE IF EXISTS `order_`;
@@ -288,8 +270,6 @@ INSERT INTO `order_` (`order_id`, `date_created`, `user_id`, `TVA`, `prix_ttc`) 
 
 --
 -- Structure de la table `order_has_article`
---
--- Création : sam. 28 mai 2022 à 18:22
 --
 
 DROP TABLE IF EXISTS `order_has_article`;
@@ -319,8 +299,6 @@ INSERT INTO `order_has_article` (`order_id`, `article_id`) VALUES
 
 --
 -- Structure de la table `pokemon_properties`
---
--- Création : dim. 29 mai 2022 à 11:18
 --
 
 DROP TABLE IF EXISTS `pokemon_properties`;
@@ -355,8 +333,6 @@ INSERT INTO `pokemon_properties` (`prop_id`, `type`, `taille`, `poids`, `Level`,
 --
 -- Structure de la table `security_details`
 --
--- Création : sam. 28 mai 2022 à 22:43
---
 
 DROP TABLE IF EXISTS `security_details`;
 CREATE TABLE IF NOT EXISTS `security_details` (
@@ -372,8 +348,6 @@ CREATE TABLE IF NOT EXISTS `security_details` (
 
 --
 -- Structure de la table `user`
---
--- Création : ven. 27 mai 2022 à 20:48
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -403,8 +377,6 @@ INSERT INTO `user` (`user_id`, `email`, `password`, `nickname`, `date_created`, 
 --
 -- Structure de la table `user_has_article_comment`
 --
--- Création : mer. 11 mai 2022 à 18:55
---
 
 DROP TABLE IF EXISTS `user_has_article_comment`;
 CREATE TABLE IF NOT EXISTS `user_has_article_comment` (
@@ -417,8 +389,6 @@ CREATE TABLE IF NOT EXISTS `user_has_article_comment` (
 
 --
 -- Structure de la table `user_has_order`
---
--- Création : sam. 28 mai 2022 à 18:17
 --
 
 DROP TABLE IF EXISTS `user_has_order`;
@@ -442,8 +412,6 @@ INSERT INTO `user_has_order` (`user_id`, `order_id`) VALUES
 --
 -- Structure de la table `user_role`
 --
--- Création : mer. 11 mai 2022 à 18:55
---
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE IF NOT EXISTS `user_role` (
@@ -466,7 +434,6 @@ INSERT INTO `user_role` (`role_id`, `label`) VALUES
 (6, 'TROUFION'),
 (7, 'RANDOM'),
 (8, 'USER');
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

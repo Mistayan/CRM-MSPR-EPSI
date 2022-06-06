@@ -13,6 +13,7 @@ import java.util.List;
 public class Panier {
 
     private int panierId;
+    private int customerId;
     private List<Article> articles;
     private double totalPrix;
 
@@ -43,9 +44,21 @@ public class Panier {
         }
     }
 
+    public void setTotalPrix(double totalPrix) {
+        this.totalPrix = totalPrix;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
     public double getTVA() {
         //TODO TAUX TVA  :: Variable selon catégorie
-        double TVA = 5.5;
+        double TVA = 20;
         double TTC = getTotalPrix();
         double HT = TTC / (1 + (TVA / 100));
         return TTC - HT;

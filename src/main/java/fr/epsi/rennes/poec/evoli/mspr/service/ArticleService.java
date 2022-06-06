@@ -1,5 +1,6 @@
 package fr.epsi.rennes.poec.evoli.mspr.service;
 
+import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleDAO;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
@@ -31,19 +32,42 @@ public class ArticleService {
     public ArticleService(ArticleDAO articleDAO) {this.articleDAO = articleDAO;}
 
     @Transactional
-    public void createArticle(Article article) throws BusinessException {
-        if (article.getLabel() == null) {
+    public void createArticle(Article newArticle) throws BusinessException {
+        if (newArticle.getLabel() == null) {
             throw new BusinessException("article.label.null");
         }
-        int articleId = this.articleDAO.createArticle(article.getLabel(), article.getPrix(),
-                article.getCategory(), article.getCodeArticle(),
-                article.getDescription(), article.getProperties());
-
+        int articleId = this.articleDAO.insertArticle(newArticle.getLabel(), newArticle.getPrix(),
+                newArticle.getCategory().getId(), newArticle.getCodeArticle(),
+                newArticle.getDescription(), newArticle.getProperties(), newArticle.getStats());
+        if (articleId == -1) {
+            throw new BusinessException("createArticle ::: Something went wrong, could not add");
+        }
     }
 
     @Transactional(readOnly = true)
     public List<Article> getAllPokemons() {
         return articleDAO.getAllPokemons();
     }
+    @Transactional(readOnly = true)
+    public Article getPokemonById(int id) {
+        return articleDAO.getPokemonById(id);
+    }
+    @Transactional(readOnly = true)
+    public List<ArticleCategory> getAllCategories() {
+        return articleDAO.getAllCategories();
+    }
 
+    @Transactional
+    public void removeArticle(int id) throws BusinessException {
+        if (!articleDAO.disableArticle(id)) {
+            throw new BusinessException("removeArticle ::: Something went wrong, could not modify enabled status");
+        }
+    }
+
+    @Transactional
+    public void modifyArticle(Article newArticle) throws BusinessException {
+        if (!articleDAO.modifyArticle(newArticle)) {
+            throw new BusinessException("modifyArticle ::: Something went wrong, could not modify article");
+        }
+    }
 }

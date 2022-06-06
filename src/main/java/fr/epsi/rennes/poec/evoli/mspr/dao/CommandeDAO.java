@@ -52,7 +52,7 @@ public class CommandeDAO {
      * @return success ? order_id : -1
      */
     @Transactional
-    public int order(int userId, int panierId) throws SQLException {
+    public int doCustomerOrder(int userId, int panierId) throws SQLException {
 
         int orderId = -1;
         Panier panier = panierDAO.getPanierById(panierId);
@@ -62,7 +62,7 @@ public class CommandeDAO {
         logger.trace("#CommandeDAO##order  ::: " + userId + " ordered panier : " + panierId);
         logger.trace(userId + " ordered panier : " + panierId);
         String sql = "INSERT INTO order_ " +
-                "(user_id, TVA, prix_ttc) VALUES " +
+                "(customer_id, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?);";
         logger.trace(panier.toString());
         try (Connection conn = ds.getConnection();
@@ -86,7 +86,7 @@ public class CommandeDAO {
                 }
 
                 logger.debug("newUserOrderTable : " + userId + ", " + orderId);
-                if (newUserOrderTable(userId, orderId, conn) == -1) {
+                if (newCustomerOrderTable(userId, orderId, conn) == -1) {
                     conn.rollback();
                     throw new SQLException("Rollback : n'a pas pu ajouter dans user_order");
                 }
@@ -103,8 +103,8 @@ public class CommandeDAO {
         }
     }
 
-    private long newUserOrderTable(int userId, int orderId, Connection conn) throws SQLException {
-        String sql = "INSERT INTO user_has_order (user_id, order_id) VALUE (?, ?)";
+    private long newCustomerOrderTable(int userId, int orderId, Connection conn) throws SQLException {
+        String sql = "INSERT INTO customer_has_order (customer_id, order_id) VALUE (?, ?)";
         logger.trace("newUserOrderTable ");
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -124,6 +124,9 @@ public class CommandeDAO {
         String sql = "INSERT INTO  order_has_article (order_id, article_id) VALUES(?,?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            if (panier.getArticles() == null) {
+                return -1;
+            }
             for (Article article : panier.getArticles()) {
                 ps.setInt(1, order_id);
                 ps.setInt(2, article.getId());
@@ -145,10 +148,11 @@ public class CommandeDAO {
      * @return Une liste des commandes prises par l'utilisateur, avec date, prix ttc, prix ht,
      * numero de commande et son contenu
      */
-    public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
+    @Transactional
+    public List<Commande> getOrdersFromCustomerId(int userId, int limit) throws SQLException {
         String sql = "select * "
                 + "from order_ "
-                + "where user_id = ? "
+                + "where customer_id = ? "
                 + "ORDER BY date_created %s ".formatted(limit <= 500 ? "DESC" : "ASC")
                 + "LIMIT ? ";
 

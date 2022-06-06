@@ -9,7 +9,7 @@
     <script defer src="/js/panier.js"></script>
 </head>
 <body>
-<include src="/template/header.html"></include>
+<link href="/templates/header.html">
 <div id="panier">
     <div class="panier">
         Nombre de articles dans le panier : {{panier && panier.articles? panier.articles.length : 0}}
@@ -24,7 +24,9 @@
                 <th class="tg-ih3h">Quantité</th>
                 <th class="tg-ih3h">+/-</th>
             </tr>
-            <tr class="article" v-for="article in articles" v-if="articleInPanier(article)">
+            <tr class="article"
+                v-for="article in articles"
+                v-if="articleInPanier(article)">
                 <td class="tg-0pky"><a class="ui-icon-info" href="#" id="infos" title="infos">{{article.label}}</a></td>
                 <td class="tg-0pky">{{ calc_price_article_panier(article) }}</td>
                 <td class="tg-0pky">{{ countArticleInCart(article.id) }}</td>
@@ -42,7 +44,7 @@
             </thead>
         </table>
         <a href="/">retour à la vitrine</a>
-        <button v-on:click="confirmAction()">Commander</button>
+        <button v-if="Object(panier.articles).length" v-on:click="confirmAction()">Commander</button>
     </div>
 
 </div>

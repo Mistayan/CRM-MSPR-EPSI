@@ -59,7 +59,6 @@ public class UserDAO {
 
     @Async
     public void addUser(User user) throws SQLException {
-        logger.info(Thread.currentThread().getName());
         String sql = "INSERT INTO user ( email , password , user_role ) VALUES (?,?,?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

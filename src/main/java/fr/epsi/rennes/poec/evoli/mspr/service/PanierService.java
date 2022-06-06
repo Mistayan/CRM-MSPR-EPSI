@@ -42,7 +42,6 @@ public class PanierService {
         return panierId;
     }
 
-
     @Transactional
     public int remArticle(int articleId, int panierId) {
         boolean exists = panierDAO.doesPanierExist(panierId);
