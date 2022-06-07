@@ -141,8 +141,8 @@ public class CustomerDAO {
      * La requête étant de type 'publique', on filtrera au maximum les infos sorties. (customerId, fullName, city)
      **/
     public List<Customer> getAllCustomersPublic() {
-        String sql = "SELECT (customer_id, first_name, last_name, city) " +
-                "FROM customer;";
+        String sql = "SELECT customer_id, first_name, last_name, city " +
+                "FROM customer";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -153,7 +153,9 @@ public class CustomerDAO {
                 customer.setId(rs.getInt("customer_id"));
                 customer.setFirstName(rs.getString("first_name"));
                 customer.setLastName(rs.getString("last_name"));
-                customer.getAddress().setCity(rs.getString("city"));
+                CustomerAddress address = new CustomerAddress();
+                address.setCity(rs.getString("city"));
+                customer.setAddress(address);
                 customers.add(customer);
             }
             return customers;

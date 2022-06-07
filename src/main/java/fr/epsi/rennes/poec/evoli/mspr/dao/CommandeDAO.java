@@ -67,10 +67,9 @@ public class CommandeDAO {
         logger.trace(panier.toString());
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, userId);
+            ps.setInt(1, panier.getCustomerId());
             ps.setDouble(2, panier.getTVA());
             ps.setDouble(3, panier.getTotalPrix());
-
             try {
                 ps.executeUpdate();
             } catch (SQLException e) {
@@ -150,10 +149,11 @@ public class CommandeDAO {
      */
     @Transactional
     public List<Commande> getOrdersFromCustomerId(int userId, int limit) throws SQLException {
+
         String sql = "select * "
                 + "from order_ "
                 + "where customer_id = ? "
-                + "ORDER BY date_created %s ".formatted(limit <= 500 ? "DESC" : "ASC")
+                + "ORDER BY date_created DESC "
                 + "LIMIT ? ";
 
         try (Connection conn = ds.getConnection();

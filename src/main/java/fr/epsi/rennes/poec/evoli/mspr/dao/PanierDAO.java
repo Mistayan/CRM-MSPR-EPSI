@@ -40,6 +40,7 @@ public class PanierDAO {
     public void addArticle(int articleId, int panierId) {
         String sql = "insert into cart_has_article"
                 + "(cart_id, article_id) values (?,?)";
+        logger.warn("insert article %d to panier %d".formatted(articleId, panierId));
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             if (panierId >= 1) {
@@ -54,11 +55,11 @@ public class PanierDAO {
         }
     }
 
-    public Panier doesPanierExist(int panierId) {
-        String sql = "select cart_id, customer_id from cart where cart_id = ?";
+    public Panier doesPanierExist(int customerId) {
+        String sql = "select cart_id, customer_id from cart where customer_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, panierId);
+            ps.setInt(1, customerId);
             ResultSet rs = ps.executeQuery();
             Panier panier = new Panier();
             if (rs.next()) {
@@ -77,8 +78,10 @@ public class PanierDAO {
     //Créer un panier => service et controller
     public int CreatePanier(int customerId) {
         String sql = "insert into cart (customer_id) values(?)";
+        logger.warn("create panier for customer %d".formatted(customerId));
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, customerId);
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
@@ -104,6 +107,7 @@ public class PanierDAO {
                 + "where cart.cart_id = ?;";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            logger.warn("get panier %d".formatted(panierId));
 
             ps.setInt(1, panierId);
             ResultSet rs = ps.executeQuery();
@@ -141,6 +145,7 @@ public class PanierDAO {
                 "    WHERE cart_id = ?" +
                 "    AND article_id = ?" +
                 "    LIMIT 1;";
+        logger.warn("remove article %d from panier %d".formatted(articleId, panierId));
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

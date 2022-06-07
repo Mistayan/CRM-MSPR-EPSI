@@ -10,10 +10,7 @@ import fr.epsi.rennes.poec.evoli.mspr.service.PanierService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,28 +48,40 @@ public class IndexController {
 
     @PostMapping("/public/panier/article")
     public Response<Integer> actionArticle(
-            @RequestParam int articleId,
             @RequestParam int panierId,
+            @RequestParam int articleId,
             @RequestParam int action) {
         Response<Integer> response = new Response<>();
-        logger.info("##User Action :: /public/panier/article/? " + articleId + " & " + panierId + " & " + action);
-        if (action == 1) {
-            panierId = panierService.addArticle(articleId, panierId);
+        String uac = "User Action !!! :";
+        if (panierId > 0) {
+            uac += "%s panierId=%d".formatted(uac, panierId);
+            if (action == 1) {
+                uac += "adding article %d".formatted(articleId);
+                panierId = panierService.addArticle(articleId, panierId);
+            } else {
+                uac += "removing article %d".formatted(articleId);
+                panierId = panierService.remArticle(articleId, panierId);
+            }
+            logger.debug(uac);
+            response.setSuccess(true);
         } else {
-            panierId = panierService.remArticle(articleId, panierId);
+            logger.debug("no such cart %d".formatted(panierId));
+            response.setSuccess(false);
         }
+        logger.debug("return value %d".formatted(panierId));
         response.setData(panierId);
         return response;
     }
 
     @GetMapping("/public/panier")
-    public Response<Panier> getPanier(@RequestParam int panierId, @RequestParam int customerId) {
-        Panier panier = panierService.getPanierById(panierId, customerId);
-
+    public Response<Panier> getPanierbyCustomerId(@RequestParam int customerId) {
         Response<Panier> response = new Response<>();
-        response.setData(panier);
+        Panier newPanier = panierService.getPanierByCustomerId(customerId);
+
+        response.setData(newPanier);
         return response;
     }
+
     @GetMapping("/public/customers")
     public Response<List<Customer>> getCustomers() {
         List<Customer> customers = customerService.getAllCustomersPublic();

@@ -303,7 +303,7 @@ public class ArticleDAO {
                 "ATKSPE = ?, " +
                 "DEFSPE = ? " +
                 "WHERE prop_id = ?";
-        logger.debug("modifyPokemonProperties ::: ");
+        logger.warn("modifyPokemonProperties ::: ");
         PokemonProperties props = article.getProperties();
 
         PokemonStats stats = article.getStats();
@@ -337,7 +337,7 @@ public class ArticleDAO {
             }
             return true;
         } catch (SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(new SQLException(e));
         }
     }
 
