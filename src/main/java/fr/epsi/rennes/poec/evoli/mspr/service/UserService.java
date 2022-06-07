@@ -34,11 +34,11 @@ public class UserService implements UserDetailsService {
         try {
             User user = userDAO.getUserByEmail(username);
             if (user == null) {
-                throw new UsernameNotFoundException("UserService ::: User not found : " + username);
+                throw new SQLException("no such user");
             }
-            return user;
+        return user;
         } catch (SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(new UsernameNotFoundException("UserService ::: User not found : " + username));
         }
     }
 
@@ -49,24 +49,28 @@ public class UserService implements UserDetailsService {
             userDAO.addUser(user);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new TechnicalException(e);
+            throw new TechnicalException(new SQLException(e));
         }
     }
 
     public int userOrder(String userName, int panierId) throws SQLException {
         try {
             logger.info("UserService ::: user : " + userName + "is ordering : \nPanierId : " + panierId);
-            int userId = userDAO.getUserByName(userName);
-            return commandeDAO.doCustomerOrder(userId, panierId);
+            int userId = userDAO.getUserIdFromName(userName);
+            int orderId = commandeDAO.doCustomerOrder(userId, panierId);
+            logger.info("UserService ::: tracking order %d by user %s".formatted(orderId, userName));
+            commandeDAO.addUserOrder(userId, orderId);
+            logger.debug("done");
+            return orderId;
         } catch (SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(new SQLException(e));
         }
     }
 
     public int getUserIdFromName(String userName) throws SQLException {
         try {
             logger.info("UserService ::: getUserIdFromName : " + userName);
-            return userDAO.getUserByName(userName); // on assumera que springboot ne nous ment pas ?
+            return userDAO.getUserIdFromName(userName); // on assumera que springboot ne nous ment pas ?
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -88,10 +92,13 @@ public class UserService implements UserDetailsService {
             throw new SQLException(e);
         }
     }
-
-    public List<Commande> getOrdersFromUserId(int userId) {
-        logger.debug("getOrdersFromUserId: not implemented yet.");
-        return null;
+    public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
+        try {
+            logger.info("UserService ::: getCustomerIdOrders : " + userId);
+            return commandeDAO.getOrdersFromUserId(userId, limit); //todo? set minimumLimit as superGlobal
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
     }
 }
 

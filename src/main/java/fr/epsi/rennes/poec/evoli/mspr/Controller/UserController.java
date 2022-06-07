@@ -70,8 +70,7 @@ public class UserController {
         try {
             int userId = userService.getUserIdFromName(auth.getName());
             logger.info("########### Action : fetching orders from customerId : " + customerId);
-            List<Commande> commandes = userService.getOrdersFromCustomerId(userId, this.limit);
-//            logger.info("########### Fetched Commande :  " + commandes);
+            List<Commande> commandes = userService.getOrdersFromCustomerId(customerId, this.limit);
             response.setData(commandes);
             response.setSuccess(true);
             return response;
@@ -88,8 +87,7 @@ public class UserController {
         try {
             int requesterId = userService.getUserIdFromName(auth.getName());
             logger.info("########### Action : requesterId: %d fetching orders from userId : %d".formatted(requesterId, userId));
-            List<Commande> commandes = userService.getOrdersFromUserId(userId);
-            logger.info("########### Fetched Commande :  " + commandes);
+            List<Commande> commandes = userService.getOrdersFromUserId(userId, this.limit);
             response.setData(commandes);
             response.setSuccess(true);
             return response;

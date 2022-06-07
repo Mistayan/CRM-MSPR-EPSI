@@ -3,6 +3,7 @@ package fr.epsi.rennes.poec.evoli.mspr.dao;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mariadb.jdbc.Statement;
@@ -57,10 +58,9 @@ public class CommandeDAO {
         int orderId = -1;
         Panier panier = panierDAO.getPanierById(panierId);
         if (panier == null) {
-            throw new SQLException("#CommandeDAO##order  ::: panier invalide");
+            throw new SQLException("#CommandeDAO##order  ::: pannier %d invalide".formatted(panierId));
         }
-        logger.trace("#CommandeDAO##order  ::: " + userId + " ordered panier : " + panierId);
-        logger.trace(userId + " ordered panier : " + panierId);
+        logger.trace("#CommandeDAO##order  ::: %d ordereding panier %d".formatted(orderId, panierId));
         String sql = "INSERT INTO order_ " +
                 "(customer_id, TVA, prix_ttc) VALUES " +
                 "(?, ?, ?);";
@@ -73,7 +73,8 @@ public class CommandeDAO {
             try {
                 ps.executeUpdate();
             } catch (SQLException e) {
-                logger.warn("#CommandeDAO##order  ::: ps.execute() failed");
+                logger.warn("#CommandeDAO##order  ::: ps.execute() failed, rolling-back");
+                conn.rollback();
                 throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix(), e);
             }
             ResultSet rs = ps.getGeneratedKeys();
@@ -147,6 +148,7 @@ public class CommandeDAO {
      * @return Une liste des commandes prises par l'utilisateur, avec date, prix ttc, prix ht,
      * numero de commande et son contenu
      */
+
     @Transactional
     public List<Commande> getOrdersFromCustomerId(int userId, int limit) throws SQLException {
 
@@ -237,4 +239,44 @@ public class CommandeDAO {
             throw new SQLException(e);
         }
     }
+    public void addUserOrder(int userId, int orderId) {
+        String sql = "insert into user_has_order " +
+                "(order_id, user_id) VALUES " +
+                "(?,?);";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, userId);
+
+            int ctrl = ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new TechnicalException(new SQLException(e));
+        }
+    }
+    public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
+        String sql = "SELECT group_concat(user_has_order.order_id) as orders " +
+                "FROM order_, user_has_order " +
+                "WHERE order_.order_id = user_has_order.order_id AND user_has_order.user_id = ?;";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+            conn.close();
+            List<Commande> commandes = new ArrayList<>();
+            if (rs.next()) {
+                String str = rs.getString("orders");
+                if (str != null)
+                    for (String order : str.split(",")) {
+                        commandes.add(getOrderById(Integer.parseInt(order)));
+                    }
+            }
+            return commandes;
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
 }

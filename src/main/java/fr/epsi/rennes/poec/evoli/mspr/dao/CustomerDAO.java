@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,5 +164,20 @@ public class CustomerDAO {
             throw new TechnicalException(e);
         }
 
+    }
+
+    public void addCustomerCommRelation(int userId, int customerId) {
+        String sql = "INSERT INTO  " +
+                "commercial_has_customer (customer_id, user_id) VALUES (?,?)";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setInt(2, userId);
+
+            ResultSet rs = ps.executeQuery();
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
     }
 }

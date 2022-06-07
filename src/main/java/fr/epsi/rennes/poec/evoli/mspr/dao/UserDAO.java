@@ -1,6 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.dao;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.User;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,7 @@ public class UserDAO {
     }
 
     public User getUserByEmail(String mail) throws SQLException {
-        //pre-encoding checks
 
-
-        //end of pre-encoding checks
         String sql = "SELECT email, password, user_role, nickname, date_created" +
                 " FROM user" +
                 " WHERE email = ?";
@@ -58,7 +56,7 @@ public class UserDAO {
     }
 
     @Async
-    public void addUser(User user) throws SQLException {
+    public void addUser(User user) throws SQLException{
         String sql = "INSERT INTO user ( email , password , user_role ) VALUES (?,?,?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -75,7 +73,7 @@ public class UserDAO {
         }
     }
 
-    public int getUserByName(String mail) throws SQLException {
+    public int getUserIdFromName(String mail) throws SQLException {
         String sql = "SELECT user_id FROM user WHERE  email = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -86,7 +84,7 @@ public class UserDAO {
             }
             return rs.getInt(1);
         } catch (SQLException e) {
-            throw new SQLException(e);
+            throw new TechnicalException(new SQLException(e));
         }
     }
 }

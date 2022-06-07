@@ -34,6 +34,8 @@ public class PanierService {
         return panierId;
     }
 
+
+    @Transactional
     public int remArticle(int articleId, int panierId) {
         logger.info("removing article %d from panier %d".formatted(articleId, panierId));
         panierDAO.removeArticle(articleId, panierId);

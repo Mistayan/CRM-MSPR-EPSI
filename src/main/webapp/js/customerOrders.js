@@ -1,5 +1,5 @@
-const order = new Vue({
-    el: '#order',
+const customerOrders = new Vue({
+    el: '#customer-orders',
     data() { //le modèle de données
         return {
             orders: [],
@@ -18,6 +18,7 @@ const order = new Vue({
         }
         console.log(this.customerId)
         if (this.customerId > 0) {
+            console.log(this.customerId)
             axios.get("/customer/orders?customerId=" + this.customerId)
                 .then(response => {
                     this.orders = Object(response.data.data)
@@ -54,7 +55,7 @@ const order = new Vue({
             return (article.prix * this.countArticleInOrder(article.id, order)).toFixed(2)
         },
         displayPrice(val) {
-                    return parseInt(val).toFixed(2) + '€'
+                    return parseFloat(val).toFixed(2) + '€'
         },
     }
 })

@@ -1,13 +1,17 @@
 package fr.epsi.rennes.poec.evoli.mspr.service;
 
 import fr.epsi.rennes.poec.evoli.mspr.dao.CustomerDAO;
+import fr.epsi.rennes.poec.evoli.mspr.dao.UserDAO;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Customer;
+import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -21,14 +25,25 @@ import java.util.List;
 @Service
 public class CustomerService {
     private static final Logger logger = LogManager.getLogger(CustomerService.class);
-    @Autowired
     private final CustomerDAO customerDAO;
+    private final UserDAO userDAO;
 
-    public CustomerService(CustomerDAO customerDAO) {this.customerDAO = customerDAO;}
-
+    @Autowired
+    public CustomerService(CustomerDAO customerDAO, UserDAO userDAO) {
+        this.customerDAO = customerDAO;
+        this.userDAO = userDAO;
+    }
 
     public int addCustomer(Customer customer) {
-        return customerDAO.addCustomer(customer);
+        int customerId = customerDAO.addCustomer(customer);
+        try {
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            int userId = userDAO.getUserIdFromName(userName);
+            customerDAO.addCustomerCommRelation(userId, customerId);
+        }catch (SQLException e){
+            throw new TechnicalException(new SQLException(e));
+        }
+        return customerId;
     }
 
     @Transactional
