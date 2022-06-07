@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
@@ -10,34 +10,38 @@
 </head>
 
 <body id="app">
-<div class="customer-select">
-    <div>
-    </div>
-    <div v-for="customer in customers">
-        <div>
-            {{ customer.id + " : " }}
-            <a href="#" v-on:click="customerId = Object(customer).id;select = true">{{ customer.firstName + " " + customer.lastName }}</a>
+<div id="panier">
+    <div class="customer-select">
+        <!--  BARRE DE RECHERCHE  -->
+        <label title="Chercher dans les clients">
+            <input placeholder="Trouver un client" type="text" v-model="customersSearch"/>
+        </label>
+        <!--  BARRE DE RECHERCHE  -->
+        <div v-for="customer in customers" v-show="filterListCustomers(customer)">
+            <div>
+                {{ customer.id + " : " }}
+                <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " + customer.lastName }}</a>
+            </div>
         </div>
     </div>
-</div>
-<!-- Customers-select END-->
-<div id="panier">
+    <div v-if="select">
+        <button v-on:click="redirect('/user/orders.html')">voir les commandes du client</button>
+    </div>
+    <br><br>
+    <!-- Customers-select END-->
+    <div v-if="select">
+    <!-- Article-select START-->
     <div class="panier" v-if="panier">
         Nombre de articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
         Prix du panier : {{ panier ? panier.totalPrix : 0 }} <br>
-        <div><a href="/public/panier.html">Voir mon panier</a></div>
+        <button v-on:click="redirect('/public/panier.html')">voir le panier du client</button>
     </div>
     <!--  BARRE DE RECHERCHE  -->
     <label title="Chercher dans les articles">
-        <input placeholder="Trouver un article" type="text" v-model="input" v-on:change="filterList()"/>
+        <input placeholder="Trouver un article" type="text" v-model="articlesSearch"/>
     </label>
-    <!--        <div class="item" v-for="article in filteredList()" :key="article">-->
-    <!--            <p>{{ article }}</p>-->
-    <!--        </div>-->
-    <!--        <div class="item error" v-if="input&&!filteredList().length">-->
-    <!--            <p>No results found!</p>-->
-    <!--        </div>-->
-    <!--  FIN BARRE DE RECHERCHE  -->
+    <!--  BARRE DE RECHERCHE  -->
+
     <div class="tg-wrap">
         <table class="tg">
             <thead>
@@ -48,12 +52,14 @@
                 <th class="tg-ih3h"> Caractéristiques </th>
                 <th class="tg-ih3h"> Stats </th>
                 <th class="tg-ih3h"> Prix </th>
-
             </tr>
-            <tr class="article" v-for="article in articles">
+            <tr class="article" v-for="(article, key, index) in articles" v-show="filterListArticle(article)"> <!--v-show: permet d'appliquer un filtre-->
                 <!--pour afficher une image liée au 'key' de l'objet json-->
-                <!-- <img v-bind:src="'/imgs/articles/' + article.label + '.png'" alt=""/>-->
-                <th class="tg-ih3h" v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a></th>
+
+                <th class="tg-ih3h"
+                    v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a><br>
+                    <img v-bind:src="'/imgs/articles/' + article.label.toLowerCase() + '.png'" v-bind:alt="article" alt="" width="100"/>
+                </th>
                 <td class="tg-0pky">{{ article.category.label }}<br>{{ article.category.taxes + "% TVA" }}</td>
                 <td class="tg-0pky">{{ article.description }}</td>
 
@@ -87,6 +93,7 @@
             </tr>
             </thead>
         </table>
+    </div>
     </div>
 </div>
 </body>

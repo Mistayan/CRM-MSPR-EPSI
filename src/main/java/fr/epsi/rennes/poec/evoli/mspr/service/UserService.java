@@ -4,7 +4,6 @@ import fr.epsi.rennes.poec.evoli.mspr.dao.CommandeDAO;
 import fr.epsi.rennes.poec.evoli.mspr.dao.UserDAO;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
 import fr.epsi.rennes.poec.evoli.mspr.domain.User;
-import fr.epsi.rennes.poec.evoli.mspr.domain.UserRole;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,10 +72,10 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Commande> getOrdersFromCustomerId(int userId, int limit) throws SQLException {
+    public List<Commande> getOrdersFromCustomerId(int customerId, int limit) throws SQLException {
         try {
-            logger.info("UserService ::: getUserIdOrders : " + userId);
-            return commandeDAO.getOrdersFromCustomerId(userId, limit); //todo? set minimumLimit as superGlobal
+            logger.info("UserService ::: getCustomerIdOrders : " + customerId);
+            return commandeDAO.getOrdersFromCustomerId(customerId, limit); //todo? set minimumLimit as superGlobal
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }

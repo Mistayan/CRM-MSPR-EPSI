@@ -22,49 +22,36 @@ import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 public class PanierService {
     private static final Logger logger = LogManager.getLogger(GetClass);
     private final PanierDAO panierDAO;
-    private final ArticleService articleService;
 
     @Autowired
-    public PanierService(PanierDAO panierDAO, ArticleService articleService) {
+    public PanierService(PanierDAO panierDAO) {
         this.panierDAO = panierDAO;
-        this.articleService = articleService;
     }
 
     public int addArticle(int articleId, int panierId) {
-        //fonction pour ajouter article au panier.
-        Panier panier = panierDAO.doesPanierExist(panierId);
-        if (panier.getId() == -1) {
-            // vérifier que le panier existe avant action
-            return -1;
-        }
+        logger.info("adding article %d to panier %d".formatted(articleId, panierId));
         panierDAO.addArticle(articleId, panierId);
         return panierId;
     }
 
-    @Transactional
     public int remArticle(int articleId, int panierId) {
-        Panier panier = panierDAO.doesPanierExist(panierId);
-        // vérifie que le panier existe avant action
-        if (panier.getId() == -1) {
-            return -1;
-        }
+        logger.info("removing article %d from panier %d".formatted(articleId, panierId));
         panierDAO.removeArticle(articleId, panierId);
-        return panier.getId();
+        return panierId;
     }
 
     @Transactional(readOnly = true)
-    public Panier getPanierById(int panierId, int customerId) {
-        /**
-         * @return: panierId.panier() ? panier : new Panier();
-         */
-        logger.info("getPanierById(" + panierId + ")");
-        Panier panier = panierDAO.doesPanierExist(panierId);
-        // vérifie que le panier existe avant action
-        if (panier.getId() == -1) {
-            panierId = panierDAO.CreatePanier(customerId);
+    public Panier getPanierByCustomerId(int customerId) {
+        logger.debug("getPanierByCustomerId(" + customerId + ")");
+        // vérifie que le newPanier existe avant action
+        Panier newPanier = panierDAO.doesPanierExist(customerId);
+        int panierId = newPanier.getId();
+        if (panierId == -1) {
+            logger.info("createPanier(" + customerId + ")");
+             panierId = panierDAO.CreatePanier(customerId);
         }
-        logger.info("getPanierById ? " + panier + " : " + panierId);
-        return panierDAO.getPanierById(panierId);
+        logger.debug("getPanierById ? " + newPanier + " : " + panierId);
+        Panier testPanier = panierDAO.getPanierById(panierId);
+        return testPanier.getId() > 1? testPanier : newPanier; // Afin d'eviter un pannier de type erroné
     }
-
 }

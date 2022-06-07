@@ -7,17 +7,18 @@ const order = new Vue({
             totalArticles: 0,
             totalPrixHT: 0.0,
             totalPrixTTC: 0.0,
-            customerId: null
+            customerId: -1
         }
     },
     mounted() {
         // Actions au chargement de la page
-        if (window.localStorage.getItem('customerId'))
-            this.customerId = window.localStorage.getItem('customerId')
-        else
-            this.customerId = -1
-        if (customerId !== -1)
-            axios.get("/user/orders?customerId=" + this.customerId)
+        this.customerId = window.localStorage.getItem('customerId')
+        if (!this.customerId) {
+            this.customerId = -1;
+        }
+        console.log(this.customerId)
+        if (this.customerId > 0) {
+            axios.get("/customer/orders?customerId=" + this.customerId)
                 .then(response => {
                     this.orders = Object(response.data.data)
                     let i = 0;
@@ -28,7 +29,10 @@ const order = new Vue({
                         this.totalArticles += order.articles.length;
                         i++
                     }
+                    this.totalPrixTTC.toFixed(2)
+                    this.totalPrixHT.toFixed(2)
             });
+        }
         axios.get("/public/article")
             .then(response => {
                 this.articlesRepo = response.data.data
@@ -48,6 +52,9 @@ const order = new Vue({
         },
         calc_price_articles_order(article, order) {
             return (article.prix * this.countArticleInOrder(article.id, order)).toFixed(2)
-        }
+        },
+        displayPrice(val) {
+                    return parseInt(val).toFixed(2) + '€'
+        },
     }
 })

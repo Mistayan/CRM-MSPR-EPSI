@@ -23,8 +23,8 @@
             <tr v-for="order in orders" v-if="order.orderId && order.articles">
                 <td class="tg-ih3h"> {{ order.numeroCmd }}</td>
                 <td class="tg-ih3h"> {{ order.articles.length }}</td>
-                <td class="tg-ih3h"> {{ order.prixTTC }}</td>
-                <td class="tg-ih3h"> {{ order.prixHT }}</td>
+                <td class="tg-ih3h"> {{ displayPrice(order.prixTTC) }}</td>
+                <td class="tg-ih3h"> {{ displayPrice(order.prixHT) }}</td>
                 <td class="tg-ih3h">
                     <details class="tg-wrap" id="order-details" v-if="order.articles">
                         <table class="tg">
@@ -37,7 +37,7 @@
                             <tr v-for="article in articlesRepo" v-if="countArticleInOrder(article.id, order)">
                                 <td class="tg-0pky"> {{ article.label }}</td>
                                 <td class="tg-0pky"> {{ countArticleInOrder(article.id, order) }}</td>
-                                <td class="tg-0pky"> {{ calc_price_articles_order(article, order) }}</td>
+                                <td class="tg-0pky"> {{ displayPrice(calc_price_articles_order(article, order)) }}</td>
                             </tr>
                             </thead>
                         </table>
@@ -47,8 +47,8 @@
             <tr v-if="orders">
                 <td class="tg-ih3h">TOTAL :</td>
                 <td class="tg-ih3h">{{ totalArticles }}</td>
-                <td class="tg-ih3h">{{ totalPrixTTC.toFixed(2) }}</td>
-                <td class="tg-ih3h">{{ totalPrixHT.toFixed(2) }}</td>
+                <td class="tg-ih3h">{{ displayPrice(totalPrixTTC) }}</td>
+                <td class="tg-ih3h">{{ displayPrice(totalPrixHT) }}</td>
             </tr>
             </thead>
         </table>
