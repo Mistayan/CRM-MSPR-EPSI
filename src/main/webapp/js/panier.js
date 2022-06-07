@@ -3,66 +3,71 @@ const app = new Vue({
     data() { //le modèle de données
 
         return {
-            customerId: -1,
-            articles: [],
-            customers: [],
-            panierId: -1,
-            panier: {},
-            filtered: {},
-            buffer: {},
-            input: ""
+            articles: {},
+            customers: {},
+            select: false,
+            customersSearch: "",
+            articlesSearch: "",
+            panier: {
+                id: 0,
+                customerId: 0,
+                articles: {},
+                totalPrix: 0,
+            },
+            CustomerId: -1,
+            panierId: -1
         }
     },
     mounted() {
         // Actions au chargement de la page
-        this.panierId = window.localStorage.getItem('panierId');
-        if (this.panierId === null) {
-            this.panierId = -1;
+        this.panier.id = window.localStorage.getItem('panierId')
+        if (!this.panier.id) {
+            this.panier.id = 0;
         }
-        this.customerId = window.localStorage.getItem('currentCustomerId');
-        if (this.customerId === null) {
-            this.customerId = -1;
+        this.panier.customerId = window.localStorage.getItem('customerId')
+        if (!this.panier.customerId) {
+            this.panier.customerId = 0;
         }
-        // Si un customer a précédemment été selectionné par l'utilisateur,
-        // on chargera le contenu nécessaire pour faire une commande
-        // (on lui laisse la possibilité de changer de client)
-        if (this.customerId !== -1) {
-            axios.get("/public/article")
+        console.log("panierId = " + this.panier.id+ "\ncustomerId =" + this.panier.customerId)
+        axios.get("/public/article")
+            .then(response => {
+                this.articles = response.data.data;
+            });
+        axios.get("/public/customers")
+            .then(response => {
+                this.customers = response.data.data;
+            });
+        if (this.panier.customerId) {
+            axios.get('/public/panier?customerId=' + this.panier.customerId)
                 .then(response => {
-                    this.articles = response.data.data;
-                });
-            axios.get('/public/panier?panierId=' + this.panierId)
-                .then(response => {
-                    this.panier = response.data.data;
-                    if (this.panier) {
-                        this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
-                        this.panierId = this.panier.id;
-                        window.localStorage.setItem('panierId', this.panierId);
-                    }
-                });
-            axios.get("/public/customers")
-                .then(response => {
-                    this.customers = response.data.data;
-                });
-        } else {
-            // Sinon, seule la liste des clients sera chargée.
-            axios.get("/public/customers")
-                .then(response => {
-                    this.customers = response.data.data;
+                    this.setPanier(response)
                 });
         }
     },
     methods: { // Methodes interactives
+        updatePanier(customerId) {
+
+        },
         setPanier(response) {
             this.panier = response.data.data;
+            console.log("newPanier Id=" + this.panier.id + " cId=" + this.panier.customerId)
+            console.log(this.panier)
             if (this.panier) {
                 this.panier.totalPrix = this.panier.totalPrix.toFixed(2);
                 if (this.panier.id >= 1) {
-                    this.panierId = this.panier.id
-                    window.localStorage.setItem('panierId', this.panierId);
+                    window.localStorage.setItem('panierId', this.panier.id);
+                    window.localStorage.setItem('customerId', this.panier.customerId);
                 }
             }
-
+        },
+        selectCustomer(customer) {
+            this.panier.customerId = customer.id;
+            window.localStorage.setItem('customerId', customer.id)
+            axios.get('/public/panier?customerId=' + this.panier.customerId)
+                .then(response => {
+                    this.panier = response.data.data;
+                    this.setPanier(response)
+                });
         },
         articleInPanier(article_) {
             return this.countArticleInCart(article_.id) > 0
@@ -85,13 +90,12 @@ const app = new Vue({
             return (article.prix * this.countArticleInCart(article.id)).toFixed(2);
         },
         ajouterArticle(articleId) {
-            <!--Charger panier-->
-            axios.post('/public/panier/article?panierId=' + this.panierId + '&articleId=' + articleId + '&action=1')
+            <!--Changer panier-->
+            axios.post('/public/panier/article?panierId=' + this.panier.id + '&articleId=' + articleId + '&action=1')
                 .then(response => {
                     if (response.data.success) {
-                        localStorage.setItem('panierId', response.data.data);
                         <!-- Re-Charger panier après ajout-->
-                        axios.get('/public/panier?panierId=' + response.data.data)
+                        axios.get('/public/panier?customerId='+ this.panier.customerId)
                             .then(response => {
                                 this.setPanier(response)
                             });
@@ -101,15 +105,13 @@ const app = new Vue({
         enleverArticle(articleId) {
             <!-- supprimer article du panier -->
             axios.post('/public/panier/article' +
-                '?panierId=' + this.panierId +
+                '?panierId=' + this.panier.id +
                 '&articleId=' + articleId +
                 '&action=0')
                 .then(response => {
                     if (response.data.success) {
-                        <!-- Actualiser le localstorage -->
-                        localStorage.setItem('panierId', response.data.data);
                         <!-- Re-Charger panier après suppression -->
-                        axios.get('/public/panier?panierId=' + response.data.data)
+                        axios.get('/public/panier?customerId=' + this.panier.customerId)
                             .then(response => {
                                 this.setPanier(response);
                             });
@@ -117,14 +119,16 @@ const app = new Vue({
                 });
         },
         order() {
-            if (!Object(this.panier).length)
+            if (!Object(this.panier.articles).length)
                 return false
-            console.log(this.panierId)
-            axios.post('/user/order?panierId=' + this.panierId + '&customerId=' + this.customerId)
+            console.log(this.panier.id)
+            axios.post('/user/order?panierId=' + this.panier.id + '&customerId=' + this.panier.customerId)
                 .then(response => {
-                    console.log(this.panierId)
+                    console.log(this.panier.id)
                     if (response.data.success) {
                         localStorage.removeItem('alconf')
+                        localStorage.removeItem('panierId')
+
                         // redirection vers la page, après succès de la commande
                         window.location.replace("/user/orders.html");
                     } else {
@@ -139,7 +143,7 @@ const app = new Vue({
                 .catch(response => {
                     window.alert("HARD_failed")
                     localStorage.setItem('last_status', 'Hard_Failed on :' +
-                        'user/order?panierId=' + this.panier.panierId)
+                        'user/order?panierId=' + this.panier.id)
                     console.timeLog(response);
                     localStorage.removeItem('alconf')
                     window.location.replace("/public/contact.html");
@@ -178,14 +182,28 @@ const app = new Vue({
                     return value + "% TVA"
                 case "pourcentage":
                     return value + '%'
+                case key.includes("prix"):
+                    return parseInt(value).toFixed(2) + '€'
             }
             return value
         },
-        filterList() {
-            return this.articles.filter((article) =>
-                article.label.toLowerCase().includes(input.value.toLowerCase())
-            );
-        },//methods end
+        redirect(url){
+            window.location.replace(url)
+        },
+        filterListArticle(article) {
+            return article.label.toLowerCase().includes(this.articlesSearch.toLowerCase());
+        },
+        filterListCustomers(customer) {
+            let id = customer.id.toString().includes(this.customersSearch)
+            let fn = customer.firstName.toLowerCase().includes(this.customersSearch.toLowerCase())
+            let ln = customer.lastName.toLowerCase().includes(this.customersSearch.toLowerCase())
+            let ma = customer.email ? customer.email.toLowerCase().includes(this.customersSearch.toLowerCase()): null
+            let cn = customer.contactNumber ? customer.contactNumber.toLowerCase().includes(this.customersSearch.toLowerCase()) : null
+            let ci = customer.address.city ? customer.address.city.toLowerCase().includes(this.customersSearch.toLowerCase()) : null
+            let co = customer.address.country ? customer.address.country.toLowerCase().includes(this.customersSearch.toLowerCase()): null
+            return id ? id : fn ? fn : ln ? ln : ma ? ma : cn ? cn : ci ? ci : co;
+        },
+        //methods end
     }
 });
 
