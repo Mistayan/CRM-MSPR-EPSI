@@ -57,10 +57,15 @@ public class Panier {
     }
 
     public double getTVA() {
-        //TODO TAUX TVA  :: Variable selon catégorie
-        double TVA = 20;
-        double TTC = getTotalPrix();
-        double HT = TTC / (1 + (TVA / 100));
+        double TVA = 0;
+        double TTC = 0;
+        double HT = 0;
+
+        for (Article article : articles) {
+            TVA = article.getCategory().getTaxes();
+            TTC += article.getPrix();
+            HT += TTC / (1 + (TVA / 100));
+        }
         return TTC - HT;
     }
 }
