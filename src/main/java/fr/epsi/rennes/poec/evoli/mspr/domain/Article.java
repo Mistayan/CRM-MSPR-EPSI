@@ -103,8 +103,7 @@ public class Article {
 
     @Override
     public String toString() {
-        return "{\"Nom\": \"" + this.label + "\", " +
-                String.format("\"Prix\": %f\n}", prix);
+        return "{\"Nom\": \"%s\",\"Prix\": %f}".formatted(label, prix);
     }
 
     public boolean getStatus() {

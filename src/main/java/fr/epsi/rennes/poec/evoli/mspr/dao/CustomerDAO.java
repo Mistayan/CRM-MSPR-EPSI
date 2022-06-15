@@ -32,39 +32,37 @@ public class CustomerDAO {
         String sql = "SELECT * from customer";
 
         try (Connection conn = ds.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)){
-        ResultSet rs = ps.executeQuery();
-        List<Customer> customers = new ArrayList<>();
-        while (rs.next()) {
-            Customer customer = new Customer();
-            customer.setId(rs.getInt("customer_id"));
-            customer.setFirstName(rs.getString("first_name"));
-            customer.setLastName(rs.getString("last_name"));
-            customer.setEmail(rs.getString("email"));
-            customer.setPhone(rs.getString("phone"));
-            CustomerAddress address = new CustomerAddress();
-            address.setCountry(rs.getString("country"));
-            address.setCity(rs.getString("city"));
-            address.setPostalCode(rs.getString("postal_code"));
-            address.setWayNumber(rs.getInt("way_number"));
-            address.setWayType(rs.getString("way_type"));
-            address.setWayName(rs.getString("way_name"));
-            customer.setAddress(address);
-            customers.add(customer);
-        }
-        return customers;
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            List<Customer> customers = new ArrayList<>();
+            while (rs.next()) {
+                Customer customer = new Customer();
+                customer.setId(rs.getInt("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setPhone(rs.getString("phone"));
+                CustomerAddress address = new CustomerAddress();
+                address.setCountry(rs.getString("country"));
+                address.setCity(rs.getString("city"));
+                address.setPostalCode(rs.getString("postal_code"));
+                address.setWayNumber(rs.getInt("way_number"));
+                address.setWayType(rs.getString("way_type"));
+                address.setWayName(rs.getString("way_name"));
+                customer.setAddress(address);
+                customers.add(customer);
+            }
+            return customers;
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
+
     public int addCustomer(Customer c, int userId) {
-        String sql = "INSERT INTO customer " +
-                "(first_name, last_name, email, phone," +
-                " country, city, postal_code," +
-                " way_number, way_type, way_name, create_time, added_by) " +
-                "VALUES " +
-                "(?,?,?,?,?,?,?,?,?,?,?,?) " + // 12
-                "";
+        String sql = "INSERT INTO customer (first_name, last_name, email, phone," +
+                " country, city, postal_code,way_number, way_type, way_name, create_time, added_by) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?) "// 12
+                ;
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -82,8 +80,9 @@ public class CustomerDAO {
             ps.setInt(12, userId);
             int ctrl = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next())
+            if (rs.next()) {
                 return rs.getInt(1);
+            }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -91,11 +90,9 @@ public class CustomerDAO {
     }
 
     public int switchCustomer(int customerId, boolean _switch) {
-        String sql = "UPDATE customer SET " +
-                "enabled = ? " +
-                "WHERE customer_id = ?";
+        String sql = "UPDATE customer SET enabled = ? WHERE customer_id = ?";
         try (Connection conn = ds.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBoolean(1, _switch);
             ps.setInt(2, customerId);
         } catch (SQLException e) {
@@ -105,14 +102,11 @@ public class CustomerDAO {
     }
 
     public int modifyCustomer(Customer c) {
-        String sql = "UPDATE customer SET " +
-                "first_name = ?, last_name = ?, " +
-                "email = ?, phone = ?, " +
-                "country = ?, city = ?, postal_code = ?, " +
-                "way_number = ?, way_type = ?, way_name = ?, " +
-                "last_modified = ?" + // 11
-                "WHERE customer_id = ? " + // 12
-                ";";
+        String sql = "UPDATE customer SET first_name = ?, last_name = ?, " +
+                "email = ?, phone = ?, country = ?, city = ?, postal_code = ?, " +
+                "way_number = ?, way_type = ?, way_name = ?, last_modified = ?" + // 11
+                "WHERE customer_id = ? "// 12
+                ;
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -133,8 +127,9 @@ public class CustomerDAO {
             int ctrl = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             conn.close();
-            if (rs.next())
+            if (rs.next()) {
                 return rs.getInt(1);
+            }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -145,8 +140,7 @@ public class CustomerDAO {
      * La requête étant de type 'publique', on filtrera au maximum les infos sorties. (customerId, fullName, city)
      **/
     public List<Customer> getAllCustomersPublic() {
-        String sql = "SELECT customer_id, first_name, last_name, city " +
-                "FROM customer";
+        String sql = "SELECT customer_id, first_name, last_name, city FROM customer";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -170,8 +164,7 @@ public class CustomerDAO {
     }
 
     public void addCustomerCommRelation(int userId, int customerId) {
-        String sql = "INSERT INTO  " +
-                "commercial_has_customer (customer_id, user_id) VALUES (?,?)";
+        String sql = "INSERT INTO  commercial_has_customer (customer_id, user_id) VALUES (?,?)";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

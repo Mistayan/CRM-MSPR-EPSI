@@ -37,7 +37,7 @@ public class PanierDAO {
     }
 
     @Async
-    public void addArticle(int articleId, int panierId) throws TechnicalException{
+    public void addArticle(int articleId, int panierId) throws TechnicalException {
         String sql = "insert into cart_has_article"
                 + "(cart_id, article_id) values (?,?)";
         logger.warn("insert article %d to panier %d".formatted(articleId, panierId));
@@ -55,7 +55,7 @@ public class PanierDAO {
         }
     }
 
-    public Panier doesPanierExist(int customerId) throws TechnicalException{
+    public Panier doesPanierExist(int customerId) throws TechnicalException {
         String sql = "select cart_id, customer_id from cart where customer_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class PanierDAO {
     }
 
     //Créer un panier => service et controller
-    public int CreatePanier(int customerId) throws TechnicalException{
+    public int CreatePanier(int customerId) throws TechnicalException {
         String sql = "insert into cart (customer_id) values(?)";
         logger.warn("create panier for customer %d".formatted(customerId));
         try (Connection conn = ds.getConnection();
@@ -93,7 +93,7 @@ public class PanierDAO {
         }
     }
 
-    public Panier getPanierById(int panierId) throws TechnicalException{
+    public Panier getPanierById(int panierId) throws TechnicalException {
         String sql = "select "
                 + "cart.cart_id as panier_id, "
                 + "cart.customer_id as customer_id, "
@@ -141,11 +141,8 @@ public class PanierDAO {
         }
     }
 
-    public void removeArticle(int articleId, int panierId) throws TechnicalException{
-        String sql = "DELETE FROM cart_has_article" +
-                "    WHERE cart_id = ?" +
-                "    AND article_id = ?" +
-                "    LIMIT 1;";
+    public void removeArticle(int articleId, int panierId) throws TechnicalException {
+        String sql = "DELETE FROM cart_has_article WHERE cart_id = ? AND article_id = ? LIMIT 1;";
         logger.warn("remove article %d from panier %d".formatted(articleId, panierId));
 
         try (Connection conn = ds.getConnection();
@@ -158,9 +155,8 @@ public class PanierDAO {
         }
     }
 
-    public void truncate(int panierId) throws TechnicalException{
-        String sql = "DELETE FROM cart_has_article" +
-                "    WHERE cart_id = ?";
+    public void truncate(int panierId) throws TechnicalException {
+        String sql = "DELETE FROM cart_has_article WHERE cart_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, Math.max(panierId, 0));

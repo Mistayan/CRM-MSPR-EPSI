@@ -61,16 +61,13 @@ public class CommandeDAO {
         if (panier == null) {
             throw new SQLException("#CommandeDAO##order  ::: pannier %d invalide".formatted(panierId));
         }
-        logger.info("ordering : userId= %d cartId %d, for user %d".formatted(orderId, panierId, panier.getCustomerId()));
-        String sql = "INSERT INTO order_ " +
-                "(customer_id, TVA, prix_ttc,status_id) VALUES " +
-                "(?, ?, ?, ?);";
+        logger.info("ordering : userId= %d cartId %d, for user %d".formatted(userId, panierId, panier.getCustomerId()));
+        String sql = "INSERT INTO order_ (customer_id, TVA, prix_ttc) VALUES (?, ?, ?);";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
             ps.setInt(1, panier.getCustomerId());
             ps.setDouble(2, panier.calc_TVA());
             ps.setDouble(3, panier.getTotalPrix());
-            ps.setInt(4, 1); //status 1 == non-acquité
 
             try {
                 ps.executeUpdate();
@@ -104,7 +101,7 @@ public class CommandeDAO {
 
     private void newCustomerOrderTable(int userId, int orderId, Connection conn) throws SQLException {
         String sql = "INSERT INTO customer_has_order (customer_id, order_id) VALUE (?, ?)";
-        logger.debug("newUserOrderTable : " + userId + ", " + orderId);
+        logger.debug("newUserOrderTable : uid: %d, order: %d".formatted(userId, orderId));
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, orderId);
@@ -130,7 +127,7 @@ public class CommandeDAO {
                 ps.setInt(2, article.getId());
                 ps.executeUpdate();
             }
-            logger.info("created order:" + orderId);
+            logger.info("created order: %d".formatted(orderId));
             return orderId;
         } catch (SQLException e) {
             logger.error("could not %s\n with orderId= %d && panierId= %d".formatted(sql, orderId, panier.getId()));
@@ -186,11 +183,11 @@ public class CommandeDAO {
             List<Commande> commandeList = new ArrayList<>();
             while (rs.next()) {
                 Commande commande = new Commande();
-                commande.setOrderId(rs.getInt(1));
-                commande.setNumeroCmd(rs.getString(2));
-                commande.setPrixHT(rs.getDouble(5) - rs.getInt(4));
-                commande.setPrixTTC(rs.getDouble(5));
-                commande.setArticles(this.getArticlesFromOrderId(rs.getInt(1)));
+                commande.setOrderId(rs.getInt("order_id"));
+                commande.setNumeroCmd(rs.getString("date_created"));
+                commande.setPrixHT(rs.getDouble("prix_ttc") - rs.getInt("TVA"));
+                commande.setPrixTTC(rs.getDouble("prix_ttc"));
+                commande.setArticles(this.getArticlesFromOrderId(rs.getInt("order_id")));
                 //TODO GetStatus from id_status
                 commandeList.add(commande);
             }
@@ -202,9 +199,7 @@ public class CommandeDAO {
     }
 
     private List<Article> getArticlesFromOrderId(int orderId) throws SQLException {
-        String sql = "SELECT * " +
-                "FROM order_has_article " +
-                "WHERE order_id = ?";
+        String sql = "SELECT * FROM order_has_article WHERE order_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
@@ -213,9 +208,9 @@ public class CommandeDAO {
             List<Article> articles = new ArrayList<>();
             List<Article> articleRepo = articleDAO.getAllPokemons();
             while (rs.next()) {
-                int pid = rs.getInt(2);
+                int articleId = rs.getInt(2);
                 for (Article article : articleRepo) {
-                    if (pid == article.getId()) {
+                    if (articleId == article.getId()) {
                         articles.add(article);
                     }
                 }
@@ -229,8 +224,7 @@ public class CommandeDAO {
 
     public Commande getOrderById(int orderId) throws SQLException {
         String sql = "SELECT *, group_concat(order_has_article.article_id) as articles " +
-                "FROM order_, order_has_article " +
-                "WHERE order_.order_id = ? AND order_has_article.order_id = order_.order_id ";
+                "FROM order_, order_has_article WHERE order_.order_id = ? AND order_has_article.order_id = order_.order_id ";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -263,9 +257,7 @@ public class CommandeDAO {
     }
 
     public void addUserOrder(int userId, int orderId) throws SQLException {
-        String sql = "INSERT INTO user_has_order " +
-                "(order_id, user_id) VALUES " +
-                "(?,?);";
+        String sql = "INSERT INTO user_has_order (order_id, user_id) VALUES (?,?);";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -280,8 +272,7 @@ public class CommandeDAO {
     }
 
     public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
-        String sql = "SELECT group_concat(user_has_order.order_id) as orders " +
-                "FROM order_, user_has_order " +
+        String sql = "SELECT group_concat(user_has_order.order_id) as orders FROM order_, user_has_order " +
                 "WHERE order_.order_id = user_has_order.order_id AND user_has_order.user_id = ?;";
 
         try (Connection conn = ds.getConnection();

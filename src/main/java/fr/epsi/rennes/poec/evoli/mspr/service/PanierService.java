@@ -42,13 +42,12 @@ public class PanierService {
 
     @Transactional(readOnly = true)
     public Panier getPanierByCustomerId(int customerId) {
-        logger.debug("getPanierByCustomerId(" + customerId + ")");
         // vérifie que le newPanier existe avant action
         Panier newPanier = panierDAO.doesPanierExist(customerId);
         int panierId = newPanier.getId();
         if (panierId == -1) {
             logger.info("createPanier(" + customerId + ")");
-             panierId = panierDAO.CreatePanier(customerId);
+            panierId = panierDAO.CreatePanier(customerId);
         }
         logger.debug("getPanierById ? " + newPanier + " : " + panierId);
         Panier panier = panierDAO.getPanierById(panierId);

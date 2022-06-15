@@ -1,9 +1,6 @@
 package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
-import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
-import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
-import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
-import fr.epsi.rennes.poec.evoli.mspr.domain.User;
+import fr.epsi.rennes.poec.evoli.mspr.domain.*;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import fr.epsi.rennes.poec.evoli.mspr.service.ArticleService;
@@ -113,15 +110,48 @@ public class AdminController {
         }
         return ret;
     }
-    @PostMapping("/admin/register")
-    public void addUser(@RequestBody User user) throws BusinessException {
+
+    @GetMapping("/admin/users")
+    public Response<List<User>> getAllUsers() {
+        Response<List<User>> response = new Response<>();
+        List<User> users = userService.getAllUsers();
+        response.setData(users);
+        return response;
+    }
+
+    @GetMapping("/admin/roles")
+    public Response<List<UserRole>> getAllRoles() {
+        Response<List<UserRole>> response = new Response<>();
+        List<UserRole> users = userService.getAllRoles();
+        response.setData(users);
+        return response;
+    }
+
+    @PostMapping("/admin/user/add")
+    public void addUser(@RequestBody User user) {
         String uName = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.info("userName " + uName + " ajoute un user");
+        logger.info("%s  ajoute un user".formatted(uName));
 
         try {
             userService.addUser(user);
-        } catch (TechnicalException e){
-            throw new BusinessException("admin/register route user.service.addUser failed");
+        } catch (TechnicalException e) {
+            throw new RuntimeException("admin/register route user.service.addUser failed");
         }
+    }
+
+    @PostMapping("/admin/user/modifY")
+    public Response<Void> modifyUser(@RequestBody User newUser) throws BusinessException {
+        Response<Void> response = new Response<>();
+        if (newUser == null) {
+            throw new BusinessException("newUser.param.null");
+        }
+        logger.trace("Admin/user/modify");
+        try {
+            userService.modifyUser(newUser);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return response;
     }
 }

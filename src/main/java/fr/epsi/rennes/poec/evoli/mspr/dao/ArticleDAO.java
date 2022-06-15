@@ -70,8 +70,7 @@ public class ArticleDAO {
     }
 
     void insertArticleHasProperty(int aId, int pId) {
-        String sql = "INSERT INTO article_has_props " +
-                "(article_id, property_id) VALUES (?, ?)";
+        String sql = "INSERT INTO article_has_props (article_id, property_id) VALUES (?, ?)";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -203,8 +202,7 @@ public class ArticleDAO {
     }
 
     public List<ArticleCategory> getAllCategories() throws TechnicalException {
-        String sql = "SELECT * " +
-                "FROM category ";
+        String sql = "SELECT * FROM category ";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -224,9 +222,7 @@ public class ArticleDAO {
     }
 
     public boolean switchArticle(int id, boolean mode) {
-        String sql = "UPDATE article SET" +
-                " enabled = ? " +
-                "WHERE article_id = ?";
+        String sql = "UPDATE article SET enabled = ? WHERE article_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -248,12 +244,12 @@ public class ArticleDAO {
                 "label = ?, " +             // label : 3
                 "last_modified = ? " +      // lm : 4
                 "WHERE article_id = ?";     // aId : 5
-        logger.warn("modifyArticle ::: " + article.getId() + "\n" + article.getDescription() + "\n" + article.getPrix() + "\n" +
-                article.getLabel());
+        logger.warn("modifyArticle ::: %d\n%s\n%D\n%s"
+                .formatted(article.getId(), article.getDescription(), article.getPrix(), article.getLabel()));
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             conn.setAutoCommit(false);
-            ps.setString(1, "" + article.getDescription() + "");
+            ps.setString(1, "\'%s\'".formatted(article.getDescription()));
             ps.setDouble(2, article.getPrix());
             ps.setString(3, article.getLabel());
             ps.setString(4, String.valueOf(LocalDateTime.now()));
@@ -295,8 +291,8 @@ public class ArticleDAO {
             if (prop_id == -1) {
                 logger.fatal("modifyPokemonProperties ::: rolling back");
                 throw new TechnicalException(new SQLException(
-                        "invalid connection between prop_id" + prop_id +
-                                " and article.prop_id  " + article.getProperties().getId()));
+                        "invalid connection between prop_id %d and article.prop_id %d"
+                                .formatted(prop_id, article.getProperties().getId())));
             }
             ps.setString(1, props.getLabel());
             ps.setDouble(2, props.getTaille());
@@ -327,9 +323,7 @@ public class ArticleDAO {
     }
 
     public int getPropertyIdFromArticleId(int article_id) throws SQLException {
-        String sql = "SELECT property_id " +
-                "FROM article " +
-                "WHERE article_id = ?";
+        String sql = "SELECT property_id FROM article WHERE article_id = ?";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
