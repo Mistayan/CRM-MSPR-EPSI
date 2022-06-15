@@ -91,20 +91,23 @@
             <artifactId>maven-dependency-plugin</artifactId>
             <version>3.3.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.7.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
         </dependency>
 
         <dependency>
@@ -165,13 +168,6 @@
             <version>3.2.2</version>
         </dependency>
 
-        <!-- Vue JS est utilisé pour toute la partie front-end du logiciel -->
-        <!-- https://mvnrepository.com/artifact/org.webjars/vue -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>vue</artifactId>
-            <version>2.6.14</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.webjars.npm/vue -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
@@ -257,6 +253,10 @@
             <artifactId>testng</artifactId>
             <version>RELEASE</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
         </dependency>
 
     </dependencies>
