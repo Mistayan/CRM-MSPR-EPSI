@@ -1,9 +1,11 @@
 package fr.epsi.rennes.poec.evoli.mspr.dao;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
+import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
 import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonStats;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
+import fr.epsi.rennes.poec.evoli.mspr.parsers.PokemonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.intellij.lang.annotations.Language;
@@ -24,8 +26,9 @@ import java.util.List;
  **/
 @Repository
 public class ArticleDAO {
-    private final DataSource ds;
     private static final Logger logger = LogManager.getLogger(ArticleDAO.class);
+    private final DataSource ds;
+
     @Autowired
     public ArticleDAO(DataSource ds) {this.ds = ds;}
 
@@ -115,8 +118,6 @@ public class ArticleDAO {
     }
 
     public List<Article> getAllPokemons() throws TechnicalException {
-        @Language("SQL")
-        //todo URGENT: split prop.type et prop.label to new tables for SQL enumeration
         String sql = "SELECT a.article_id as article_id, a.label as label, a.prix as prix," +
                 " a.description as description, a.code_article as code_article, a.date_created as date," +
                 " a.enabled as enabled, " +
@@ -131,44 +132,26 @@ public class ArticleDAO {
                 " FROM article as a " +
                 " RIGHT JOIN article_has_props ON article_has_props.article_id = a.article_id" +    // properties
                 " LEFT JOIN pokemon_properties ON pokemon_properties.prop_id = a.property_id" +         //
-                " LEFT JOIN category ON category.category_id = 1" +                                 // category 1 = pokemons
+                " LEFT JOIN category ON category.category_id = 1" +                                 // category 1 = pokemon
                 " WHERE enabled is true" +
                 " GROUP BY a.article_id" +
                 " ;";
 
-        List<Article> articles = new ArrayList<>();
         try (Connection conn = ds.getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery(sql);
             conn.close();
+            PokemonParser parser = new PokemonParser();
+            List<Article> articles = new ArrayList<>();
             while (rs.next()) {
-                Article article = new Article();                                    //Article
-                article.setId(rs.getInt("article_id"));
-                article.setCodeArticle(rs.getString("code_article"));
-                article.setLabel(rs.getString("label"));
-                article.setPrix(rs.getDouble("prix"));
-                article.setDateCreated(rs.getString("date"));
-                article.setDescription(rs.getString("description"));
-                ArticleCategory cat = new ArticleCategory();                      // category
-                String[] cats = rs.getString("category").split(":");
-                // style : id:label:taxe
-                cat.setId(Integer.parseInt(cats[0]));
-                cat.setLabel(cats[1]);
-                cat.setTaxes(Double.parseDouble(cats[2]));
-                article.setCategory(cat);
-                String[] splitted = rs.getString("props").split("/");   // separation props/stats
-                PokemonProperties props = new PokemonProperties(splitted[0]);   // Properties
-                PokemonStats stats = new PokemonStats(splitted[1]);             // stats
-                article.setStats(stats);                      // adding stats to articlePokemon
-                article.setProperties(props);               // adding properties to articlePokemon
-                articles.add(article);                      // adding article to the return list
-                // NEXT ?
+                articles.add(parser.parsePokemon(rs));
             }
             return articles;
         } catch (TechnicalException | SQLException e) {
             throw new TechnicalException(e);
         }
     }
-    public Article getPokemonById(int id) throws TechnicalException {
+
+    public List<Article> getAllPokemonsAdmin() throws TechnicalException {
         @Language("SQL")
         String sql = "SELECT a.article_id as article_id, a.label as label, a.prix as prix," +
                 " a.description as description, a.code_article as code_article, a.date_created as date," +
@@ -184,44 +167,41 @@ public class ArticleDAO {
                 " FROM article as a " +
                 " RIGHT JOIN article_has_props ON article_has_props.article_id = a.article_id" +    // properties
                 " LEFT JOIN pokemon_properties ON pokemon_properties.prop_id = a.property_id" +         //
-                " LEFT JOIN category ON category.category_id = 1" +                                 // category 1 = pokemons
-                " WHERE  a.article_id = ?" + //enabled is true AND
+                " LEFT JOIN category ON category.category_id = 1" +                                 // category 1 = pokemon
                 " GROUP BY a.article_id" +
                 " ;";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery(sql);
+            ResultSet rs = ps.executeQuery();
             conn.close();
-            Article article = new Article();                                    //Article
-            if (rs.next()) {
-                article.setId(rs.getInt("article_id"));
-                article.setCodeArticle(rs.getString("code_article"));
-                article.setLabel(rs.getString("label"));
-                article.setPrix(rs.getDouble("prix"));
-                article.setDateCreated(rs.getString("date"));
-                article.setDescription(rs.getString("description"));
-                ArticleCategory cat = new ArticleCategory();                      // category
-                String[] cats = rs.getString("category").split(":");
-                // style : id:label:taxe
-                cat.setId(Integer.parseInt(cats[0]));
-                cat.setLabel(cats[1]);
-                cat.setTaxes(Double.parseDouble(cats[2]));
-                article.setCategory(cat);
-                String[] splitted = rs.getString("props").split("/");   // separation props/stats
-                PokemonProperties props = new PokemonProperties(splitted[0]);   // Properties
-                PokemonStats stats = new PokemonStats(splitted[1]);             // stats
-                article.setStats(stats);                      // adding stats to articlePokemon
-                article.setProperties(props);               // adding properties to articlePokemon
-                return article;                      // adding article to the return list
-                // NEXT ?
+            PokemonParser parser = new PokemonParser();
+            List<Article> articles = new ArrayList<>();
+            while (rs.next()) {
+                switch (rs.getString("category").split(":")[0]) {
+                    case "1": {
+                        articles.add(parser.parsePokemon(rs));
+//                    }
+//                    case "2" :{
+//                        //TBD
+//                    }
+//                    case "3" :{
+//                        //TBD
+//                    }
+//                    case "4" :{
+//                        //TBD
+//                    }
+//                    case "5" :{
+//                        //TBD
+                    }
+                }
             }
-            return null;
+            return articles;
         } catch (TechnicalException | SQLException e) {
             throw new TechnicalException(e);
         }
     }
+
     public List<ArticleCategory> getAllCategories() throws TechnicalException {
         String sql = "SELECT * " +
                 "FROM category ";
@@ -243,13 +223,14 @@ public class ArticleDAO {
         }
     }
 
-    public boolean disableArticle(int id) {
+    public boolean switchArticle(int id, boolean mode) {
         String sql = "UPDATE article SET" +
-                " enabled = false " +
+                " enabled = ? " +
                 "WHERE article_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
+            ps.setBoolean(2, mode);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.first();
@@ -262,7 +243,7 @@ public class ArticleDAO {
 
     public boolean modifyArticle(Article article) {
         String sql = "UPDATE article SET " +
-                "description = ?, " +   // desc : 1
+                "description = ?, " +       // desc : 1
                 "prix = ?, " +              // prix : 2
                 "label = ?, " +             // label : 3
                 "last_modified = ? " +      // lm : 4
@@ -271,6 +252,7 @@ public class ArticleDAO {
                 article.getLabel());
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false);
             ps.setString(1, "" + article.getDescription() + "");
             ps.setDouble(2, article.getPrix());
             ps.setString(3, article.getLabel());
@@ -335,6 +317,9 @@ public class ArticleDAO {
                 conn.rollback();
                 return false;
             }
+            conn.setAutoCommit(true);
+            conn.commit();
+            conn.close();
             return true;
         } catch (SQLException e) {
             throw new TechnicalException(new SQLException(e));

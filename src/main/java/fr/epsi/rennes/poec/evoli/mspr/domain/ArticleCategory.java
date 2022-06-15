@@ -1,4 +1,4 @@
-package fr.epsi.rennes.poec.evoli.mspr.dao;
+package fr.epsi.rennes.poec.evoli.mspr.domain;
 
 /**
  * Author : Stephen Mistayan

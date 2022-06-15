@@ -1,6 +1,9 @@
 package fr.epsi.rennes.poec.evoli.mspr.domain;
 
-import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleCategory;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: Stephen Mistayan
@@ -24,6 +27,7 @@ public class Article {
     private ArticleCategory category;
     private PokemonProperties properties;
     private PokemonStats stats;
+    private boolean status;
 
     public String getDateCreated() {
         return dateCreated;
@@ -103,4 +107,11 @@ public class Article {
                 String.format("\"Prix\": %f\n}", prix);
     }
 
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }
