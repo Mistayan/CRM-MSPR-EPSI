@@ -12,12 +12,12 @@ const customerOrders = new Vue({
     },
     mounted() {
         // Actions au chargement de la page
-        this.customerId = window.localStorage.getItem('customerId')
+        this.customerId = parseInt(window.sessionStorage.getItem('customerId'))
         if (!this.customerId) {
             this.customerId = -1;
         }
         console.log(this.customerId)
-        if (this.customerId > 0) {
+        if (this.customerId >= 1) {
             console.log(this.customerId)
             axios.get("/customer/orders?customerId=" + this.customerId)
                 .then(response => {
@@ -32,9 +32,9 @@ const customerOrders = new Vue({
                     }
                     this.totalPrixTTC.toFixed(2)
                     this.totalPrixHT.toFixed(2)
-            });
+                });
         }
-        axios.get("/public/article")
+        axios.get("/user/article")
             .then(response => {
                 this.articlesRepo = response.data.data
             });
@@ -55,7 +55,7 @@ const customerOrders = new Vue({
             return (article.prix * this.countArticleInOrder(article.id, order)).toFixed(2)
         },
         displayPrice(val) {
-                    return parseFloat(val).toFixed(2) + '€'
+            return parseFloat(val).toFixed(2) + '€'
         },
     }
 })

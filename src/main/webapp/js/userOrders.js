@@ -7,19 +7,24 @@ const userOrders = new Vue({
             totalArticles: 0,
             totalPrixHT: 0.0,
             totalPrixTTC: 0.0,
-            userId: -1
+            userId: 0,
         }
     },
     mounted() {
         // Actions au chargement de la page
-        this.userId = window.localStorage.getItem('userId')
-        if (!this.userId) {
-            this.userId = -1;
-        }
-        console.log(this.userId)
-        if (this.userId > 0) {
-            console.log(this.userId)
-            axios.get("/user/orders?customerId=" + this.userId)
+        if (window.sessionStorage.getItem("userId"))
+            this.userId = parseInt(window.sessionStorage.getItem("userId"))
+        else
+            this.userId = -1
+        if (this.userId <= 0) {
+            axios.get("id")
+                .then(response => {
+                        this.userId = response.data.data;
+                        window.sessionStorage.setItem("userId", response.data.data)
+                    }
+                );
+        } else {
+            axios.get("orders?userId=" + this.userId)
                 .then(response => {
                     this.orders = Object(response.data.data)
                     let i = 0;
@@ -32,7 +37,7 @@ const userOrders = new Vue({
                     }
                     this.totalPrixTTC.toFixed(2)
                     this.totalPrixHT.toFixed(2)
-            });
+                });
         }
         axios.get("/public/article")
             .then(response => {
@@ -55,7 +60,7 @@ const userOrders = new Vue({
             return (article.prix * this.countArticleInOrder(article.id, order)).toFixed(2)
         },
         displayPrice(val) {
-                    return parseFloat(val).toFixed(2) + '€'
+            return parseFloat(val).toFixed(2) + '€'
         },
     }
 })

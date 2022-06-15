@@ -12,10 +12,11 @@ const app = new Vue({
             newArticle: {
                 category: {id: -1},
                 properties: {id: -1},
-                stats: {id: -1}
+                stats: {id: -1},
+                status: true,
             },
             newCat: [],
-            search: ""
+            search: "",
         }
     },
     mounted() { // Ce qui est fait au chargement de la page
@@ -33,7 +34,6 @@ const app = new Vue({
         //     });
     },
     methods: { // Methodes intéractives
-
         createArticle() {
             // concat
             this.newArticle.category = {};
@@ -71,9 +71,10 @@ const app = new Vue({
                     }
                 });
         },
-        removeArticle() {
+        switchArticle(stat) {
+            newArticle.status = stat
             console.log(this.newArticle)
-            axios.post('/admin/article/disable', this.newArticle)
+            axios.post('/admin/article/switch', this.newArticle)
                 .then(response => {
                     if (response.data.success) {
                         this.resetValues()
