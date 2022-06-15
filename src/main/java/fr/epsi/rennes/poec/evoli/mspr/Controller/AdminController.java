@@ -1,8 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
-import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleCategory;
+import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
-import fr.epsi.rennes.poec.evoli.mspr.domain.PokemonProperties;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
 import fr.epsi.rennes.poec.evoli.mspr.domain.User;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
@@ -13,7 +12,6 @@ import fr.epsi.rennes.poec.evoli.mspr.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +47,6 @@ public class AdminController {
 //        for (PokemonProperties PokemonProperties : properties) {
 //            logger.debug(PokemonProperties.getLabel()); //should filter every strings
 //        }
-//
 //        Response<List<PokemonProperties>> response = new Response<>();
 //        response.setData(properties);
 //        return response;
@@ -57,7 +54,7 @@ public class AdminController {
 
     @GetMapping("/admin/article")
     public Response<List<Article>> getAllArticles() {
-        List<Article> articles = articleService.getAllPokemons();
+        List<Article> articles = articleService.getAllPokemonsAdmin();
 
         Response<List<Article>> response = new Response<>();
         response.setData(articles);
@@ -89,12 +86,12 @@ public class AdminController {
         return response;
     }
 
-    @PostMapping("/admin/article/disable")
+    @PostMapping("/admin/article/switch")
     public Response<Void> removeArticle(@RequestBody Article newArticle) throws BusinessException {
         if (newArticle == null) {
             throw new BusinessException("newArticle.param.null");
         }
-        articleService.removeArticle(newArticle.getId());
+        articleService.switchArticle(newArticle.getId(), newArticle.getStatus());
         Response<Void> ret = new Response<>();
         ret.setSuccess(true);
         return ret;
@@ -117,16 +114,14 @@ public class AdminController {
         return ret;
     }
     @PostMapping("/admin/register")
-    public void addUser(@RequestBody User user){
+    public void addUser(@RequestBody User user) throws BusinessException {
         String uName = SecurityContextHolder.getContext().getAuthentication().getName();
         logger.info("userName " + uName + " ajoute un user");
 
         try {
-            //
-            logger.debug(user);
             userService.addUser(user);
         } catch (TechnicalException e){
-            throw new RuntimeException("admin/register route user.service.addUser failed");
+            throw new BusinessException("admin/register route user.service.addUser failed");
         }
     }
 }
