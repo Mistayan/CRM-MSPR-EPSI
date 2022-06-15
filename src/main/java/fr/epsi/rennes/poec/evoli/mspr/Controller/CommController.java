@@ -5,6 +5,7 @@ import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +71,7 @@ public class CommController {
         response.setData(customerService.getAllCustomers());
         if (response.getData() == null) {
             response.setSuccess(false);
-            throw new BusinessException(" : : : could not retrieve ");
+            throw new BusinessException("could not retrieve customers");
         } else {
             response.setSuccess(true);
         }

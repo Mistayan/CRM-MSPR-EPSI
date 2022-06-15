@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
-
 /**
  * Author: Stephen Mistayan
  * Created on : 5/4/2022 : 5:02 PM:51
@@ -25,7 +23,7 @@ import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 
 @RestController
 public class IndexController {
-    private static final Logger logger = LogManager.getLogger(GetClass);
+    private static final Logger logger = LogManager.getLogger(IndexController.class);
     private final ArticleService articleService;
     private final PanierService panierService;
     private final CustomerService customerService;
@@ -46,7 +44,7 @@ public class IndexController {
         return response;
     }
 
-    @PostMapping("/public/panier/article")
+    @PostMapping("/user/panier/article")
     public Response<Integer> actionArticle(
             @RequestParam int panierId,
             @RequestParam int articleId,
@@ -73,7 +71,7 @@ public class IndexController {
         return response;
     }
 
-    @GetMapping("/public/panier")
+    @GetMapping("/user/panier")
     public Response<Panier> getPanierbyCustomerId(@RequestParam int customerId) {
         Response<Panier> response = new Response<>();
         Panier newPanier = panierService.getPanierByCustomerId(customerId);
@@ -82,7 +80,7 @@ public class IndexController {
         return response;
     }
 
-    @GetMapping("/public/customers")
+    @GetMapping("/customer/customers")
     public Response<List<Customer>> getCustomers() {
         List<Customer> customers = customerService.getAllCustomersPublic();
         Response<List<Customer>> response = new Response<>();
