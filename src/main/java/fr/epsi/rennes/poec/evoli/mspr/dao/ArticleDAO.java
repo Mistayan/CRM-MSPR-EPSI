@@ -244,7 +244,7 @@ public class ArticleDAO {
                 "label = ?, " +             // label : 3
                 "last_modified = ? " +      // lm : 4
                 "WHERE article_id = ?";     // aId : 5
-        logger.warn("modifyArticle ::: %d\n%s\n%D\n%s"
+        logger.warn("modifyArticle ::: %d\n%s\n%f\n%s"
                 .formatted(article.getId(), article.getDescription(), article.getPrix(), article.getLabel()));
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
