@@ -36,16 +36,17 @@ public class UserService implements UserDetailsService {
             if (user == null) {
                 throw new SQLException("no such user");
             }
-        return user;
+            return user;
         } catch (SQLException e) {
-            throw new TechnicalException(new UsernameNotFoundException("UserService ::: User not found : " + username));
+            throw new TechnicalException(new UsernameNotFoundException("User not found : " + username));
         }
     }
 
     public void addUser(User user) {
         try {
 //            user.setRole(UserRole.ROLE_USER.name());
-            logger.info("UserService ::: user role : " + user.getRole());
+            logger.trace("Adding user: {'email': %s, 'role': %s, 'nickname': %s} "
+                    .formatted(user.getEmail(), user.getRole(), user.getNickname()));
             userDAO.addUser(user);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -53,7 +54,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public int userOrder(String userName, int panierId) throws SQLException {
+    public int userOrder(String userName, int panierId) {
         try {
             logger.info("UserService ::: user : " + userName + "is ordering : \nPanierId : " + panierId);
             int userId = userDAO.getUserIdFromName(userName);
@@ -67,37 +68,38 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public int getUserIdFromName(String userName) throws SQLException {
+    public int getUserIdFromName(String userName) throws TechnicalException {
         try {
-            logger.info("UserService ::: getUserIdFromName : " + userName);
-            return userDAO.getUserIdFromName(userName); // on assumera que springboot ne nous ment pas ?
+            logger.info("getUserIdFromName : %s".formatted(userName));
+            int userId = userDAO.getUserIdFromName(userName);
+            return userId; // on assumera que springboot ne nous ment pas ?
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
 
-    public List<Commande> getOrdersFromCustomerId(int customerId, int limit) throws SQLException {
+    public List<Commande> getOrdersFromCustomerId(int customerId, int limit) {
         try {
             logger.info("UserService ::: getCustomerIdOrders : " + customerId);
             return commandeDAO.getOrdersFromCustomerId(customerId, limit); //todo? set minimumLimit as superGlobal
         } catch (SQLException e) {
+            throw new TechnicalException(new SQLException(e));
+        }
+    }
+
+    public Commande getOrderByOrderId(int orderId) {
+        try {
+            return commandeDAO.getOrderById(orderId);
+        } catch (SQLException e) {
             throw new TechnicalException(e);
         }
     }
 
-    public Commande getOrderByOrderId(int orderId) throws SQLException {
-        try {
-            return commandeDAO.getOrderById(orderId);
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        }
-    }
     public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
         try {
-            logger.info("UserService ::: getCustomerIdOrders : " + userId);
             return commandeDAO.getOrdersFromUserId(userId, limit); //todo? set minimumLimit as superGlobal
         } catch (SQLException e) {
-            throw new TechnicalException(e);
+            throw new TechnicalException(new SQLException(e));
         }
     }
 }

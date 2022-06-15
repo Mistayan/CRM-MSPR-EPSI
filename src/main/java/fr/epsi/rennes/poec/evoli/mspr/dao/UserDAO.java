@@ -35,9 +35,9 @@ public class UserDAO {
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mail);
+            logger.debug("getUserByEmail(%s)".formatted(mail));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) { // pour le premier élément de la requête:
-                logger.debug("getUserByEmail" + mail);
                 User user = new User();
                 user.setEmail(rs.getString(1));
                 user.setPassword(rs.getString(2));
@@ -56,7 +56,7 @@ public class UserDAO {
     }
 
     @Async
-    public void addUser(User user) throws SQLException{
+    public void addUser(User user) throws SQLException {
         String sql = "INSERT INTO user ( email , password , user_role ) VALUES (?,?,?)";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -69,6 +69,7 @@ public class UserDAO {
                 throw new SQLException("error adding user.");
             }
         } catch (SQLException e) {
+            logger.error("could not %s with email= %s, role= %s, nick= %s".formatted(sql, user.getEmail(), user.getRole(), user.getNickname()));
             throw new SQLException(e);
         }
     }
@@ -84,6 +85,7 @@ public class UserDAO {
             }
             return rs.getInt(1);
         } catch (SQLException e) {
+            logger.trace("could not %s with mail= %s".formatted(sql, mail));
             throw new TechnicalException(new SQLException(e));
         }
     }

@@ -10,6 +10,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     private final boolean checked = true;
+    private int id;
     private String email;
     private String password;
     private String nickname;
@@ -91,5 +92,12 @@ public class User implements UserDetails {
 
     public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }
