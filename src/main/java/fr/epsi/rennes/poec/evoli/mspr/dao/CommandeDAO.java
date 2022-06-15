@@ -6,7 +6,6 @@ import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mariadb.jdbc.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mariadb.jdbc.Statement.*;
 
 /**
  * Author : Stephen Mistayan
@@ -32,7 +33,7 @@ import java.util.List;
 @Repository
 @Transactional
 public class CommandeDAO {
-    private static final Logger logger = LogManager.getLogger(CommandeDAO.class);
+    private final Logger logger = LogManager.getLogger(CommandeDAO.class);
     private final PanierDAO panierDAO;
     private final ArticleDAO articleDAO;
     private final DataSource ds;
@@ -60,37 +61,35 @@ public class CommandeDAO {
         if (panier == null) {
             throw new SQLException("#CommandeDAO##order  ::: pannier %d invalide".formatted(panierId));
         }
-        logger.trace("#CommandeDAO##order  ::: %d ordereding panier %d".formatted(orderId, panierId));
+        logger.info("ordering : userId= %d cartId %d, for user %d".formatted(orderId, panierId, panier.getCustomerId()));
         String sql = "INSERT INTO order_ " +
-                "(customer_id, TVA, prix_ttc) VALUES " +
-                "(?, ?, ?);";
-        logger.trace(panier.toString());
+                "(customer_id, TVA, prix_ttc,status_id) VALUES " +
+                "(?, ?, ?, ?);";
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
             ps.setInt(1, panier.getCustomerId());
-            ps.setDouble(2, panier.getTVA());
+            ps.setDouble(2, panier.calc_TVA());
             ps.setDouble(3, panier.getTotalPrix());
+            ps.setInt(4, 1); //status 1 == non-acquité
+
             try {
                 ps.executeUpdate();
             } catch (SQLException e) {
-                logger.warn("#CommandeDAO##order  ::: ps.execute() failed, rolling-back");
+                logger.error("could not %s\n with userId= %d && cartId= %d".formatted(sql, orderId, panierId));
                 conn.rollback();
-                throw new SQLException(sql + userId + ", " + panier.getTVA() + ", " + panier.getTotalPrix(), e);
+                throw new SQLException(sql + userId);
             }
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 orderId = rs.getInt(1);
-                if (newOrderArticlesTable(orderId, panier) != orderId) {
-                    conn.rollback();
-                    throw new SQLException("Rollback : un-Equal orderId from order_article & order");
+                try { // Tables de liaisons
+                    newOrderArticlesTable(orderId, panier, conn);
+                    newCustomerOrderTable(panier.getCustomerId(), orderId, conn);
+                } catch (SQLException e) {
+                    throw new SQLException(e);
                 }
 
-                logger.debug("newUserOrderTable : " + userId + ", " + orderId);
-                if (newCustomerOrderTable(userId, orderId, conn) == -1) {
-                    conn.rollback();
-                    throw new SQLException("Rollback : n'a pas pu ajouter dans user_order");
-                }
-                logger.trace("##############\tCommandeDAO :: vidange du pannier N°" + panierId);
+                logger.trace("Vidange du pannier N° %d".formatted(panierId));
                 panierDAO.truncate(panierId);
             } else {
                 conn.rollback();
@@ -98,50 +97,70 @@ public class CommandeDAO {
             conn.close();
             return orderId;
         } catch (SQLException e) {
-            logger.fatal("##############\tCommandeDAO :: " + e);
+            logger.fatal("could not %s\n with customerId= %d".formatted(sql, panier.getCustomerId()));
             throw new SQLException(e);
         }
     }
 
-    private long newCustomerOrderTable(int userId, int orderId, Connection conn) throws SQLException {
+    private void newCustomerOrderTable(int userId, int orderId, Connection conn) throws SQLException {
         String sql = "INSERT INTO customer_has_order (customer_id, order_id) VALUE (?, ?)";
-        logger.trace("newUserOrderTable ");
+        logger.debug("newUserOrderTable : " + userId + ", " + orderId);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setInt(2, orderId);
-            if (ps.executeUpdate() == 0) {
-                throw new SQLException("##### Cannot insert user_order: " + sql + "\n" + userId + ", " + orderId);
-            }
+            ps.executeUpdate();
         } catch (SQLException e) {
+            logger.error("could not %s\n with userId= %d && orderId= %d".formatted(sql, orderId, orderId));
+            conn.rollback();
+            conn.close();
             throw new SQLException(e);
         }
-        return 1L;
     }
 
-    private long newOrderArticlesTable(int order_id, Panier panier) throws SQLException {
+    private long newOrderArticlesTable(int orderId, Panier panier, Connection conn) throws SQLException {
 
         logger.trace("newOrderTable ");
         String sql = "INSERT INTO  order_has_article (order_id, article_id) VALUES(?,?)";
-        try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
             if (panier.getArticles() == null) {
                 return -1;
             }
             for (Article article : panier.getArticles()) {
-                ps.setInt(1, order_id);
+                ps.setInt(1, orderId);
                 ps.setInt(2, article.getId());
-                int result = ps.executeUpdate();
-                if (result == 0) {
-                    logger.warn("###############" + sql + order_id + " : " + panier.getId() + " failed");
-                    throw new SQLException(order_id + ", " + article.getId());
-                }
+                ps.executeUpdate();
             }
-            logger.info("created order:" + order_id);
-            return order_id;
+            logger.info("created order:" + orderId);
+            return orderId;
         } catch (SQLException e) {
+            logger.error("could not %s\n with orderId= %d && panierId= %d".formatted(sql, orderId, panier.getId()));
+            conn.rollback();
+            conn.close();
             throw new SQLException(e);
         }
     }
+
+    private long newOrderStatusUpdate(int orderId, int statusId, Connection conn) throws SQLException {
+
+        String sql = "INSERT INTO order_has_status VALUES (?,?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, orderId);
+            ps.setInt(2, statusId);
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return -1;
+        } catch (SQLException e) {
+            logger.error("could not %s\n with orderId= %d && statusId= %d".formatted(sql, orderId, statusId));
+            conn.rollback();
+            conn.close();
+            throw new SQLException(e);
+        }
+    }
+
 
     /**
      * @param userId le userId de l'utilisateur dont on veut querry les commandes
@@ -177,6 +196,7 @@ public class CommandeDAO {
             }
             return commandeList;
         } catch (SQLException e) {
+            logger.error("could not %s\n with userId= %d".formatted(sql, userId));
             throw new SQLException(e);
         }
     }
@@ -202,6 +222,7 @@ public class CommandeDAO {
             }
             return articles;
         } catch (SQLException e) {
+            logger.error("could not %s\n with orderId= %d".formatted(sql, orderId));
             throw new SQLException(e);
         }
     }
@@ -223,10 +244,10 @@ public class CommandeDAO {
                 commande.setNumeroCmd(rs.getString("date_created"));
                 commande.setPrixTTC(rs.getDouble("prix_ttc"));
                 commande.setPrixHT(rs.getDouble("prix_ttc") - rs.getDouble("TVA"));
-                List<Article> articlesREPO = articleDAO.getAllPokemons();
+                List<Article> articlesRepo = articleDAO.getAllPokemons();
                 List<Article> articles = new ArrayList<>();
                 for (String _tmp : rs.getString("articles").split(",")) {
-                    for (Article article : articlesREPO) {
+                    for (Article article : articlesRepo) {
                         if (article.getId() == Integer.parseInt(_tmp)) {
                             articles.add(article);
                         }
@@ -236,11 +257,13 @@ public class CommandeDAO {
             }
             return commande;
         } catch (SQLException e) {
+            logger.error("could not %s\n with orderId= %d".formatted(sql, orderId));
             throw new SQLException(e);
         }
     }
-    public void addUserOrder(int userId, int orderId) {
-        String sql = "insert into user_has_order " +
+
+    public void addUserOrder(int userId, int orderId) throws SQLException {
+        String sql = "INSERT INTO user_has_order " +
                 "(order_id, user_id) VALUES " +
                 "(?,?);";
 
@@ -251,9 +274,11 @@ public class CommandeDAO {
 
             int ctrl = ps.executeUpdate();
         } catch (SQLException e) {
-            throw new TechnicalException(new SQLException(e));
+            logger.error("could not %s with orderId= %d && userId= %d".formatted(sql, orderId, userId));
+            throw new SQLException(e);
         }
     }
+
     public List<Commande> getOrdersFromUserId(int userId, int limit) throws SQLException {
         String sql = "SELECT group_concat(user_has_order.order_id) as orders " +
                 "FROM order_, user_has_order " +
@@ -265,16 +290,18 @@ public class CommandeDAO {
 
             ResultSet rs = ps.executeQuery();
             conn.close();
-            List<Commande> commandes = new ArrayList<>();
+            List<Commande> orders = new ArrayList<>();
             if (rs.next()) {
                 String str = rs.getString("orders");
-                if (str != null)
+                if (str != null) {
                     for (String order : str.split(",")) {
-                        commandes.add(getOrderById(Integer.parseInt(order)));
+                        orders.add(getOrderById(Integer.parseInt(order)));
                     }
+                }
             }
-            return commandes;
+            return orders;
         } catch (SQLException e) {
+            logger.error("could not %s with userId= %d".formatted(sql, userId));
             throw new SQLException(e);
         }
     }

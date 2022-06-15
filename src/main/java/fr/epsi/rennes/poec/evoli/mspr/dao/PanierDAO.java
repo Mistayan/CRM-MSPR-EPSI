@@ -37,7 +37,7 @@ public class PanierDAO {
     }
 
     @Async
-    public void addArticle(int articleId, int panierId) {
+    public void addArticle(int articleId, int panierId) throws TechnicalException{
         String sql = "insert into cart_has_article"
                 + "(cart_id, article_id) values (?,?)";
         logger.warn("insert article %d to panier %d".formatted(articleId, panierId));
@@ -51,11 +51,11 @@ public class PanierDAO {
             ps.setInt(2, articleId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("could not add article to DB :: Panier: " + panierId + " & pizzaId: " + articleId);
+            throw new TechnicalException(e);
         }
     }
 
-    public Panier doesPanierExist(int customerId) {
+    public Panier doesPanierExist(int customerId) throws TechnicalException{
         String sql = "select cart_id, customer_id from cart where customer_id = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class PanierDAO {
     }
 
     //Créer un panier => service et controller
-    public int CreatePanier(int customerId) {
+    public int CreatePanier(int customerId) throws TechnicalException{
         String sql = "insert into cart (customer_id) values(?)";
         logger.warn("create panier for customer %d".formatted(customerId));
         try (Connection conn = ds.getConnection();
@@ -93,7 +93,7 @@ public class PanierDAO {
         }
     }
 
-    public Panier getPanierById(int panierId) {
+    public Panier getPanierById(int panierId) throws TechnicalException{
         String sql = "select "
                 + "cart.cart_id as panier_id, "
                 + "cart.customer_id as customer_id, "
@@ -131,16 +131,17 @@ public class PanierDAO {
                     panier.setArticles(articleList);
                     panier.setTotalPrix();
                 }
+                panier.setArticles(articleList);
                 return panier;
             }
             return null;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
     }
 
-    public void removeArticle(int articleId, int panierId) {
+    public void removeArticle(int articleId, int panierId) throws TechnicalException{
         String sql = "DELETE FROM cart_has_article" +
                 "    WHERE cart_id = ?" +
                 "    AND article_id = ?" +
@@ -153,11 +154,11 @@ public class PanierDAO {
             ps.setInt(2, Math.max(articleId, 0));
             ps.executeQuery();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
     }
 
-    public void truncate(int panierId) {
+    public void truncate(int panierId) throws TechnicalException{
         String sql = "DELETE FROM cart_has_article" +
                 "    WHERE cart_id = ?";
         try (Connection conn = ds.getConnection();
@@ -165,7 +166,7 @@ public class PanierDAO {
             ps.setInt(1, Math.max(panierId, 0));
             ps.executeQuery();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
     }
 }

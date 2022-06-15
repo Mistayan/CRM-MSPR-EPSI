@@ -15,6 +15,7 @@ public class Panier {
     private int panierId;
     private int customerId;
     private List<Article> articles;
+    private double TVA;
     private double totalPrix;
 
     public int getId() {
@@ -56,16 +57,25 @@ public class Panier {
         this.customerId = customerId;
     }
 
-    public double getTVA() {
+    public double calc_TVA() {
         double TVA = 0;
         double TTC = 0;
         double HT = 0;
 
         for (Article article : articles) {
             TVA = article.getCategory().getTaxes();
-            TTC += article.getPrix();
-            HT += TTC / (1 + (TVA / 100));
+            double price = article.getPrix();
+            TTC += price;
+            HT += price / (1 + (TVA / 100));
         }
         return TTC - HT;
+    }
+
+    public void setTVA() {
+        TVA = calc_TVA();
+    }
+
+    public double getTVA() {
+        return TVA;
     }
 }

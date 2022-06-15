@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
-
 /**
  * Author : Stephen Mistayan
  * Created on : 5/12/2022 : 11:24 AM:25
@@ -20,7 +18,7 @@ import static org.eclipse.jdt.internal.compiler.codegen.ConstantPool.GetClass;
 
 @Service
 public class PanierService {
-    private static final Logger logger = LogManager.getLogger(GetClass);
+    private static final Logger logger = LogManager.getLogger(PanierService.class);
     private final PanierDAO panierDAO;
 
     @Autowired
@@ -53,7 +51,9 @@ public class PanierService {
              panierId = panierDAO.CreatePanier(customerId);
         }
         logger.debug("getPanierById ? " + newPanier + " : " + panierId);
-        Panier testPanier = panierDAO.getPanierById(panierId);
-        return testPanier.getId() > 1? testPanier : newPanier; // Afin d'eviter un pannier de type erroné
+        Panier panier = panierDAO.getPanierById(panierId);
+        panier.setId(panierId);
+        panier.setCustomerId(customerId);
+        return panier;
     }
 }

@@ -14,6 +14,7 @@ public class Commande {
 
     private String numeroCmd;
     private int OrderId;
+    private String status;
     private String clientEmail;
     private List<Article> articles;
     private double prixHT;
@@ -65,5 +66,13 @@ public class Commande {
 
     public void setPrixTTC(double prixTTC) {
         this.prixTTC = prixTTC;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
