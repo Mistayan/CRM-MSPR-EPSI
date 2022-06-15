@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/js/panier.js"></script>
+    <link href="/css/liste-article.css" rel="stylesheet">
+</head>
+
+<body id="app">
+<div id="panier">
+    <div class="customer-select">
+        <!--  BARRE DE RECHERCHE  -->
+        <label title="Chercher dans les clients">
+            <input placeholder="Trouver un client" type="text" v-model="customersSearch"/>
+        </label>
+        <!--  BARRE DE RECHERCHE  -->
+        <div v-for="customer in customers" v-show="filterListCustomers(customer)">
+            <div>
+                {{ customer.id + " : " }}
+                <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " + customer.lastName }}</a>
+            </div>
+        </div>
+    </div>
+    <div v-if="select">
+        <button v-on:click="redirect('/customer/orders.html')">voir les commandes du client</button>
+    </div>
+    <br><br>
+    <!-- Customers-select END-->
+    <div v-if="select">
+    <!-- Article-select START-->
+    <div class="panier" v-if="panier">
+        Nombre de articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
+        Prix du panier : {{ panier ? panier.totalPrix : 0 }} <br>
+        <button v-on:click="redirect('/public/panier.html')">voir le panier du client</button>
+    </div>
+    <!--  BARRE DE RECHERCHE  -->
+    <label title="Chercher dans les articles">
+        <input placeholder="Trouver un article" type="text" v-model="articlesSearch"/>
+    </label>
+    <!--  BARRE DE RECHERCHE  -->
+
+    <div class="tg-wrap">
+        <table class="tg">
+            <thead>
+            <tr> <!--TABLE HEADER -->
+                <th class="tg-ih3h"> Article </th>
+                <th class="tg-ih3h"> Catégorie </th>
+                <th class="tg-ih3h"> Description </th>
+                <th class="tg-ih3h"> Caractéristiques </th>
+                <th class="tg-ih3h"> Stats </th>
+                <th class="tg-ih3h"> Prix </th>
+            </tr>
+            <tr class="article" v-for="(article, key, index) in articles" v-show="filterListArticle(article)"> <!--v-show: permet d'appliquer un filtre-->
+
+                <!--pour afficher une image liée au 'key' de l'objet json-->
+                <th class="tg-ih3h"
+                    v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a><br>
+                    <img v-bind:src="'/imgs/articles/' + article.label.toLowerCase() + '.png'" v-bind:alt="article" alt="" width="80"/>
+                </th>
+
+                <td class="tg-0pky">{{ article.category.label }}<br>{{ article.category.taxes + "% TVA" }}</td>
+                <td class="tg-0pky">{{ article.description }}</td>
+
+                <!-- PROPERTIES -->
+                <td class="tg-0pky"><span class="values" v-for="(value, key, index) in article.properties"
+                                          v-if="key && value && index > 1">
+                    <span v-if="index % 2"><br></span>
+                    <span class="tg-0pky">
+                        <!-- <img v-bind:src="'/imgs/props/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        {{ key + " : " + displayValue(key, value) }}
+                    </span>
+                </span></td>
+                <!-- PROPS END -->
+                <!-- STATS -->
+                <td class="tg-0pky">
+                    <details about="voir les stats" accesskey="s" class="stats" content="stats" id="stats"
+                             title="stats">
+                    <span class="values" v-for="(value, key, index) in article.stats"
+                          v-if="key && value">
+                        <span v-if="index >= 1"><br></span>
+                        <!--<img v-bind:src="'/imgs/stats/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        {{ key + " : " + value }}
+                    </span>
+                    </details>
+                </td>
+                <!-- STATS END -->
+                <td class="tg-c3ow">{{ article.prix }}</td>
+                <td class="tg-c3ow">
+                    <button v-on:click="ajouterArticle(article.id)">Ajouter</button>
+                </td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    </div>
+</div>
+</body>
+</html>

@@ -13,7 +13,7 @@
 <div id="panier">
     <div class="panier">
         Nombre de articles dans le panier : {{panier && panier.articles? panier.articles.length : 0}}
-        <a href="/">retour à la vitrine</a>
+        <a href="/user/">retour à la vitrine</a>
     </div>
     <div class="tg-wrap">
         <table class="tg">
@@ -43,7 +43,7 @@
             </tr>
             </thead>
         </table>
-        <a href="/">retour à la vitrine</a>
+        <a href="/user">retour à la vitrine</a>
         <button v-if="Object(panier.articles).length" v-on:click="confirmAction()">Commander</button>
     </div>
 

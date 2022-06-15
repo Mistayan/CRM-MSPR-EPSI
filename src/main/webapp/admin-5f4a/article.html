@@ -46,6 +46,7 @@
         <div>
             <label for="label">Nom de l'article:</label><input id="label" size="45" type="text"
                                                                v-model="newArticle.label">
+            <p>Status: {{newArticle.status}}</p>
         </div>
         <div>
             <label for="prix">Prix :</label><input aria-valuemin="0" id="prix" type="number" v-model="newArticle.prix">
@@ -84,7 +85,7 @@
             <button v-if="create" v-on:click="createArticle()">Créer l'article</button>
             <button v-if="modify" v-on:click="modifyArticle()">Changer l'article</button>
             <br>
-            <button v-if="modify" v-on:click="removeArticle()">Supprimer l'article (et ses propriétés)</button>
+            <button v-if="modify" v-on:click="switchArticle(false)">Supprimer l'article (et ses propriétés)</button>
         </div>
     </div>
 </div>

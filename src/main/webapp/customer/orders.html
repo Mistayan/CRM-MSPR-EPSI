@@ -1,59 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <meta charset="UTF-8">
-  <title>Les commandes d'un utilisateur</title>
-  <script defer src="/js/customerOrders.js"></script>
-  <link href="/css/liste-article.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Les commandes d'un utilisateur</title>
+    <script defer src="/js/customerOrders.js"></script>
+    <link href="/css/liste-article.css" rel="stylesheet">
 
 </head>
 <body>
 <div class="customer-orders" id="customer-orders">
-  <div class="tg-wrap">
-    <table class="tg">
-      <thead>
-      <tr>
-        <th class="tg-ih3h"> N° Commande</th>
-        <th class="tg-ih3h"> Nombre d'articles</th>
-        <th class="tg-ih3h"> Prix TTC</th>
-        <th class="tg-ih3h"> Prix HT</th>
-      </tr>
-      <tr v-for="order in orders" v-if="order.orderId && order.articles">
-        <td class="tg-ih3h"> {{ order.numeroCmd }}</td>
-        <td class="tg-ih3h"> {{ order.articles.length }}</td>
-        <td class="tg-ih3h"> {{ displayPrice(order.prixTTC) }}</td>
-        <td class="tg-ih3h"> {{ displayPrice(order.prixHT) }}</td>
-        <td class="tg-ih3h">
-          <details class="tg-wrap" id="order-details" v-if="order.articles">
-            <table class="tg">
-              <thead>
-              <tr>
-                <th class="tg-ih3h">Nom article</th>
-                <th class="tg-ih3h">Quantité</th>
-                <th class="tg-ih3h">Prix</th>
-              </tr>
-              <tr v-for="article in articlesRepo" v-if="countArticleInOrder(article.id, order)">
-                <td class="tg-0pky"> {{ article.label }}</td>
-                <td class="tg-0pky"> {{ countArticleInOrder(article.id, order) }}</td>
-                <td class="tg-0pky"> {{ displayPrice(calc_price_articles_order(article, order)) }}</td>
-              </tr>
-              </thead>
-            </table>
-          </details>
-        </td>
-      </tr>
-      <tr v-if="orders">
-        <td class="tg-ih3h">TOTAL :</td>
-        <td class="tg-ih3h">{{ totalArticles }}</td>
-        <td class="tg-ih3h">{{ displayPrice(totalPrixTTC) }}</td>
-        <td class="tg-ih3h">{{ displayPrice(totalPrixHT) }}</td>
-      </tr>
-      </thead>
-    </table>
-  </div> <!-- Tg-wrap -->
-  <br>
+    <div class="tg-wrap">
+        <table class="tg">
+            <thead>
+            <tr>
+                <th class="tg-ih3h"> N° Commande</th>
+                <th class="tg-ih3h"> Nombre d'articles</th>
+                <th class="tg-ih3h"> Prix TTC</th>
+                <th class="tg-ih3h"> Prix HT</th>
+            </tr>
+            <tr v-for="order in orders" v-if="order.orderId && order.articles">
+                <td class="tg-ih3h"><a href="#">{{ order.numeroCmd }}</a></td>
+                <td class="tg-ih3h"> {{ order.articles.length }}</td>
+                <td class="tg-ih3h"> {{ displayPrice(order.prixTTC) }}</td>
+                <td class="tg-ih3h"> {{ displayPrice(order.prixHT) }}</td>
+                <td class="tg-ih3h">
+                    <details class="tg-wrap" id="order-details" v-if="order.articles">
+                        <table class="tg">
+                            <thead>
+                            <tr>
+                                <th class="tg-ih3h">Nom article</th>
+                                <th class="tg-ih3h">Quantité</th>
+                                <th class="tg-ih3h">Prix</th>
+                            </tr>
+                            <tr v-for="article in articlesRepo" v-if="countArticleInOrder(article.id, order)">
+                                <td class="tg-0pky"> {{ article.label }}</td>
+                                <td class="tg-0pky"> {{ countArticleInOrder(article.id, order) }}</td>
+                                <td class="tg-0pky"> {{ displayPrice(calc_price_articles_order(article, order)) }}</td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </details>
+                </td>
+            </tr>
+            <tr v-if="orders">
+                <td class="tg-ih3h">TOTAL :</td>
+                <td class="tg-ih3h">{{ totalArticles }}</td>
+                <td class="tg-ih3h">{{ displayPrice(totalPrixTTC) }}</td>
+                <td class="tg-ih3h">{{ displayPrice(totalPrixHT) }}</td>
+            </tr>
+            </thead>
+        </table>
+    </div> <!-- Tg-wrap -->
+    <br>
 
 </div>
 
