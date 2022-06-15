@@ -35,15 +35,15 @@ public class CustomerService {
     }
 
     public int addCustomer(Customer customer) {
-        int customerId = customerDAO.addCustomer(customer);
         try {
             String userName = SecurityContextHolder.getContext().getAuthentication().getName();
             int userId = userDAO.getUserIdFromName(userName);
+            int customerId = customerDAO.addCustomer(customer, userId);
             customerDAO.addCustomerCommRelation(userId, customerId);
+            return customerId;
         }catch (SQLException e){
             throw new TechnicalException(new SQLException(e));
         }
-        return customerId;
     }
 
     @Transactional

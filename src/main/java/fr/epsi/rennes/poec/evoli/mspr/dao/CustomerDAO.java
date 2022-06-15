@@ -57,13 +57,13 @@ public class CustomerDAO {
             throw new TechnicalException(e);
         }
     }
-    public int addCustomer(Customer c) {
+    public int addCustomer(Customer c, int userId) {
         String sql = "INSERT INTO customer " +
                 "(first_name, last_name, email, phone," +
                 " country, city, postal_code," +
-                " way_number, way_type, way_name) " +
+                " way_number, way_type, way_name, create_time, added_by) " +
                 "VALUES " +
-                "(?,?,?,?,?,?,?,?,?,?) " + // 10
+                "(?,?,?,?,?,?,?,?,?,?,?,?) " + // 12
                 "";
 
         try (Connection conn = ds.getConnection();
@@ -78,7 +78,8 @@ public class CustomerDAO {
             ps.setInt(8, c.getAddress().getWayNumber());
             ps.setString(9, c.getAddress().getWayType());
             ps.setString(10, c.getAddress().getWayName());
-
+            ps.setString(11, String.valueOf(LocalDateTime.now()));
+            ps.setInt(12, userId);
             int ctrl = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next())
@@ -108,8 +109,9 @@ public class CustomerDAO {
                 "first_name = ?, last_name = ?, " +
                 "email = ?, phone = ?, " +
                 "country = ?, city = ?, postal_code = ?, " +
-                "way_number = ?, way_type = ?, way_name = ? " + // 10
-                "WHERE customer_id = ? " + // 11
+                "way_number = ?, way_type = ?, way_name = ?, " +
+                "last_modified = ?" + // 11
+                "WHERE customer_id = ? " + // 12
                 ";";
 
         try (Connection conn = ds.getConnection();
@@ -125,7 +127,8 @@ public class CustomerDAO {
             ps.setInt(8, a.getWayNumber());
             ps.setString(9, a.getWayType());
             ps.setString(10, a.getWayName());
-            ps.setInt(11, c.getId());
+            ps.setString(11, String.valueOf(LocalDateTime.now()));
+            ps.setInt(12, c.getId());
 
             int ctrl = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
