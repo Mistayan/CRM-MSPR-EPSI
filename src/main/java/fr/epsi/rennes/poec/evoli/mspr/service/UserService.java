@@ -4,6 +4,8 @@ import fr.epsi.rennes.poec.evoli.mspr.dao.CommandeDAO;
 import fr.epsi.rennes.poec.evoli.mspr.dao.UserDAO;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
 import fr.epsi.rennes.poec.evoli.mspr.domain.User;
+import fr.epsi.rennes.poec.evoli.mspr.domain.UserRole;
+import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,12 +56,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public int userOrder(String userName, int panierId) {
+    public int userOrder(String userName, int panierId) throws SQLException {
         try {
-            logger.info("UserService ::: user : " + userName + "is ordering : \nPanierId : " + panierId);
+            logger.info("UserService ::: " + userName + "is ordering : \nPanierId : " + panierId);
             int userId = userDAO.getUserIdFromName(userName);
             int orderId = commandeDAO.doCustomerOrder(userId, panierId);
-            logger.info("UserService ::: tracking order %d by user %s".formatted(orderId, userName));
+            logger.info("UserService ::: tracking order %d by %s".formatted(orderId, userName));
             commandeDAO.addUserOrder(userId, orderId);
             logger.debug("done");
             return orderId;
@@ -78,7 +80,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Commande> getOrdersFromCustomerId(int customerId, int limit) {
+    public List<Commande> getOrdersFromCustomerId(int customerId, int limit) throws SQLException {
         try {
             logger.info("UserService ::: getCustomerIdOrders : " + customerId);
             return commandeDAO.getOrdersFromCustomerId(customerId, limit); //todo? set minimumLimit as superGlobal
@@ -87,11 +89,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public Commande getOrderByOrderId(int orderId) {
+    public Commande getOrderByOrderId(int orderId) throws SQLException {
         try {
             return commandeDAO.getOrderById(orderId);
         } catch (SQLException e) {
-            throw new TechnicalException(e);
+            throw new SQLException(e);
         }
     }
 
@@ -101,6 +103,25 @@ public class UserService implements UserDetailsService {
         } catch (SQLException e) {
             throw new TechnicalException(new SQLException(e));
         }
+    }
+
+    public List<User> getAllUsers() {
+        try {
+            return userDAO.getAllUsers();
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    public List<UserRole> getAllRoles() {
+        return userDAO.getAllRoles();
+    }
+
+    public UserDetails modifyUser(User user) throws Exception {
+        if (!userDAO.modifyUser(user)) {
+            throw new BusinessException("cannot change user %d".formatted(user.getId()));
+        }
+        return user;
     }
 }
 

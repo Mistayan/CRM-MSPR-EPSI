@@ -5,7 +5,7 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script defer src="/js/customer.js"></script>
+    <script defer src="/ressources/js/customer.js"></script>
     <meta charset="UTF-8">
     <title>Ajouter un client chez ACME</title>
 </head>
@@ -21,7 +21,8 @@
             <div>
                 {{ customer.id + " : " }}
                 <a href="#" v-on:click="newUser = Object(customer);
-                                        modify = true; create = false; select = false">{{ customer.firstName + " " + customer.lastName }}</a>
+                                        modify = true; create = false; select = false">{{ customer.firstName + " " +
+                    customer.lastName }}</a>
             </div>
         </div>
         <div>
@@ -40,7 +41,8 @@
             <h2>Addresse complète :</h2> <br>
             <label for="country">pays :</label><input id="country" type="text" v-model="newUser.address.country"><br>
             <label for="city">ville :</label><input id="city" type="text" v-model="newUser.address.city">
-            <label for="postal">Code Postal :</label><input id="postal" type="number" v-model="newUser.address.postalCode">
+            <label for="postal">Code Postal :</label><input id="postal" type="number"
+                                                            v-model="newUser.address.postalCode">
             <table>
                 <thead>
                 <tr>

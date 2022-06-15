@@ -1,6 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.dao;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.User;
+import fr.epsi.rennes.poec.evoli.mspr.domain.UserRole;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,10 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class UserDAO {
@@ -22,22 +22,20 @@ public class UserDAO {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserDAO(DataSource ds, PasswordEncoder passwordEncoder) {
+    public UserDAO(DataSource ds, PasswordEncoder passwordEncoder) throws SQLException {
         this.ds = ds;
         this.passwordEncoder = passwordEncoder;
     }
 
     public User getUserByEmail(String mail) throws SQLException {
 
-        String sql = "SELECT email, password, user_role, nickname, date_created" +
-                " FROM user" +
-                " WHERE email = ?";
+        String sql = "SELECT email, password, user_role, nickname, date_created FROM user WHERE email = ?";
         try (Connection conn = ds.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mail);
-            logger.debug("getUserByEmail(%s)".formatted(mail));
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) { // pour le premier élément de la requête:
+                logger.debug("getUserByEmail" + mail);
                 User user = new User();
                 user.setEmail(rs.getString(1));
                 user.setPassword(rs.getString(2));
@@ -83,10 +81,72 @@ public class UserDAO {
             if (!rs.next()) {
                 throw new SQLException("error: user not found");
             }
-            return rs.getInt(1);
+            return rs.getInt(1) == -1 ? 0 : rs.getInt(1);
         } catch (SQLException e) {
-            logger.trace("could not %s with mail= %s".formatted(sql, mail));
             throw new TechnicalException(new SQLException(e));
+        }
+    }
+
+    public List<User> getAllUsers() throws SQLException {
+        String sql = "SELECT * FROM user ";
+        try (Connection conn = ds.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("user_id"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword("");
+                user.setRole(rs.getString("user_role"));
+                user.setNickname(rs.getString("nickname"));
+                user.setDateCreated(rs.getString("date_created"));
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new TechnicalException(new SQLException(e));
+        }
+    }
+
+    public List<UserRole> getAllRoles() {
+        String sql = "SELECT label FROM user_role";
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            List<UserRole> roles = new ArrayList<>();
+            ResultSet rs = ps.executeQuery();
+            logger.debug("ok");
+            while (rs.next()) {
+                UserRole role = UserRole.valueOf("%s%s".formatted("USER_", rs.getString("label")));
+                roles.add(role);
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new TechnicalException(new SQLException(e));
+        }
+    }
+
+    public boolean modifyUser(User user) throws SQLException {
+        String sql = "update user set email = ? ,nickname = ? ,user_role = ? WHERE user_id = ?;";
+        logger.debug("modUser");
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getNickname());
+            ps.setString(3, user.getRole() == null ? "ROLE_NOONE" : user.getRole());
+            ps.setInt(4, user.getId());
+            logger.debug("exec");
+            int ctrl = ps.executeUpdate();
+            logger.debug("ok, parsing");
+
+            if (ctrl > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
         }
     }
 }

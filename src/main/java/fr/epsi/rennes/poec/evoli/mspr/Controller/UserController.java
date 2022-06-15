@@ -48,12 +48,18 @@ public class UserController {
     public Response<Commande> order(@RequestParam int panierId) {
 //                                @AuthenticationPrincipal User user) {
         Response<Commande> response = new Response<>();
-        logger.info("########### Action : ordering cart " + panierId);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        int orderId = userService.userOrder(auth.getName(), panierId);
-        response.setData(userService.getOrderByOrderId(orderId));
-        response.setSuccess(true);
-        return response;
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            logger.info("%s : ordering cart %d".formatted(auth.getName(), panierId));
+            int orderId = userService.userOrder(auth.getName(), panierId);
+            response.setData(userService.getOrderByOrderId(orderId));
+            response.setSuccess(true);
+            return response;
+        } catch (SQLException e) {
+            response.setSuccess(false);
+            logger.fatal("user/order route userService.userOrder failed :::> %s".formatted(e));
+            throw new TechnicalException(e);
+        }
     }
 
     @GetMapping("/customer/orders")
@@ -61,13 +67,19 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         // on récupère le nom de l'utilisateur via l'application, et son token JSession
         Response<List<Commande>> response = new Response<>();
-            int userId = userService.getUserIdFromName(auth.getName());
-            logger.info("########### Action : fetching orders from customerId : " + customerId);
+        try {
+            logger.trace("%s : fetching orders from customerId : %d"
+                    .formatted(auth.getName(), customerId));
             List<Commande> commandes = userService.getOrdersFromCustomerId(customerId, this.limit);
             response.setData(commandes);
             response.setSuccess(true);
             return response;
+        } catch (SQLException e) {
+            response.setSuccess(false);
+            throw new RuntimeException("Could not load user's orders");
+        }
     }
+
     @GetMapping("/user/orders")
     public Response<List<Commande>> getUserOrders(int userId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +87,8 @@ public class UserController {
         Response<List<Commande>> response = new Response<>();
         try {
             int requesterId = userService.getUserIdFromName(auth.getName());
-            logger.info("########### Action : requesterId: %d fetching orders from userId : %d".formatted(requesterId, userId));
+            logger.trace("%s : requesterId: %d fetching orders from userId : %d"
+                    .formatted(auth.getName(), requesterId, userId));
             List<Commande> commandes = userService.getOrdersFromUserId(userId, this.limit);
             response.setData(commandes);
             response.setSuccess(true);
@@ -85,19 +98,20 @@ public class UserController {
             throw new RuntimeException("Could not load user's orders");
         }
     }
+
     @GetMapping("/user/id")
     public Response<Integer> getUserId() throws BusinessException {
         Response<Integer> response = new Response<>();
 
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
             int userId = userService.getUserIdFromName(userName);
             response.setSuccess(userId > 0);
             response.setData(userId);
             return response;
         } catch (TechnicalException e) {
             response.setSuccess(false);
-            throw new BusinessException("Could not load user's id" + e);
+            throw new BusinessException("Could not load user's id for %s".formatted(userName) + e);
         }
     }
 }
