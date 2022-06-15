@@ -5,7 +5,7 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script defer src="/js/customer.js"></script>
+    <script defer src="/ressources/js/customer.js"></script>
     <meta charset="UTF-8">
     <title>Ajouter un client chez ACME</title>
 </head>
@@ -18,9 +18,10 @@
         </label>
         <!--  BARRE DE RECHERCHE  -->
         <div v-for="customer in customers" v-show="filterListCustomers(customer)"> <!--Liste filtrée dynamiquement-->
-                {{ customer.id + " : " }}
-                <a href="#" v-on:click="newCustomer = Object(customer);
-                                        modify = true; create = false; select = false">{{ customer.firstName + " " + customer.lastName }}</a>
+            {{ customer.id + " : " }}
+            <a href="#" v-on:click="newCustomer = Object(customer);
+                                        modify = true; create = false; select = false">{{ customer.firstName + " " +
+                customer.lastName }}</a>
         </div>
         <div>
             <button v-on:click="create = true; modify = false; resetValues()">Ajouter un nouveau client</button>
@@ -36,12 +37,15 @@
         </div>
         <div id="client-address">
             <h2>Addresse complète :</h2> <br>
-            <p v-for="country in countries" v-show="filterList(newCustomer.address.country)">{{ newCustomer.address.country }}</p>
+            <p v-for="country in countries" v-show="filterList(newCustomer.address.country)">{{
+                newCustomer.address.country }}</p>
             <!--Liste filtrée dynamiquement-->
 
-            <label for="country">pays :</label><input id="country" type="text" v-model="newCustomer.address.country"><br>
+            <label for="country">pays :</label><input id="country" type="text"
+                                                      v-model="newCustomer.address.country"><br>
             <label for="city">ville :</label><input id="city" type="text" v-model="newCustomer.address.city">
-            <label for="postal">Code Postal :</label><input id="postal" type="number" v-model="newCustomer.address.postalCode">
+            <label for="postal">Code Postal :</label><input id="postal" type="number"
+                                                            v-model="newCustomer.address.postalCode">
             <table>
                 <thead>
                 <tr>

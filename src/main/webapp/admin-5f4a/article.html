@@ -5,7 +5,7 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script defer src="/js/article.js"></script>
+    <script defer src="/ressources/js/article.js"></script>
     <meta charset="UTF-8">
     <title>Editez la vitrine de ACME</title>
 </head>
@@ -34,7 +34,8 @@
             <label for="category">catégorie :</label>
             <select id="category" v-model="newCat">
                 <option :key="index"
-                        v-for="(v, key, index) in categories" v-on:click="select = v; newArticle.category.id = v.id">{{v.id}} : {{v.label}}
+                        v-for="(v, key, index) in categories" v-on:click="select = v; newArticle.category.id = v.id">
+                    {{v.id}} : {{v.label}}
                 </option>
             </select>
         </div>

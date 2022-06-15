@@ -5,8 +5,8 @@
     <title>Index</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script defer src="/js/panier.js"></script>
-    <link href="/css/liste-article.css" rel="stylesheet">
+    <script defer src="/ressources/js/panier.js"></script>
+    <link href="/ressources/css/liste-article.css" rel="stylesheet">
 </head>
 
 <body id="app">
@@ -61,7 +61,8 @@
                     <th class="tg-ih3h"
                         v-on:click="ajouterArticle(article.id)"><a href="#">{{ article.label }}</a><br>
                         <img alt="" v-bind:alt="article"
-                             v-bind:src="'/imgs/articles/' + article.label.toLowerCase() + '.png'" width="80"/>
+                             v-bind:src="'/ressources/imgs/articles/' + article.label.toLowerCase() + '.png'"
+                             width="80"/>
                     </th>
 
                     <td class="tg-0pky">{{ article.category.label }}<br>{{ article.category.taxes + "% TVA" }}</td>
@@ -72,7 +73,7 @@
                                               v-if="key && value && index > 1">
                     <span v-if="index % 2"><br></span>
                     <span class="tg-0pky">
-                        <!-- <img v-bind:src="'/imgs/props/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        <!-- <img v-bind:src="'/ressources/imgs/props/' + key + '.png'" v-bind:alt="key" alt=""/>-->
                         {{ key + " : " + displayValue(key, value) }}
                     </span>
                 </span></td>
@@ -84,7 +85,7 @@
                     <span class="values" v-for="(value, key, index) in article.stats"
                           v-if="key && value">
                         <span v-if="index >= 1"><br></span>
-                        <!--<img v-bind:src="'/imgs/stats/' + key + '.png'" v-bind:alt="key" alt=""/>-->
+                        <!--<img v-bind:src="'/ressources/imgs/stats/' + key + '.png'" v-bind:alt="key" alt=""/>-->
                         {{ key + " : " + value }}
                     </span>
                         </details>

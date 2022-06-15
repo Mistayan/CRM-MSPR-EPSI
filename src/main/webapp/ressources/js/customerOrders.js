@@ -34,7 +34,7 @@ const customerOrders = new Vue({
                     this.totalPrixHT.toFixed(2)
                 });
         }
-        axios.get("/user/article")
+        axios.get("/public/article")
             .then(response => {
                 this.articlesRepo = response.data.data
             });
