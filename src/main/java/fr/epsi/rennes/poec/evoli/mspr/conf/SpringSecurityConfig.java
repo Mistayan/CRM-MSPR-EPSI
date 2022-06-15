@@ -33,30 +33,49 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-//                .notifyAll();
+                .passwordEncoder(passwordEncoder())
+        //.and()
+        //.ldapAuthentication()
+        //.notifyAll()
+        ;
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        super.configure(http);
         http
-                .csrf().disable()  //should be removed ?
+                .headers()
+                .xssProtection()
+                .xssProtectionEnabled(true)
+//                .and()
+//                .contentSecurityPolicy("" +
+//                        "script-src 'self' https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js; " +
+//                        "script-src 'self' https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js; " +
+//                        "script-src 'self'; form-action 'self'; " +
+//                        "img-scr 'self';")
+        ;
+        http
+                .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/**.html").permitAll().filterSecurityInterceptorOncePerRequest(true)
                 .antMatchers("/public/**").permitAll().filterSecurityInterceptorOncePerRequest(true)
-                .antMatchers("/user/**").hasAnyRole("USER","COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
-                .antMatchers("/comm/**").hasAnyRole("COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
-                .antMatchers("/admin/**", "/actuator/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("USER", "COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/customer/**").hasAnyRole("COMM", "ADMIN", "USER").filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/comm**/**").hasAnyRole("COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
+                .antMatchers("/admin**/**", "/actuator/**").hasRole("ADMIN").filterSecurityInterceptorOncePerRequest(true)
 //                .antMatchers("/**").hasRole("ADMIN") // Debug only
                 .and()
                 .formLogin()
 //                .loginPage("/login.html")
-//                .loginProcessingUrl("/user/login-success.html")
+//                .loginProcessingUrl("/user/login-checker")
                 .defaultSuccessUrl("/user/login-success.html")
                 .failureUrl("/login.html?error=true")
                 .and()
                 .logout()
 //                .logoutUrl("/logout")
-                .deleteCookies("JSESSIONID");
+                .deleteCookies("Arma3")
+        ;
     }
 
     @Bean
@@ -65,6 +84,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public Logger appLogger() {return LogManager.getLogger("app");}
+    public Logger appLogger() {return LogManager.getLogger();}
 
 }
