@@ -1,8 +1,8 @@
 package fr.epsi.rennes.poec.evoli.mspr.service;
 
-import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleDAO;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
+import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,6 +53,7 @@ public class ArticleService {
     public List<Article> getAllPokemonsAdmin() {
         return articleDAO.getAllPokemonsAdmin();
     }
+
     @Transactional(readOnly = true)
     public List<Article> getPokemonById(int id) {
         return articleDAO.getAllPokemonsAdmin();

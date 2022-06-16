@@ -5,7 +5,6 @@ import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +42,7 @@ public class CommController {
         }
         return response;
     }
+
     @PostMapping("/comm/customer/add")
     public Response<Void> addCustomer(@RequestBody Customer customer) throws BusinessException {
         Response<Void> response = new Response<>();
@@ -54,6 +54,7 @@ public class CommController {
         }
         return response;
     }
+
     @PostMapping("/comm/customer/remove")
     public Response<Void> removeCustomer(@RequestBody Customer customer) throws BusinessException {
         Response<Void> response = new Response<>();
@@ -65,6 +66,7 @@ public class CommController {
         }
         return response;
     }
+
     @GetMapping("/comm/customers")
     public Response<List<Customer>> getAllCustomers() throws BusinessException {
         Response<List<Customer>> response = new Response<>();

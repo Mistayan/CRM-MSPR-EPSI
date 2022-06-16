@@ -41,7 +41,7 @@ public class CustomerService {
             int customerId = customerDAO.addCustomer(customer, userId);
             customerDAO.addCustomerCommRelation(userId, customerId);
             return customerId;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new TechnicalException(new SQLException(e));
         }
     }

@@ -1,10 +1,5 @@
 package fr.epsi.rennes.poec.evoli.mspr.domain;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Author: Stephen Mistayan
  * Created on : 5/9/2022 : 7:30 AM:28

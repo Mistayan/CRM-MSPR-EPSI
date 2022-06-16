@@ -12,7 +12,7 @@ public class SecuredString {
     final String securedString;
 
     public SecuredString(String securedString) {
-        
+
         this.securedString = securedString;
     }
 }

@@ -38,15 +38,15 @@ public class Panier {
         return totalPrix;
     }
 
+    public void setTotalPrix(double totalPrix) {
+        this.totalPrix = totalPrix;
+    }
+
     public void setTotalPrix() {
         totalPrix = 0;
         for (Article article : articles) {
             totalPrix += article.getPrix();
         }
-    }
-
-    public void setTotalPrix(double totalPrix) {
-        this.totalPrix = totalPrix;
     }
 
     public int getCustomerId() {

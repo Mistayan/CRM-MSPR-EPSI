@@ -3,7 +3,6 @@ package fr.epsi.rennes.poec.evoli.mspr.dao;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Article;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Panier;
-import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mariadb.jdbc.Statement.*;
+import static org.mariadb.jdbc.Statement.RETURN_GENERATED_KEYS;
 
 /**
  * Author : Stephen Mistayan

@@ -1,7 +1,7 @@
 package fr.epsi.rennes.poec.evoli.mspr.service;
 
-import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import fr.epsi.rennes.poec.evoli.mspr.dao.ArticleDAO;
+import fr.epsi.rennes.poec.evoli.mspr.domain.ArticleCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

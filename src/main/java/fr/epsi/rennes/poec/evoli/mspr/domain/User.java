@@ -15,7 +15,6 @@ public class User implements UserDetails {
     private String password;
     private String nickname;
     private String dateCreated;
-
     private String role;
 
     public String getEmail() {
@@ -30,6 +29,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null || role.length() == 0) {
+            return null;
+        }
         return List.of(UserRole.valueOf(role));
     }
 
@@ -94,9 +96,14 @@ public class User implements UserDetails {
         this.dateCreated = dateCreated;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }

@@ -3,7 +3,6 @@ package fr.epsi.rennes.poec.evoli.mspr.Controller;
 
 import fr.epsi.rennes.poec.evoli.mspr.domain.Commande;
 import fr.epsi.rennes.poec.evoli.mspr.domain.Response;
-import fr.epsi.rennes.poec.evoli.mspr.domain.User;
 import fr.epsi.rennes.poec.evoli.mspr.exception.BusinessException;
 import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import fr.epsi.rennes.poec.evoli.mspr.service.UserService;
@@ -11,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

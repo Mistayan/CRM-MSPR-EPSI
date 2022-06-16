@@ -8,7 +8,7 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
 -- -----------------------------------------------------
 -- Schema test2_acme
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `test2_acme`;
+DROP SCHEMA IF EXISTS `test_acme`;
 
 -- -----------------------------------------------------
 -- Schema test_acme

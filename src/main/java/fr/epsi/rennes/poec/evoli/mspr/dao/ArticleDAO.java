@@ -8,7 +8,6 @@ import fr.epsi.rennes.poec.evoli.mspr.exception.TechnicalException;
 import fr.epsi.rennes.poec.evoli.mspr.parsers.PokemonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.intellij.lang.annotations.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -151,7 +150,6 @@ public class ArticleDAO {
     }
 
     public List<Article> getAllPokemonsAdmin() throws TechnicalException {
-        @Language("SQL")
         String sql = "SELECT a.article_id as article_id, a.label as label, a.prix as prix," +
                 " a.description as description, a.code_article as code_article, a.date_created as date," +
                 " a.enabled as enabled, " +
