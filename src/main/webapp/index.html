@@ -71,7 +71,7 @@
                     <!-- PROPERTIES -->
                     <td class="tg-0pky"><span class="values" v-for="(value, key, index) in article.properties"
                                               v-if="key && value && index > 1">
-                    <span v-if="index % 2"><br></span>
+                    <span><br></span>
                     <span class="tg-0pky">
                         <!-- <img v-bind:src="'/ressources/imgs/props/' + key + '.png'" v-bind:alt="key" alt=""/>-->
                         {{ key + " : " + displayValue(key, value) }}
