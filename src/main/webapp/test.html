@@ -1,0 +1,29 @@
+<html>
+<head class="scripts">
+
+    <title></title>
+    <script
+            crossorigin="anonymous"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            src="https://code.jquery.com/jquery-3.3.1.js">
+    </script>
+    <script>
+        $(function () {
+            $("#scripts").load("/ressources/templates/imports.html");
+            $("#header").load("/ressources/templates/header.html");
+            $("#footer").load("/ressources/templates/footer.html");
+            $("#pages").load("/" + window.sessionStorage.getItem("nav"))
+        });
+    </script>
+    <script class="script">
+
+    </script>
+</head>
+<body>
+<div id="header"></div>
+
+<!-- la page en elle même-->
+
+<div id="footer"></div>
+</body>
+</html>
