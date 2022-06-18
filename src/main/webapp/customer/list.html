@@ -16,7 +16,7 @@
     <link href="/ressources/css/liste-article.css" rel="stylesheet">
     <link href="/ressources/css/style.css" rel="stylesheet">
 
-    <script defer src="/ressources/js/panier.js"></script>
+    <script defer src="/ressources/js/customer.js"></script>
     <meta charset="UTF-8">
     <title>Liste des clients</title>
 </head>
@@ -37,40 +37,41 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a aria-current="page" class="nav-link " href="/index.html">home</a>
+                    <a class="nav-link" href="/user/order.html">Faire une commande</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href=/customer/orders.html>voir les commandes<br> du client</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/public/articles.html">produits</a>
+                    <a class="nav-link" href=/user/orders.html>voir mes commandes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/user/order.html">Faire une commande</a>
+                    <a class="nav-link align-content-center" href="/logout">Se déconnecter</a>
                 </li>
+
             </ul>
 
         </div>
     </div>
 </nav>
 <!----------------------------------------------------------------------------------------->
-<div id="panier">
+<div id="customerApp">
     <div class="customer-select">
         <!--  BARRE DE RECHERCHE  -->
         <label title="Chercher dans les clients">
-            <input placeholder="Trouver un client" type="text" v-model="customersSearch"/>
+            <input placeholder="Trouver un client" type="text" v-model="search"/>
         </label>
         <!--  BARRE DE RECHERCHE  -->
         <div v-for="customer in customers" v-show="filterListCustomers(customer)">
             <div>
                 {{ customer.id + " : " }}
-                <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " +
+                <a href="#" v-on:click="this.selectCustomer(customer);select = true">{{ customer.firstName + " " +
                     customer.lastName }}</a>
             </div>
         </div>
     </div>
     <div v-if="select">
-        <button v-on:click="redirect('/customer/orders.html')">voir les commandes du client</button>
+        <button v-on:click="redirect('/customer/orders.html')">Voir les commandes du client</button>
     </div>
 </div>
 </body>

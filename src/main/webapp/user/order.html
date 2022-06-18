@@ -56,12 +56,12 @@
         </label>
         <!--  BARRE DE RECHERCHE  -->
         <div v-for="customer in customers" v-show="filterListCustomers(customer)">
-            <div>
-                {{ customer.id + " : " }}
+            <div> {{ customer.id + " : " }}
                 <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " +
                     customer.lastName }}</a>
             </div>
         </div>
+        <span v-if="select"> Actuellement sélectionné : {{uName}} </span>
     </div>
     <div v-if="select">
         <button v-on:click="redirect('/customer/orders.html')">voir les commandes du client</button>
