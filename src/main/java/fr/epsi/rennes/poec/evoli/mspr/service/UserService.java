@@ -32,15 +32,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         try {
+            logger.debug(username);
             User user = userDAO.getUserByEmail(username);
             if (user == null) {
                 throw new SQLException("no such user");
             }
             return user;
         } catch (SQLException e) {
-            throw new TechnicalException(new UsernameNotFoundException("User not found : " + username));
+            throw new RuntimeException("email + password incorrect");
         }
     }
 
