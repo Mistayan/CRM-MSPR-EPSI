@@ -34,9 +34,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder())
-        //.and()
-        //.ldapAuthentication()
-        //.notifyAll()
+        ;
+        auth.jdbcAuthentication()
         ;
 
     }
@@ -48,12 +47,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers()
                 .xssProtection()
                 .xssProtectionEnabled(true)
-//                .and()
-//                .contentSecurityPolicy("" +
-//                        "script-src 'self' https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js; " +
-//                        "script-src 'self' https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js; " +
-//                        "script-src 'self'; form-action 'self'; " +
-//                        "img-scr 'self';")
         ;
         http
                 .csrf().disable()
@@ -64,16 +57,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/customer/**").hasAnyRole("COMM", "ADMIN", "USER").filterSecurityInterceptorOncePerRequest(true)
                 .antMatchers("/comm**/**").hasAnyRole("COMM", "ADMIN").filterSecurityInterceptorOncePerRequest(true)
                 .antMatchers("/admin**/**", "/actuator/**").hasRole("ADMIN").filterSecurityInterceptorOncePerRequest(true)
-//                .antMatchers("/**").hasRole("ADMIN") // Debug only
                 .and()
                 .formLogin()
-//                .loginPage("/login.html")
-//                .loginProcessingUrl("/user/login-checker")
                 .defaultSuccessUrl("/user/login-success.html")
                 .failureUrl("/login.html?error=true")
                 .and()
                 .logout()
-//                .logoutUrl("/logout")
                 .deleteCookies("Arma3")
         ;
     }
