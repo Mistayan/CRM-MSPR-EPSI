@@ -1,669 +1,86 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
-SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
-SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
-        'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
-
--- -----------------------------------------------------
--- Schema acme
--- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `acme`;
-CREATE SCHEMA IF NOT EXISTS `acme` DEFAULT CHARACTER SET utf8;
-USE `acme`;
-
--- -----------------------------------------------------
--- Table `category`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `category`;
-
-CREATE TABLE IF NOT EXISTS `category`
-(
-    `category_id` INT          NOT NULL,
-    `label`       VARCHAR(255) NOT NULL,
-    `taxes`       DOUBLE(5, 2) NULL DEFAULT NULL,
-    PRIMARY KEY (`category_id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `category_id_UNIQUE` ON `category` (`category_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `pokemon_properties`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `pokemon_properties`;
-
-CREATE TABLE IF NOT EXISTS `pokemon_properties`
-(
-    `prop_id` INT           NOT NULL AUTO_INCREMENT,
-    `type`    VARCHAR(255)  NOT NULL,
-    `taille`  DOUBLE(3, 1)  NOT NULL,
-    `poids`   DOUBLE(10, 2) NOT NULL,
-    `Level`   INT           NOT NULL DEFAULT '1',
-    `Exp`     INT           NOT NULL DEFAULT '0',
-    `ATK`     INT           NOT NULL,
-    `DEF`     INT           NOT NULL,
-    `SPD`     INT           NOT NULL,
-    `ATKSPE`  INT           NOT NULL,
-    `DEFSPE`  INT           NOT NULL,
-    `PV`      INT           NOT NULL DEFAULT '0',
-    `PP`      INT           NOT NULL DEFAULT '0',
-    PRIMARY KEY (`prop_id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 7
-    DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `article`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `article`;
-
-CREATE TABLE IF NOT EXISTS `article`
-(
-    `article_id`    INT UNSIGNED  NOT NULL AUTO_INCREMENT,
-    `code_article`  VARCHAR(45)   NULL     DEFAULT 'CONCAT(label, \'_\', category_id)',
-    `label`         VARCHAR(45)   NOT NULL,
-    `prix`          DOUBLE(10, 2) NOT NULL,
-    `date_created`  TIMESTAMP     NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `description`   TEXT          NULL     DEFAULT NULL,
-    `enabled`       BIT(1)        NOT NULL DEFAULT b'1',
-    `last_modified` TIMESTAMP     NULL     DEFAULT NULL,
-    `category_id`   INT           NOT NULL,
-    `property_id`   INT           NOT NULL,
-    PRIMARY KEY (`article_id`),
-    CONSTRAINT `fk_article_category1`
-        FOREIGN KEY (`category_id`)
-            REFERENCES `category` (`category_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_article_pokemon_properties1`
-        FOREIGN KEY (`property_id`)
-            REFERENCES `pokemon_properties` (`prop_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 5
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `article_article_id_index` ON `article` (`article_id` ASC);
-
-CREATE INDEX `fk_article_category1_idx` ON `article` (`category_id` ASC);
-
-CREATE INDEX `fk_article_pokemon_properties1_idx` ON `article` (`property_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `customer`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `customer`;
-
-CREATE TABLE IF NOT EXISTS `customer`
-(
-    `customer_id`   INT          NOT NULL AUTO_INCREMENT,
-    `first_name`    VARCHAR(30)  NOT NULL,
-    `last_name`     VARCHAR(30)  NOT NULL,
-    `email`         VARCHAR(255) NULL     DEFAULT NULL,
-    `phone`         VARCHAR(20)  NULL     DEFAULT NULL,
-    `country`       VARCHAR(255) NOT NULL,
-    `city`          VARCHAR(255) NOT NULL,
-    `postal_code`   VARCHAR(12)  NOT NULL,
-    `way_number`    INT          NULL     DEFAULT NULL,
-    `way_type`      VARCHAR(30)  NOT NULL,
-    `way_name`      VARCHAR(255) NOT NULL,
-    `create_time`   TIMESTAMP    NULL     DEFAULT NULL,
-    `last_modified` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `enabled`       TINYINT(1)   NOT NULL DEFAULT '1',
-    `added_by`      INT          NOT NULL,
-    PRIMARY KEY (`customer_id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 7
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `Customers_pk_2` ON `customer` (`first_name` ASC, `last_name` ASC);
-
-CREATE UNIQUE INDEX `customer_email_uindex` ON `customer` (`email` ASC);
-
-
--- -----------------------------------------------------
--- Table `cart`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `cart`;
-
-CREATE TABLE IF NOT EXISTS `cart`
-(
-    `cart_id`      INT       NOT NULL AUTO_INCREMENT,
-    `date_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `last_user`    INT       NULL,
-    `customer_id`  INT       NOT NULL,
-    PRIMARY KEY (`cart_id`, `customer_id`),
-    CONSTRAINT `fk_cart_customer1`
-        FOREIGN KEY (`customer_id`)
-            REFERENCES `customer` (`customer_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 202
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `cart_cart_id_customer_id_index` ON `cart` (`cart_id` ASC);
-
-CREATE INDEX `fk_cart_customer1_idx` ON `cart` (`customer_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `cart_has_article`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `cart_has_article`;
-
-CREATE TABLE IF NOT EXISTS `cart_has_article`
-(
-    `cart_id`    INT          NOT NULL,
-    `article_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `cart_has_article_article_article_id_fk`
-        FOREIGN KEY (`article_id`)
-            REFERENCES `article` (`article_id`),
-    CONSTRAINT `cart_has_article_cart_cart_id_fk`
-        FOREIGN KEY (`cart_id`)
-            REFERENCES `cart` (`cart_id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `cart_has_article_article_article_id_fk` ON `cart_has_article` (`article_id` ASC);
-
-CREATE INDEX `cart_has_article_cart_cart_id_fk` ON `cart_has_article` (`cart_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `city`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `city`;
-
-CREATE TABLE IF NOT EXISTS `city`
-(
-    `id`         INT         NOT NULL AUTO_INCREMENT,
-    `country_id` INT         NOT NULL,
-    `label`      VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`id`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `cities_label_uindex` ON `city` (`label` ASC);
-
-
--- -----------------------------------------------------
--- Table `user_role`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `user_role`;
-
-CREATE TABLE IF NOT EXISTS `user_role`
-(
-    `role_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `label`   VARCHAR(10)  NULL DEFAULT 'USER',
-    PRIMARY KEY (`role_id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 9
-    DEFAULT CHARACTER SET = utf8mb3;
-
-
-
--- -----------------------------------------------------
--- Table `user`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `user`;
-
-CREATE TABLE IF NOT EXISTS `user`
-(
-    `user_id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `email`        VARCHAR(60)  NOT NULL,
-    `password`     VARCHAR(60)  NOT NULL,
-    `nickname`     VARCHAR(45)  NULL     DEFAULT NULL,
-    `date_created` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `user_role`    VARCHAR(15)  NOT NULL DEFAULT 'NOONE',
-    `role_id`      INT UNSIGNED NOT NULL DEFAULT 8,
-    PRIMARY KEY (`user_id`, `role_id`),
-    CONSTRAINT `fk_user_user_role1`
-        FOREIGN KEY (`role_id`)
-            REFERENCES `user_role` (`role_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 13
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `email_UNIQUE` ON `user` (`email` ASC);
-
-CREATE INDEX `fk_user_user_role1_idx` ON `user` (`role_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `commercial_has_customer`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercial_has_customer`;
-
-CREATE TABLE IF NOT EXISTS `commercial_has_customer`
-(
-    `customer_id`   INT          NOT NULL,
-    `creation_date` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `change_date`   TIMESTAMP    NULL     DEFAULT NULL,
-    `user_id`       INT UNSIGNED NOT NULL,
-    CONSTRAINT `commercial_has_customer_customer_customer_id_fk`
-        FOREIGN KEY (`customer_id`)
-            REFERENCES `customer` (`customer_id`),
-    CONSTRAINT `fk_commercial_has_customer_user1`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `commercial_has_customer_customer_customer_id_fk` ON `commercial_has_customer` (`customer_id` ASC);
-
-CREATE INDEX `fk_commercial_has_customer_user1_idx` ON `commercial_has_customer` (`user_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `country`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `country`;
-
-CREATE TABLE IF NOT EXISTS `country`
-(
-    `id`       INT         NOT NULL AUTO_INCREMENT,
-    `iso`      CHAR(2)     NOT NULL,
-    `name`     VARCHAR(80) NOT NULL,
-    `nicename` VARCHAR(80) NOT NULL,
-    `iso3`     CHAR(3)     NULL DEFAULT NULL,
-    PRIMARY KEY (`id`)
-)
-    ENGINE = MyISAM
-    AUTO_INCREMENT = 240
-    DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
--- Table `order_`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `order_`;
-
-CREATE TABLE IF NOT EXISTS `order_`
-(
-    `order_id`      INT           NOT NULL AUTO_INCREMENT,
-    `date_created`  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `TVA`           DOUBLE(10, 2) NOT NULL,
-    `prix_ttc`      DOUBLE(10, 2) NOT NULL,
-    `status_id`     INT           NULL     DEFAULT '1',
-    `date_modified` TIMESTAMP     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-    `customer_id`   INT           NOT NULL,
-    PRIMARY KEY (`order_id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 35
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `order_id_customer_id_index` ON `order_` (`customer_id` ASC);
-
-CREATE INDEX `order__status_id_index` ON `order_` (`status_id` ASC);
-
-CREATE INDEX `order_status_status_id_index` ON `order_` (`status_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `customer_has_order`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `customer_has_order`;
-
-CREATE TABLE IF NOT EXISTS `customer_has_order`
-(
-    `customer_id` INT NOT NULL,
-    `order_id`    INT NOT NULL,
-    CONSTRAINT `fk_customer_has_order_customer1`
-        FOREIGN KEY (`customer_id`)
-            REFERENCES `customer` (`customer_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_customer_has_order_order_1`
-        FOREIGN KEY (`order_id`)
-            REFERENCES `order_` (`order_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_customer_has_order_customer1_idx` ON `customer_has_order` (`customer_id` ASC);
-
-CREATE INDEX `fk_customer_has_order_order_1_idx` ON `customer_has_order` (`order_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `order_status`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `order_status`;
-
-CREATE TABLE IF NOT EXISTS `order_status`
-(
-    `id`    INT         NOT NULL AUTO_INCREMENT,
-    `label` VARCHAR(35) NOT NULL,
-    PRIMARY KEY (`id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 8
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `order_status_label_uindex` ON `order_status` (`label` ASC);
-
-
--- -----------------------------------------------------
--- Table `security_details`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `security_details`;
-
-CREATE TABLE IF NOT EXISTS `security_details`
-(
-    `user_id`             INT UNSIGNED NOT NULL,
-    `account_locked`      BINARY(1)    NOT NULL DEFAULT '0',
-    `credentials_expired` BINARY(1)    NOT NULL DEFAULT '0',
-    `enabled`             BINARY(1)    NOT NULL DEFAULT '1',
-    `account_expired`     BINARY(1)    NOT NULL DEFAULT '0',
-    PRIMARY KEY (`user_id`),
-    CONSTRAINT `fk_security_details_user1`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_security_details_user1_idx` ON `security_details` (`user_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `street_type`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `street_type`;
-
-CREATE TABLE IF NOT EXISTS `street_type`
-(
-    `id`    INT          NOT NULL AUTO_INCREMENT,
-    `label` VARCHAR(100) NOT NULL,
-    `abrev` VARCHAR(5)   NULL DEFAULT NULL,
-    PRIMARY KEY (`id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 12
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE UNIQUE INDEX `street_type_label_uindex` ON `street_type` (`label` ASC);
-
-
--- -----------------------------------------------------
--- Table `user_has_customer_rights`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `user_has_customer_rights`;
-
-CREATE TABLE IF NOT EXISTS `user_has_customer_rights`
-(
-    `user_id`     INT UNSIGNED NOT NULL,
-    `customer_id` INT          NOT NULL,
-    CONSTRAINT `fk_user_has_customer_rights_user1`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_user_has_customer_rights_customer1`
-        FOREIGN KEY (`customer_id`)
-            REFERENCES `customer` (`customer_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_user_has_customer_rights_user1_idx` ON `user_has_customer_rights` (`user_id` ASC);
-
-CREATE INDEX `fk_user_has_customer_rights_customer1_idx` ON `user_has_customer_rights` (`customer_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `user_has_order`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `user_has_order`;
-
-CREATE TABLE IF NOT EXISTS `user_has_order`
-(
-    `user_id`  INT UNSIGNED NOT NULL,
-    `order_id` INT          NOT NULL,
-    CONSTRAINT `fk_user_has_order_user1`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `user` (`user_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_user_has_order_order_1`
-        FOREIGN KEY (`order_id`)
-            REFERENCES `order_` (`order_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_user_has_order_user1_idx` ON `user_has_order` (`user_id` ASC);
-
-CREATE INDEX `fk_user_has_order_order_1_idx` ON `user_has_order` (`order_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `warehouse`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `warehouse`;
-
-CREATE TABLE IF NOT EXISTS `warehouse`
-(
-    `warehouse_id` INT         NOT NULL AUTO_INCREMENT,
-    `label`        VARCHAR(50) NOT NULL,
-    `city_id`      INT         NULL,
-    `country_id`   INT         NULL,
-    PRIMARY KEY (`warehouse_id`)
-)
-    ENGINE = InnoDB
-    AUTO_INCREMENT = 4
-    DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `warehouse_has_article`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `warehouse_has_article`;
-
-CREATE TABLE IF NOT EXISTS `warehouse_has_article`
-(
-    `article_id`   INT UNSIGNED NOT NULL,
-    `warehouse_id` INT          NOT NULL,
-    `quantity`     INT          NOT NULL DEFAULT 0,
-    CONSTRAINT `fk_warehouse_has_article_warehouse1`
-        FOREIGN KEY (`warehouse_id`)
-            REFERENCES `warehouse` (`warehouse_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_warehouse_has_article_article1`
-        FOREIGN KEY (`article_id`)
-            REFERENCES `article` (`article_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_warehouse_has_article_warehouse1_idx` ON `warehouse_has_article` (`warehouse_id` ASC);
-
-CREATE INDEX `fk_warehouse_has_article_article1_idx` ON `warehouse_has_article` (`article_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `article_has_props`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `article_has_props`;
-
-CREATE TABLE IF NOT EXISTS `article_has_props`
-(
-    `article_id`  INT UNSIGNED NOT NULL,
-    `property_id` INT          NOT NULL,
-    PRIMARY KEY (`article_id`, `property_id`),
-    CONSTRAINT `fk_article_has_pokemon_properties_article1`
-        FOREIGN KEY (`article_id`)
-            REFERENCES `article` (`article_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_article_has_props_pokemon_properties1`
-        FOREIGN KEY (`property_id`)
-            REFERENCES `pokemon_properties` (`prop_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_article_has_pokemon_properties_article1_idx` ON `article_has_props` (`article_id` ASC);
-
-CREATE INDEX `fk_article_has_props_pokemon_properties1_idx` ON `article_has_props` (`property_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `order_has_article`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `order_has_article`;
-
-CREATE TABLE IF NOT EXISTS `order_has_article`
-(
-    `order_id`   INT          NOT NULL,
-    `article_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `fk_order__has_article_order_1`
-        FOREIGN KEY (`order_id`)
-            REFERENCES `order_` (`order_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_order__has_article_article1`
-        FOREIGN KEY (`article_id`)
-            REFERENCES `article` (`article_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_order__has_article_article1_idx` ON `order_has_article` (`article_id` ASC);
-
-CREATE INDEX `fk_order__has_article_order_1_idx` ON `order_has_article` (`order_id` ASC);
-
-
--- -----------------------------------------------------
--- Table `order_has_status`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `order_has_status`;
-
-CREATE TABLE IF NOT EXISTS `order_has_status`
-(
-    `status_id` INT       NOT NULL,
-    `order_id`  INT       NOT NULL,
-    `date`      TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`status_id`, `order_id`),
-    CONSTRAINT `fk_order_status_has_order__order_status1`
-        FOREIGN KEY (`status_id`)
-            REFERENCES `order_status` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_order_status_has_order__order_1`
-        FOREIGN KEY (`order_id`)
-            REFERENCES `order_` (`order_id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb3;
-
-CREATE INDEX `fk_order_status_has_order__order_1_idx` ON `order_has_status` (`order_id` ASC);
-
-CREATE INDEX `fk_order_status_has_order__order_status1_idx` ON `order_has_status` (`status_id` ASC);
-
-USE `acme`;
-
--- -----------------------------------------------------
--- Placeholder table for view `Pokemon`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Pokemon`
-(
-    `article_id`   INT,
-    `label`        INT,
-    `prix`         INT,
-    `description`  INT,
-    `code_article` INT,
-    `date`         INT,
-    `enabled`      INT,
-    `props`        INT,
-    `category`     INT
-);
-
--- -----------------------------------------------------
--- View `Pokemon`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `Pokemon`;
-DROP VIEW IF EXISTS `Pokemon`;
-USE `acme`;
-CREATE OR REPLACE VIEW `Pokemon` AS
-SELECT a.article_id                                                                 as article_id,
-       a.label                                                                      as label,
-       a.prix                                                                       as prix,
-       a.description                                                                as description,
-       a.code_article                                                               as code_article,
-       a.date_created                                                               as date,
-       a.enabled                                                                    as enabled,
-       GROUP_CONCAT(pokemon_properties.prop_id, ':', pokemon_properties.type,
-                    ':', pokemon_properties.taille, ':', pokemon_properties.poids,
-                    ':', pokemon_properties.Level, ':', pokemon_properties.Exp,
-                    '/', pokemon_properties.ATK, ':', pokemon_properties.DEF,
-                    ':', pokemon_properties.SPD,
-                    ':', pokemon_properties.ATKSPE, ':', pokemon_properties.DEFSPE,
-                    ':', pokemon_properties.PV, ':', pokemon_properties.PP)         as props,
-       GROUP_CONCAT(category.category_id, ':', category.label, ':', category.taxes) as category
-FROM article as a
-         RIGHT JOIN article_has_props ON article_has_props.article_id = a.article_id
-         LEFT JOIN pokemon_properties ON pokemon_properties.prop_id = a.property_id
-         LEFT JOIN category ON category.category_id = 1
-GROUP BY a.article_id
-;
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : 127.0.0.1:3306
+-- Généré le : sam. 18 juin 2022 à 16:51
+-- Version du serveur : 8.0.27
+-- Version de PHP : 7.4.26
+
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données : `acme`
 --
+CREATE DATABASE IF NOT EXISTS `acme` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `acme`;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `article`
+--
+
+DROP TABLE IF EXISTS `article`;
+CREATE TABLE IF NOT EXISTS `article`
+(
+    `article_id`    int UNSIGNED  NOT NULL AUTO_INCREMENT,
+    `code_article`  varchar(45)            DEFAULT 'CONCAT(label, ''_'', category_id)',
+    `label`         varchar(45)   NOT NULL,
+    `prix`          double(10, 2) NOT NULL,
+    `date_created`  timestamp              DEFAULT CURRENT_TIMESTAMP,
+    `description`   text,
+    `enabled`       bit(1)        NOT NULL DEFAULT b'1',
+    `last_modified` timestamp     NULL     DEFAULT NULL,
+    `category_id`   int           NOT NULL,
+    `property_id`   int           NOT NULL,
+    PRIMARY KEY (`article_id`),
+    KEY `article_article_id_index` (`article_id`),
+    KEY `fk_article_category1_idx` (`category_id`),
+    KEY `fk_article_pokemon_properties1_idx` (`property_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `article`
 --
 
-INSERT INTO `article` (`article_id`, `code_article`, `label`, `prix`, `date_created`, `description`, `category_id`,
-                       `property_id`, `enabled`, `last_modified`)
-VALUES (1, 'POKE_0001', 'Bulbizarre', 120.23, '2022-06-12 15:46:47', '\'un pokemon de type plante, niveau 10\'', 1, 1,
-        b'1', '2022-06-12 15:46:48'),
-       (2, 'POKE_0002', 'Herbizarre', 180.78, '2022-06-03 05:50:33', '\'un pokemone de type plante, rang2, niveau 30\'',
-        1, 2, b'1', NULL),
-       (3, 'POKE_0003', 'Florizarre', 350, '2022-05-29 08:34:32', '\'un pokemone de type plante, rang3, niveau 52\'', 1,
-        3, b'1', NULL),
-       (4, 'TEST_0001', 'Salamèche', 122, '2022-06-05 00:04:34', 'Type feu, Nivaeu 12', 1, 6, b'1', NULL);
+INSERT INTO `article` (`article_id`, `code_article`, `label`, `prix`, `date_created`, `description`, `enabled`,
+                       `last_modified`, `category_id`, `property_id`)
+VALUES (1, 'POKE_0001', 'Bulbizarre', 120.23, '2022-06-12 13:46:47', '\'un pokemon de type plante, niveau 10\'', b'1',
+        '2022-06-12 13:46:48', 1, 1),
+       (2, 'POKE_0002', 'Herbizarre', 180.78, '2022-06-03 03:50:33', '\'un pokemone de type plante, rang2, niveau 30\'',
+        b'1', NULL, 1, 2),
+       (3, 'POKE_0003', 'Florizarre', 350.00, '2022-05-29 06:34:32', '\'un pokemone de type plante, rang3, niveau 52\'',
+        b'1', NULL, 1, 3),
+       (4, 'TEST_0001', 'Salamèche', 122.00, '2022-06-04 22:04:34', 'Type feu, Nivaeu 12', b'1', NULL, 1, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `article_has_props`
+--
+
+DROP TABLE IF EXISTS `article_has_props`;
+CREATE TABLE IF NOT EXISTS `article_has_props`
+(
+    `article_id`  int UNSIGNED NOT NULL,
+    `property_id` int          NOT NULL,
+    PRIMARY KEY (`article_id`, `property_id`),
+    KEY `fk_article_has_pokemon_properties_article1_idx` (`article_id`),
+    KEY `fk_article_has_props_pokemon_properties1_idx` (`property_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `article_has_props`
@@ -675,23 +92,59 @@ VALUES (1, 1),
        (3, 3),
        (4, 6);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cart`
+--
+
+DROP TABLE IF EXISTS `cart`;
+CREATE TABLE IF NOT EXISTS `cart`
+(
+    `cart_id`      int NOT NULL AUTO_INCREMENT,
+    `date_created` timestamp DEFAULT CURRENT_TIMESTAMP,
+    `last_user`    int       DEFAULT NULL,
+    `customer_id`  int NOT NULL,
+    PRIMARY KEY (`cart_id`, `customer_id`),
+    KEY `cart_cart_id_customer_id_index` (`cart_id`),
+    KEY `fk_cart_customer1_idx` (`customer_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 208
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `cart`
 --
 
-INSERT INTO `cart` (`cart_id`, `date_created`, `customer_id`)
-VALUES (195, '2022-06-06 19:12:50', 1),
-       (196, '2022-06-06 19:12:50', 2),
-       (197, '2022-06-06 19:12:50', 3),
-       (198, '2022-06-06 19:51:22', 4),
-       (200, '2022-06-07 09:42:17', 5),
-       (201, '2022-06-12 13:41:26', 6),
-       (202, '2022-06-06 19:12:50', 1),
-       (203, '2022-06-06 19:12:50', 2),
-       (204, '2022-06-06 19:12:50', 3),
-       (205, '2022-06-06 19:51:22', 4),
-       (206, '2022-06-07 09:42:17', 5),
-       (207, '2022-06-12 13:41:26', 6);
+INSERT INTO `cart` (`cart_id`, `date_created`, `last_user`, `customer_id`)
+VALUES (195, '2022-06-06 17:12:50', NULL, 1),
+       (196, '2022-06-06 17:12:50', NULL, 2),
+       (197, '2022-06-06 17:12:50', NULL, 3),
+       (198, '2022-06-06 17:51:22', NULL, 4),
+       (200, '2022-06-07 07:42:17', NULL, 5),
+       (201, '2022-06-12 11:41:26', NULL, 6),
+       (202, '2022-06-06 17:12:50', NULL, 1),
+       (203, '2022-06-06 17:12:50', NULL, 2),
+       (204, '2022-06-06 17:12:50', NULL, 3),
+       (205, '2022-06-06 17:51:22', NULL, 4),
+       (206, '2022-06-07 07:42:17', NULL, 5),
+       (207, '2022-06-12 11:41:26', NULL, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cart_has_article`
+--
+
+DROP TABLE IF EXISTS `cart_has_article`;
+CREATE TABLE IF NOT EXISTS `cart_has_article`
+(
+    `cart_id`    int          NOT NULL,
+    `article_id` int UNSIGNED NOT NULL,
+    KEY `cart_has_article_article_article_id_fk` (`article_id`),
+    KEY `cart_has_article_cart_cart_id_fk` (`cart_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `cart_has_article`
@@ -704,6 +157,23 @@ VALUES (196, 1),
        (201, 4),
        (201, 2);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `category`
+--
+
+DROP TABLE IF EXISTS `category`;
+CREATE TABLE IF NOT EXISTS `category`
+(
+    `category_id` int          NOT NULL,
+    `label`       varchar(255) NOT NULL,
+    `taxes`       double(5, 2) DEFAULT NULL,
+    PRIMARY KEY (`category_id`),
+    UNIQUE KEY `category_id_UNIQUE` (`category_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `category`
 --
@@ -715,12 +185,66 @@ VALUES (1, 'Pokemon', 20.00),
        (4, 'Vitamine', 5.50),
        (5, 'Ticket', 12.00);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `city`
+--
+
+DROP TABLE IF EXISTS `city`;
+CREATE TABLE IF NOT EXISTS `city`
+(
+    `id`         int         NOT NULL AUTO_INCREMENT,
+    `country_id` int         NOT NULL,
+    `label`      varchar(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `cities_label_uindex` (`label`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commercial_has_customer`
+--
+
+DROP TABLE IF EXISTS `commercial_has_customer`;
+CREATE TABLE IF NOT EXISTS `commercial_has_customer`
+(
+    `customer_id`   int          NOT NULL,
+    `creation_date` timestamp DEFAULT CURRENT_TIMESTAMP,
+    `change_date`   timestamp DEFAULT NULL,
+    `user_id`       int UNSIGNED NOT NULL,
+    KEY `commercial_has_customer_customer_customer_id_fk` (`customer_id`),
+    KEY `fk_commercial_has_customer_user1_idx` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `commercial_has_customer`
 --
 
-INSERT INTO `commercial_has_customer` (`customer_id`, `user_id`, `creation_date`, `change_date`)
-VALUES (6, 4, '2022-06-11 23:00:01', NULL);
+INSERT INTO `commercial_has_customer` (`customer_id`, `creation_date`, `change_date`, `user_id`)
+VALUES (6, '2022-06-11 21:00:01', NULL, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `country`
+--
+
+DROP TABLE IF EXISTS `country`;
+CREATE TABLE IF NOT EXISTS `country`
+(
+    `id`       int         NOT NULL AUTO_INCREMENT,
+    `iso`      char(2)     NOT NULL,
+    `name`     varchar(80) NOT NULL,
+    `nicename` varchar(80) NOT NULL,
+    `iso3`     char(3) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = MyISAM
+  AUTO_INCREMENT = 240
+  DEFAULT CHARSET = latin1;
 
 --
 -- Déchargement des données de la table `country`
@@ -968,6 +492,37 @@ VALUES (1, 'AF', 'AFGHANISTAN', 'Afghanistan', 'AFG'),
        (238, 'ZM', 'ZAMBIA', 'Zambia', 'ZMB'),
        (239, 'ZW', 'ZIMBABWE', 'Zimbabwe', 'ZWE');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `customer`
+--
+
+DROP TABLE IF EXISTS `customer`;
+CREATE TABLE IF NOT EXISTS `customer`
+(
+    `customer_id`   int          NOT NULL AUTO_INCREMENT,
+    `first_name`    varchar(30)  NOT NULL,
+    `last_name`     varchar(30)  NOT NULL,
+    `email`         varchar(255)          DEFAULT NULL,
+    `phone`         varchar(20)           DEFAULT NULL,
+    `country`       varchar(255) NOT NULL,
+    `city`          varchar(255) NOT NULL,
+    `postal_code`   varchar(12)  NOT NULL,
+    `way_number`    int                   DEFAULT NULL,
+    `way_type`      varchar(30)  NOT NULL,
+    `way_name`      varchar(255) NOT NULL,
+    `create_time`   timestamp    NULL     DEFAULT NULL,
+    `last_modified` timestamp             DEFAULT CURRENT_TIMESTAMP,
+    `enabled`       tinyint(1)   NOT NULL DEFAULT '1',
+    `added_by`      int          NOT NULL,
+    PRIMARY KEY (`customer_id`),
+    UNIQUE KEY `Customers_pk_2` (`first_name`, `last_name`),
+    UNIQUE KEY `customer_email_uindex` (`email`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 7
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `customer`
 --
@@ -975,15 +530,31 @@ VALUES (1, 'AF', 'AFGHANISTAN', 'Afghanistan', 'AFG'),
 INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `country`, `city`, `postal_code`,
                         `way_number`, `way_type`, `way_name`, `create_time`, `last_modified`, `enabled`, `added_by`)
 VALUES (2, 'pro', 'ste', 'b.1@G.c', '0708090909', 'FR', 'Rennes', '35000', 107, 'Avenue', 'Artisitde Briand',
-        '2022-06-11 22:54:56', '2022-06-11 22:55:08', 1, 10),
+        '2022-06-11 20:54:56', '2022-06-11 20:55:08', 1, 10),
        (3, 'Chauveau', 'Manu', 'mau@manu.fr', '0707070707', 'France', 'Saint Malo', '', 123, 'xxx', 'xxx',
-        '2022-06-11 22:55:00', '2022-06-11 22:55:10', 1, 10),
+        '2022-06-11 20:55:00', '2022-06-11 20:55:10', 1, 10),
        (4, 'la fripouille', 'toto', 'toto@toto.com', '0609109109', 'US', 'New York', '12380', 1, 'sq', 'Time',
-        '2022-06-11 22:55:03', '2022-06-11 22:55:13', 1, 10),
+        '2022-06-11 20:55:03', '2022-06-11 20:55:13', 1, 10),
        (5, '\'; TRUNCATE *;', '<%php alert(‘Executed\');%>', 'titi@titi.com', '0909090909', 'France', 'Rennes', '35000',
-        120, 'Avenue', 'des poneys', '2022-06-11 22:55:04', '2022-06-11 22:55:15', 1, 10),
+        120, 'Avenue', 'des poneys', '2022-06-11 20:55:04', '2022-06-11 20:55:15', 1, 10),
        (6, 'helix', 'mastaz', 'helixmastaz@gmail.com', '6666666666', 'ANY', 'ANY', '000000', 18, 'Vallée',
-        'des hackerzz', '2022-06-11 23:00:02', '2022-06-11 23:00:01', 1, 12);
+        'des hackerzz', '2022-06-11 21:00:02', '2022-06-11 21:00:01', 1, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `customer_has_order`
+--
+
+DROP TABLE IF EXISTS `customer_has_order`;
+CREATE TABLE IF NOT EXISTS `customer_has_order`
+(
+    `customer_id` int NOT NULL,
+    `order_id`    int NOT NULL,
+    KEY `fk_customer_has_order_customer1_idx` (`customer_id`),
+    KEY `fk_customer_has_order_order_1_idx` (`order_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `customer_has_order`
@@ -1023,76 +594,88 @@ VALUES (4, 1),
        (5, 31),
        (4, 32),
        (5, 33),
-       (5, 34);
+       (5, 34),
+       (5, 35);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order_`
+--
+
+DROP TABLE IF EXISTS `order_`;
+CREATE TABLE IF NOT EXISTS `order_`
+(
+    `order_id`      int           NOT NULL AUTO_INCREMENT,
+    `date_created`  timestamp DEFAULT CURRENT_TIMESTAMP,
+    `TVA`           double(10, 2) NOT NULL,
+    `prix_ttc`      double(10, 2) NOT NULL,
+    `status_id`     int       DEFAULT '1',
+    `date_modified` timestamp     NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `customer_id`   int           NOT NULL,
+    PRIMARY KEY (`order_id`),
+    KEY `order_id_customer_id_index` (`customer_id`),
+    KEY `order__status_id_index` (`status_id`),
+    KEY `order_status_status_id_index` (`status_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 36
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `order_`
 --
 
-INSERT INTO `order_has_status` (`order_id`, `status_id`, `date`)
-VALUES (1, 1, '2022-06-14 18:44:25'),
-       (2, 1, '2022-06-14 18:44:25'),
-       (3, 1, '2022-06-14 18:44:25'),
-       (4, 1, '2022-06-14 18:44:25'),
-       (5, 1, '2022-06-14 18:44:25'),
-       (6, 1, '2022-06-14 18:44:25'),
-       (7, 1, '2022-06-14 18:44:25'),
-       (8, 1, '2022-06-14 18:44:25'),
-       (9, 1, '2022-06-14 18:44:25'),
-       (10, 1, '2022-06-14 18:44:25'),
-       (11, 1, '2022-06-14 18:44:25'),
-       (12, 1, '2022-06-14 18:44:25'),
-       (13, 1, '2022-06-14 18:44:25'),
-       (14, 1, '2022-06-14 18:44:25'),
-       (15, 1, '2022-06-14 18:44:25'),
-       (16, 1, '2022-06-14 18:44:25'),
-       (17, 1, '2022-06-14 18:44:25'),
-       (18, 1, '2022-06-14 18:44:25'),
-       (19, 1, '2022-06-14 18:44:25'),
-       (20, 1, '2022-06-14 18:44:25'),
-       (21, 1, '2022-06-14 18:44:25'),
-       (22, 1, '2022-06-14 18:44:25'),
-       (23, 1, '2022-06-14 18:44:25'),
-       (24, 1, '2022-06-14 18:44:25'),
-       (25, 1, '2022-06-14 18:44:25');
+INSERT INTO `order_` (`order_id`, `date_created`, `TVA`, `prix_ttc`, `status_id`, `date_modified`, `customer_id`)
+VALUES (1, '2022-06-10 15:05:25', 81.33, 488.00, 1, '2022-06-10 15:13:33', 2),
+       (2, '2022-06-10 15:05:25', 187.17, 1123.01, 1, '2022-06-10 15:13:33', 4),
+       (3, '2022-06-10 15:05:25', 291.67, 1750.00, 1, '2022-06-10 15:13:33', 3),
+       (4, '2022-06-10 15:05:25', 20.04, 120.23, 1, '2022-06-10 15:13:33', 4),
+       (5, '2022-06-10 15:05:25', 100.49, 602.92, 1, '2022-06-10 15:13:33', 4),
+       (6, '2022-06-10 15:05:25', 60.12, 360.69, 1, '2022-06-10 15:13:33', 2),
+       (7, '2022-06-10 15:05:25', 98.70, 592.23, 1, '2022-06-10 15:13:33', 2),
+       (8, '2022-06-10 15:05:25', 80.30, 481.79, 1, '2022-06-10 15:13:33', 3),
+       (9, '2022-06-10 15:05:25', 136.70, 820.23, 1, '2022-06-10 15:13:33', 4),
+       (10, '2022-06-10 15:05:25', 20.04, 120.23, 1, '2022-06-10 15:13:33', 4),
+       (11, '2022-06-10 15:05:25', 20.04, 120.23, 1, '2022-06-10 15:13:33', 3),
+       (12, '2022-06-10 15:05:25', 50.17, 301.01, 1, '2022-06-10 15:13:33', 5),
+       (13, '2022-06-10 15:05:25', 40.08, 240.46, 1, '2022-06-10 15:13:33', 4),
+       (14, '2022-06-10 15:05:25', 60.41, 362.46, 1, '2022-06-10 15:13:33', 5),
+       (15, '2022-06-10 15:05:25', 160.31, 961.84, 1, '2022-06-10 15:13:33', 3),
+       (16, '2022-06-10 15:05:25', 122.00, 732.00, 1, '2022-06-10 15:13:33', 4),
+       (17, '2022-06-14 04:13:51', 120.46, 360.69, 1, '2022-06-11 20:20:50', 3),
+       (18, '2022-06-14 04:13:51', 197.94, 845.15, 1, '2022-06-12 11:43:29', 2),
+       (19, '2022-06-14 04:13:51', 878.81, 4394.03, 1, '2022-06-12 13:45:09', 4),
+       (20, '2022-06-14 04:13:51', 295.27, 1265.46, 1, '2022-06-13 21:38:17', 5),
+       (21, '2022-06-13 21:39:00', 30.13, 180.78, 1, '2022-06-13 21:39:00', 6),
+       (22, '2022-06-14 04:21:18', 317.93, 1907.58, 1, '2022-06-14 04:21:18', 3),
+       (23, '2022-06-14 08:45:46', 60.26, 361.56, 1, '2022-06-14 08:45:46', 6),
+       (24, '2022-06-14 09:03:44', 40.08, 240.46, 1, '2022-06-14 09:03:44', 5),
+       (25, '2022-06-14 09:05:47', 20.33, 122.00, 1, '2022-06-14 09:05:47', 4),
+       (26, '2022-06-14 18:01:50', 101.37, 608.23, 1, '2022-06-14 18:01:50', 3),
+       (27, '2022-06-14 18:17:55', 150.65, 903.90, 1, '2022-06-14 18:17:55', 5),
+       (28, '2022-06-14 18:34:14', 100.19, 601.15, 1, '2022-06-14 18:34:14', 6),
+       (29, '2022-06-14 18:34:27', 270.88, 1625.28, 1, '2022-06-14 18:34:27', 5),
+       (30, '2022-06-14 18:34:34', 80.15, 480.92, 1, '2022-06-14 18:34:34', 3),
+       (31, '2022-06-14 19:36:37', 327.88, 1967.26, 1, '2022-06-14 19:36:37', 5),
+       (32, '2022-06-14 19:36:55', 60.11, 360.69, 1, '2022-06-14 19:36:55', 4),
+       (35, '2022-06-18 16:45:13', 60.11, 360.69, 1, '0000-00-00 00:00:00', 5);
+
+-- --------------------------------------------------------
 
 --
--- Déchargement des données de la table `order_has_status`
+-- Structure de la table `order_has_article`
 --
 
-INSERT INTO `order_` (`order_id`, `date_created`, `customer_id`, `TVA`, `prix_ttc`, `status_id`, `date_modified`)
-VALUES (1, '2022-06-10 17:05:25', 2, 81.33, 488.00, 1, '2022-06-10 17:13:33'),
-       (2, '2022-06-10 17:05:25', 4, 187.17, 1123.01, 1, '2022-06-10 17:13:33'),
-       (3, '2022-06-10 17:05:25', 3, 291.67, 1750.00, 1, '2022-06-10 17:13:33'),
-       (4, '2022-06-10 17:05:25', 4, 20.04, 120.23, 1, '2022-06-10 17:13:33'),
-       (5, '2022-06-10 17:05:25', 4, 100.49, 602.92, 1, '2022-06-10 17:13:33'),
-       (6, '2022-06-10 17:05:25', 2, 60.12, 360.69, 1, '2022-06-10 17:13:33'),
-       (7, '2022-06-10 17:05:25', 2, 98.70, 592.23, 1, '2022-06-10 17:13:33'),
-       (8, '2022-06-10 17:05:25', 3, 80.30, 481.79, 1, '2022-06-10 17:13:33'),
-       (9, '2022-06-10 17:05:25', 4, 136.70, 820.23, 1, '2022-06-10 17:13:33'),
-       (10, '2022-06-10 17:05:25', 4, 20.04, 120.23, 1, '2022-06-10 17:13:33'),
-       (11, '2022-06-10 17:05:25', 3, 20.04, 120.23, 1, '2022-06-10 17:13:33'),
-       (12, '2022-06-10 17:05:25', 5, 50.17, 301.01, 1, '2022-06-10 17:13:33'),
-       (13, '2022-06-10 17:05:25', 4, 40.08, 240.46, 1, '2022-06-10 17:13:33'),
-       (14, '2022-06-10 17:05:25', 5, 60.41, 362.46, 1, '2022-06-10 17:13:33'),
-       (15, '2022-06-10 17:05:25', 3, 160.31, 961.84, 1, '2022-06-10 17:13:33'),
-       (16, '2022-06-10 17:05:25', 4, 122.00, 732.00, 1, '2022-06-10 17:13:33'),
-       (17, '2022-06-14 06:13:51', 3, 120.46, 360.69, 1, '2022-06-11 22:20:50'),
-       (18, '2022-06-14 06:13:51', 2, 197.94, 845.15, 1, '2022-06-12 13:43:29'),
-       (19, '2022-06-14 06:13:51', 4, 878.81, 4394.03, 1, '2022-06-12 15:45:09'),
-       (20, '2022-06-14 06:13:51', 5, 295.27, 1265.46, 1, '2022-06-13 23:38:17'),
-       (21, '2022-06-13 23:39:00', 6, 30.13, 180.78, 1, '2022-06-13 23:39:00'),
-       (22, '2022-06-14 06:21:18', 3, 317.93, 1907.58, 1, '2022-06-14 06:21:18'),
-       (23, '2022-06-14 10:45:46', 6, 60.26, 361.56, 1, '2022-06-14 10:45:46'),
-       (24, '2022-06-14 11:03:44', 5, 40.08, 240.46, 1, '2022-06-14 11:03:44'),
-       (25, '2022-06-14 11:05:47', 4, 20.33, 122.00, 1, '2022-06-14 11:05:47'),
-       (26, '2022-06-14 20:01:50', 3, 101.37, 608.23, 1, '2022-06-14 20:01:50'),
-       (27, '2022-06-14 20:17:55', 5, 150.65, 903.90, 1, '2022-06-14 20:17:55'),
-       (28, '2022-06-14 20:34:14', 6, 100.19, 601.15, 1, '2022-06-14 20:34:14'),
-       (29, '2022-06-14 20:34:27', 5, 270.88, 1625.28, 1, '2022-06-14 20:34:27'),
-       (30, '2022-06-14 20:34:34', 3, 80.15, 480.92, 1, '2022-06-14 20:34:34'),
-       (31, '2022-06-14 21:36:37', 5, 327.88, 1967.26, 1, '2022-06-14 21:36:37'),
-       (32, '2022-06-14 21:36:55', 4, 60.11, 360.69, 1, '2022-06-14 21:36:55');
+DROP TABLE IF EXISTS `order_has_article`;
+CREATE TABLE IF NOT EXISTS `order_has_article`
+(
+    `order_id`   int          NOT NULL,
+    `article_id` int UNSIGNED NOT NULL,
+    KEY `fk_order__has_article_article1_idx` (`article_id`),
+    KEY `fk_order__has_article_order_1_idx` (`order_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `order_has_article`
 --
@@ -1256,7 +839,76 @@ VALUES (1, 4),
        (34, 1),
        (34, 1),
        (34, 1),
-       (34, 1);
+       (34, 1),
+       (35, 1),
+       (35, 1),
+       (35, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order_has_status`
+--
+
+DROP TABLE IF EXISTS `order_has_status`;
+CREATE TABLE IF NOT EXISTS `order_has_status`
+(
+    `status_id` int NOT NULL,
+    `order_id`  int NOT NULL,
+    `date`      timestamp DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`status_id`, `order_id`),
+    KEY `fk_order_status_has_order__order_1_idx` (`order_id`),
+    KEY `fk_order_status_has_order__order_status1_idx` (`status_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
+--
+-- Déchargement des données de la table `order_has_status`
+--
+
+INSERT INTO `order_has_status` (`status_id`, `order_id`, `date`)
+VALUES (1, 1, '2022-06-14 16:44:25'),
+       (1, 2, '2022-06-14 16:44:25'),
+       (1, 3, '2022-06-14 16:44:25'),
+       (1, 4, '2022-06-14 16:44:25'),
+       (1, 5, '2022-06-14 16:44:25'),
+       (1, 6, '2022-06-14 16:44:25'),
+       (1, 7, '2022-06-14 16:44:25'),
+       (1, 8, '2022-06-14 16:44:25'),
+       (1, 9, '2022-06-14 16:44:25'),
+       (1, 10, '2022-06-14 16:44:25'),
+       (1, 11, '2022-06-14 16:44:25'),
+       (1, 12, '2022-06-14 16:44:25'),
+       (1, 13, '2022-06-14 16:44:25'),
+       (1, 14, '2022-06-14 16:44:25'),
+       (1, 15, '2022-06-14 16:44:25'),
+       (1, 16, '2022-06-14 16:44:25'),
+       (1, 17, '2022-06-14 16:44:25'),
+       (1, 18, '2022-06-14 16:44:25'),
+       (1, 19, '2022-06-14 16:44:25'),
+       (1, 20, '2022-06-14 16:44:25'),
+       (1, 21, '2022-06-14 16:44:25'),
+       (1, 22, '2022-06-14 16:44:25'),
+       (1, 23, '2022-06-14 16:44:25'),
+       (1, 24, '2022-06-14 16:44:25'),
+       (1, 25, '2022-06-14 16:44:25');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order_status`
+--
+
+DROP TABLE IF EXISTS `order_status`;
+CREATE TABLE IF NOT EXISTS `order_status`
+(
+    `id`    int         NOT NULL AUTO_INCREMENT,
+    `label` varchar(35) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `order_status_label_uindex` (`label`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 8
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `order_status`
@@ -1271,6 +923,53 @@ VALUES (7, 'annulé'),
        (2, 'payé'),
        (5, 'reçu');
 
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `pokemon`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `pokemon`;
+CREATE TABLE IF NOT EXISTS `pokemon`
+(
+    `article_id`   int unsigned,
+    `label`        varchar(45),
+    `prix`         double(10, 2),
+    `description`  text,
+    `code_article` varchar(45),
+    `date`         timestamp,
+    `enabled`      bit(1),
+    `props`        text,
+    `category`     text
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `pokemon_properties`
+--
+
+DROP TABLE IF EXISTS `pokemon_properties`;
+CREATE TABLE IF NOT EXISTS `pokemon_properties`
+(
+    `prop_id` int           NOT NULL AUTO_INCREMENT,
+    `type`    varchar(255)  NOT NULL,
+    `taille`  double(3, 1)  NOT NULL,
+    `poids`   double(10, 2) NOT NULL,
+    `Level`   int           NOT NULL DEFAULT '1',
+    `Exp`     int           NOT NULL DEFAULT '0',
+    `ATK`     int           NOT NULL,
+    `DEF`     int           NOT NULL,
+    `SPD`     int           NOT NULL,
+    `ATKSPE`  int           NOT NULL,
+    `DEFSPE`  int           NOT NULL,
+    `PV`      int           NOT NULL DEFAULT '0',
+    `PP`      int           NOT NULL DEFAULT '0',
+    PRIMARY KEY (`prop_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 7
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `pokemon_properties`
 --
@@ -1281,6 +980,43 @@ VALUES (1, 'Plante', 0.7, 6904.00, 10, 1, 29, 35, 18, 38, 27, 25, 12),
        (2, 'Plante', 1.0, 13000.00, 30, 2, 49, 82, 29, 57, 58, 130, 27),
        (3, 'Plante', 2.0, 100000.00, 52, 3, 103, 132, 47, 153, 80, 430, 64),
        (6, 'Feu', 0.8, 2112.00, 12, 12, 12, 12, 12, 21, 12, 21, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `security_details`
+--
+
+DROP TABLE IF EXISTS `security_details`;
+CREATE TABLE IF NOT EXISTS `security_details`
+(
+    `user_id`             int UNSIGNED NOT NULL,
+    `account_locked`      binary(1)    NOT NULL DEFAULT '0',
+    `credentials_expired` binary(1)    NOT NULL DEFAULT '0',
+    `enabled`             binary(1)    NOT NULL DEFAULT '1',
+    `account_expired`     binary(1)    NOT NULL DEFAULT '0',
+    PRIMARY KEY (`user_id`),
+    KEY `fk_security_details_user1_idx` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `street_type`
+--
+
+DROP TABLE IF EXISTS `street_type`;
+CREATE TABLE IF NOT EXISTS `street_type`
+(
+    `id`    int          NOT NULL AUTO_INCREMENT,
+    `label` varchar(100) NOT NULL,
+    `abrev` varchar(5) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `street_type_label_uindex` (`label`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 12
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `street_type`
@@ -1295,60 +1031,126 @@ VALUES (5, 'rue', NULL),
        (10, 'allée', 'via'),
        (11, 'street', 'st');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user`
+(
+    `user_id`      int UNSIGNED NOT NULL AUTO_INCREMENT,
+    `email`        varchar(60)  NOT NULL,
+    `password`     varchar(60)  NOT NULL,
+    `nickname`     varchar(45)           DEFAULT NULL,
+    `date_created` timestamp             DEFAULT CURRENT_TIMESTAMP,
+    `user_role`    varchar(15)  NOT NULL DEFAULT 'NOONE',
+    `role_id`      int UNSIGNED NOT NULL DEFAULT '8',
+    PRIMARY KEY (`user_id`, `role_id`),
+    UNIQUE KEY `email_UNIQUE` (`email`),
+    KEY `fk_user_user_role1_idx` (`role_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 13
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`user_id`, `email`, `password`, `nickname`, `date_created`, `user_role`)
+INSERT INTO `user` (`user_id`, `email`, `password`, `nickname`, `date_created`, `user_role`, `role_id`)
 VALUES (4, 'user@email.com', '$2a$10$O6nD1mex5dzDaO3wco6H4e9lB7ZPI7r9j88MEeXCNZNLvRxFwEcmq', 'Regis',
-        '2022-06-14 20:49:32',
-        'ROLE_ADMIN'),
+        '2022-06-14 18:49:32', 'ROLE_ADMIN', 8),
        (5, 'user1@email.com', '$2a$10$A21hBE6ZrS693m4/sRqddOb6yUS7k8UfvpGklS/RnD4sasGkb.4ce', 'Sacha',
-        '2022-06-14 20:49:32',
-        'ROLE_USER'),
+        '2022-06-14 18:49:32', 'ROLE_USER', 8),
        (7, 'user2@email.com', '$2a$10$9aTXaqbdMI/jPsIIaZtod.WJsDMrg2ATmoxWKHIDKIP2PLA1yRWwe', 'Ondine',
-        '2022-06-14 20:49:32',
-        'ROLE_USER'),
+        '2022-06-14 18:49:32', 'ROLE_USER', 8),
        (8, 'user3@email.com', '$2a$10$0sDNBSL.8qOvzis/qwg/Ze5EBBisQi.WDa.W/Vo5d3rCc6eoDXXem', 'Pierre',
-        '2022-06-14 20:49:32',
-        'ROLE_USER'),
+        '2022-06-14 18:49:32', 'ROLE_USER', 8),
        (10, 'user5@email.com', '$2a$10$mo.CDF9.nOyTFU46uKERquZ5lzS1F5PQxKnAQDMSagE98rp9lOx1i', 'Marcel',
-        '2022-06-14 20:49:32',
-        'ROLE_COMM'),
+        '2022-06-14 18:49:32', 'ROLE_COMM', 8),
        (12, 'user4@email.com', '$2a$10$bC/Buy7PpKVSvgpSpMX/punzR9ixRcIRiXO0C8DUm6yBUb9fEgsgm', 'Geanice',
-        '2022-06-14 20:49:32',
-        'ROLE_COMM');
+        '2022-06-14 18:49:32', 'ROLE_COMM', 8);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_has_customer_rights`
+--
+
+DROP TABLE IF EXISTS `user_has_customer_rights`;
+CREATE TABLE IF NOT EXISTS `user_has_customer_rights`
+(
+    `user_id`     int UNSIGNED NOT NULL,
+    `customer_id` int          NOT NULL,
+    KEY `fk_user_has_customer_rights_user1_idx` (`user_id`),
+    KEY `fk_user_has_customer_rights_customer1_idx` (`customer_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_has_order`
+--
+
+DROP TABLE IF EXISTS `user_has_order`;
+CREATE TABLE IF NOT EXISTS `user_has_order`
+(
+    `user_id`  int UNSIGNED NOT NULL,
+    `order_id` int          NOT NULL,
+    KEY `fk_user_has_order_user1_idx` (`user_id`),
+    KEY `fk_user_has_order_order_1_idx` (`order_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `user_has_order`
 --
 
-INSERT INTO `user_has_order` (`order_id`, `user_id`)
-VALUES (10, 4),
-       (11, 4),
-       (12, 4),
-       (13, 4),
-       (14, 4),
-       (15, 4),
-       (16, 4),
-       (17, 4),
-       (18, 4),
-       (19, 4),
-       (20, 4),
-       (21, 4),
-       (22, 4),
-       (23, 4),
-       (24, 4),
-       (25, 4),
-       (26, 4),
-       (27, 4),
-       (28, 4),
-       (29, 4),
-       (30, 4),
-       (31, 4),
-       (32, 4),
-       (33, 4),
-       (34, 4);
+INSERT INTO `user_has_order` (`user_id`, `order_id`)
+VALUES (4, 10),
+       (4, 11),
+       (4, 12),
+       (4, 13),
+       (4, 14),
+       (4, 15),
+       (4, 16),
+       (4, 17),
+       (4, 18),
+       (4, 19),
+       (4, 20),
+       (4, 21),
+       (4, 22),
+       (4, 23),
+       (4, 24),
+       (4, 25),
+       (4, 26),
+       (4, 27),
+       (4, 28),
+       (4, 29),
+       (4, 30),
+       (4, 31),
+       (4, 32),
+       (4, 33),
+       (4, 34),
+       (4, 35);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_role`
+--
+
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE IF NOT EXISTS `user_role`
+(
+    `role_id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+    `label`   varchar(10) DEFAULT 'USER',
+    PRIMARY KEY (`role_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 9
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `user_role`
@@ -1364,28 +1166,175 @@ VALUES (1, 'USER'),
        (7, 'RANDOM'),
        (8, 'NOONE');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `warehouse`
+--
+
+DROP TABLE IF EXISTS `warehouse`;
+CREATE TABLE IF NOT EXISTS `warehouse`
+(
+    `warehouse_id` int         NOT NULL AUTO_INCREMENT,
+    `label`        varchar(50) NOT NULL,
+    `city_id`      int DEFAULT NULL,
+    `country_id`   int DEFAULT NULL,
+    PRIMARY KEY (`warehouse_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8mb3;
+
 --
 -- Déchargement des données de la table `warehouse`
 --
 
-INSERT INTO `warehouse` (`warehouse_id`, `label`)
-VALUES (1, 'Rennes'),
-       (2, 'Tours'),
-       (3, 'Paris');
+INSERT INTO `warehouse` (`warehouse_id`, `label`, `city_id`, `country_id`)
+VALUES (1, 'Rennes', NULL, NULL),
+       (2, 'Tours', NULL, NULL),
+       (3, 'Paris', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `warehouse_has_article`
+--
+
+DROP TABLE IF EXISTS `warehouse_has_article`;
+CREATE TABLE IF NOT EXISTS `warehouse_has_article`
+(
+    `article_id`   int UNSIGNED NOT NULL,
+    `warehouse_id` int          NOT NULL,
+    `quantity`     int          NOT NULL DEFAULT '0',
+    KEY `fk_warehouse_has_article_warehouse1_idx` (`warehouse_id`),
+    KEY `fk_warehouse_has_article_article1_idx` (`article_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb3;
 
 --
 -- Déchargement des données de la table `warehouse_has_article`
 --
 
-INSERT INTO `warehouse_has_article` (`warehouse_id`, `article_id`)
-VALUES (1, 1),
-       (1, 2),
-       (1, 3),
-       (2, 4),
-       (3, 3),
-       (3, 4);
+INSERT INTO `warehouse_has_article` (`article_id`, `warehouse_id`, `quantity`)
+VALUES (1, 1, 0),
+       (2, 1, 0),
+       (3, 1, 0),
+       (4, 2, 0),
+       (3, 3, 0),
+       (4, 3, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `pokemon` exportée comme une table
+--
+DROP TABLE IF EXISTS `pokemon`;
+CREATE TABLE IF NOT EXISTS `pokemon`
+(
+    `article_id`   int unsigned                        DEFAULT '0',
+    `label`        varchar(45) COLLATE utf8_general_ci NOT NULL,
+    `prix`         double(10, 2)                       NOT NULL,
+    `description`  text COLLATE utf8_general_ci        DEFAULT NULL,
+    `code_article` varchar(45) COLLATE utf8_general_ci DEFAULT 'CONCAT(label, \'_\', category_id)',
+    `date`         timestamp                           DEFAULT CURRENT_TIMESTAMP,
+    `enabled`      bit(1)                              DEFAULT TRUE,
+    `props`        text COLLATE utf8_general_ci        NOT NULL,
+    `category`     text COLLATE utf8_general_ci        NOT NULL
+);
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `article`
+--
+ALTER TABLE `article`
+    ADD CONSTRAINT `fk_article_category1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
+    ADD CONSTRAINT `fk_article_pokemon_properties1` FOREIGN KEY (`property_id`) REFERENCES `pokemon_properties` (`prop_id`);
+
+--
+-- Contraintes pour la table `article_has_props`
+--
+ALTER TABLE `article_has_props`
+    ADD CONSTRAINT `fk_article_has_pokemon_properties_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`article_id`),
+    ADD CONSTRAINT `fk_article_has_props_pokemon_properties1` FOREIGN KEY (`property_id`) REFERENCES `pokemon_properties` (`prop_id`);
+
+--
+-- Contraintes pour la table `cart`
+--
+ALTER TABLE `cart`
+    ADD CONSTRAINT `fk_cart_customer1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`);
+
+--
+-- Contraintes pour la table `cart_has_article`
+--
+ALTER TABLE `cart_has_article`
+    ADD CONSTRAINT `cart_has_article_article_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`article_id`),
+    ADD CONSTRAINT `cart_has_article_cart_cart_id_fk` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`);
+
+--
+-- Contraintes pour la table `commercial_has_customer`
+--
+ALTER TABLE `commercial_has_customer`
+    ADD CONSTRAINT `commercial_has_customer_customer_customer_id_fk` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
+    ADD CONSTRAINT `fk_commercial_has_customer_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Contraintes pour la table `customer_has_order`
+--
+ALTER TABLE `customer_has_order`
+    ADD CONSTRAINT `fk_customer_has_order_customer1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
+    ADD CONSTRAINT `fk_customer_has_order_order_1` FOREIGN KEY (`order_id`) REFERENCES `order_` (`order_id`);
+
+--
+-- Contraintes pour la table `order_has_article`
+--
+ALTER TABLE `order_has_article`
+    ADD CONSTRAINT `fk_order__has_article_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`article_id`),
+    ADD CONSTRAINT `fk_order__has_article_order_1` FOREIGN KEY (`order_id`) REFERENCES `order_` (`order_id`);
+
+--
+-- Contraintes pour la table `order_has_status`
+--
+ALTER TABLE `order_has_status`
+    ADD CONSTRAINT `fk_order_status_has_order__order_1` FOREIGN KEY (`order_id`) REFERENCES `order_` (`order_id`),
+    ADD CONSTRAINT `fk_order_status_has_order__order_status1` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`);
+
+--
+-- Contraintes pour la table `security_details`
+--
+ALTER TABLE `security_details`
+    ADD CONSTRAINT `fk_security_details_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Contraintes pour la table `user`
+--
+ALTER TABLE `user`
+    ADD CONSTRAINT `fk_user_user_role1` FOREIGN KEY (`role_id`) REFERENCES `user_role` (`role_id`);
+
+--
+-- Contraintes pour la table `user_has_customer_rights`
+--
+ALTER TABLE `user_has_customer_rights`
+    ADD CONSTRAINT `fk_user_has_customer_rights_customer1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
+    ADD CONSTRAINT `fk_user_has_customer_rights_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Contraintes pour la table `user_has_order`
+--
+ALTER TABLE `user_has_order`
+    ADD CONSTRAINT `fk_user_has_order_order_1` FOREIGN KEY (`order_id`) REFERENCES `order_` (`order_id`),
+    ADD CONSTRAINT `fk_user_has_order_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Contraintes pour la table `warehouse_has_article`
+--
+ALTER TABLE `warehouse_has_article`
+    ADD CONSTRAINT `fk_warehouse_has_article_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`article_id`),
+    ADD CONSTRAINT `fk_warehouse_has_article_warehouse1` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouse` (`warehouse_id`);
 SET FOREIGN_KEY_CHECKS = 1;
 COMMIT;
-SET SQL_MODE = @OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;
+
+/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
