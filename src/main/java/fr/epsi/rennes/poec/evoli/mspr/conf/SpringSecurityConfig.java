@@ -59,7 +59,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin**/**", "/actuator/**").hasRole("ADMIN").filterSecurityInterceptorOncePerRequest(true)
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/user/login-success.html")
+                .defaultSuccessUrl("/public/login-success.html")
                 .failureUrl("/login.html?error=true")
                 .and()
                 .logout()
