@@ -18,6 +18,10 @@ const customerApp = new Vue({
         this.resetValues()
         axios.get("/comm/customers")
             .then(response => {
+                if (!response.data.success) {
+//TODO
+                    //FIXME
+                }
                 this.customers = response.data.data;
             });
         // axios.get("/public/countries")
