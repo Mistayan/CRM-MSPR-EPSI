@@ -50,7 +50,7 @@ public class IndexController {
         } else {
             response.setSuccess(true);
         }
-        response.setData(auth.getName());
+        response.setData(auth.getName() + "::" + auth.getAuthorities().toString());
 
 
         return response;
