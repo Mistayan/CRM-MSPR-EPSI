@@ -27,7 +27,6 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService) {this.userService = userService;}
-
 //    @PostMapping("/public/register")
 //    public void addUser(@RequestParam String email,
 //                        @RequestParam String password) {
@@ -43,7 +42,7 @@ public class UserController {
 //    }
 
     @PostMapping("/user/order")
-    public Response<Commande> order(@RequestParam int panierId) {
+    public Response<Commande> order(@RequestParam int panierId) throws BusinessException {
 //                                @AuthenticationPrincipal User user) {
         Response<Commande> response = new Response<>();
         try {
@@ -56,7 +55,7 @@ public class UserController {
         } catch (SQLException e) {
             response.setSuccess(false);
             logger.fatal("user/order route userService.userOrder failed :::> %s".formatted(e));
-            throw new TechnicalException(e);
+            throw new BusinessException("could not load order n°%d".formatted(panierId));
         }
     }
 
