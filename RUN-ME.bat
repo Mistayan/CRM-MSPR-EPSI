@@ -37,7 +37,7 @@ if '%errorlevel%' NEQ '0' (
     NET START wampmysqld64
     C:\wamp64\bin\mysql\mysql8.0.27\bin\mysqld --host=localhost --port=3306 --user=acme --password=acme --database=acme < conf/sql/acme.sql
     CALL mvn install -U -f pom.xml
-    java -jar  /Users/REN-13/.m2/repository/fr/epsi/rennes/poec/evoli/mspr/acme/0.1.1.7/acme-0.1.1.7.jar
+    java -jar  %USERPROFILE%/.m2/repository/fr/epsi/rennes/poec/evoli/mspr/acme/0.8.4.2/acme-0.8.4.2.jar
 
 pause
 
