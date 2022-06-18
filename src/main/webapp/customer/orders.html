@@ -55,7 +55,7 @@
                 <th class="tg-ih3h"> Prix HT</th>
             </tr>
             <tr v-for="order in orders" v-if="order.orderId && order.articles">
-                <td class="tg-ih3h"><a href="#">{{ order.numeroCmd }}</a></td>
+                <td class="tg-ih3h">{{ order.numeroCmd }}</td>
                 <td class="tg-ih3h"> {{ order.articles.length }}</td>
                 <td class="tg-ih3h"> {{ displayPrice(order.prixTTC) }}</td>
                 <td class="tg-ih3h"> {{ displayPrice(order.prixHT) }}</td>
