@@ -5,16 +5,13 @@ SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
         'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
--- -----------------------------------------------------
--- Schema test2_acme
--- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `test_acme`;
 
 -- -----------------------------------------------------
 -- Schema test_acme
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `test2_acme` DEFAULT CHARACTER SET utf8;
-USE `test2_acme`;
+DROP SCHEMA IF EXISTS `test_acme`;
+CREATE SCHEMA IF NOT EXISTS `test_acme` DEFAULT CHARACTER SET utf8;
+USE `test_acme`;
 
 -- -----------------------------------------------------
 -- Table `category`
@@ -1360,7 +1357,7 @@ VALUES (1, 'USER'),
        (5, 'IT'),
        (6, 'TROUFION'),
        (7, 'RANDOM'),
-       (8, 'USER_');
+       (8, 'NOONE');
 
 --
 -- Déchargement des données de la table `warehouse`
