@@ -1,7 +1,7 @@
 const app = new Vue({
     el: '#panier',
+    alt: '#nav',
     data() { //le modèle de données
-
         return {
             articles: {},
             customers: {},
@@ -20,6 +20,7 @@ const app = new Vue({
         }
     },
     mounted() {
+        select = false
         // Actions au chargement de la page
         this.panier.id = window.sessionStorage.getItem('panierId')
         if (!this.panier.id) {
