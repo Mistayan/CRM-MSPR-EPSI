@@ -5,6 +5,9 @@ const userApp = new Vue({
         return {
             users: {},
             roles: [],
+            search: "",
+            role_user: false,
+            role_comm: false,
             create: false,
             modify: false,
             select: false,
@@ -24,7 +27,7 @@ const userApp = new Vue({
     },
     methods: { // Methodes intéractives
 
-        createCustomer: function () {
+        createUser: function () {
             console.log(this.newUser)
 
             axios.post('/admin/user/add', this.newUser)
@@ -39,9 +42,9 @@ const userApp = new Vue({
                     }
                 });
         },
-        modifyCustomer: function () {
+        modifyUser: function () {
             console.log(this.newUser)
-
+            this.newUser.role = this.role_user ? "ROLE_USER" : this.role_comm ? "ROLE_COMM" : "ROLE_NOONE"
             axios.post('/admin/user/modify', this.newUser)
                 .then(response => {
                     if (response.data.success) {
@@ -62,6 +65,11 @@ const userApp = new Vue({
                 role: "",
                 dateCreated: "",
             }
-        }
+        },
+        filterListUsers: function (user) {
+            let em = user.email.toLowerCase().includes(this.search.toString().toLowerCase())
+            let ro = user.role ? user.role.toString().includes(this.search.toString()) : null
+            return em ? em : ro;
+        },
     }
 });

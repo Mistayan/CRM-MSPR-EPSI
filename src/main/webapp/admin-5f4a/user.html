@@ -25,59 +25,63 @@
 
 <div id="userApp">
     <div class="user-list">
-        <div>
-            <button v-on:click="create = true; modify = false; resetValues()">
-                Ajouter un nouvel utilisateur
-            </button>
-        </div>
+        <button v-on:click="create = true; modify = false; resetValues()">
+            Ajouter un nouvel utilisateur
+        </button>
+        <!--  BARRE DE RECHERCHE  -->
+        <label title="Chercher un utilisateur">
+            <input placeholder="Trouver un client" type="text" v-model="search"/>
+        </label>
+        <!--  BARRE DE RECHERCHE  -->
+        <!--        v-show="filterListUsers(user)"-->
         <div v-for="user in users">
-            <div>
-                {{ user.id + " : " }}
-                <a href="#" v-on:click="newUser = Object(user);
-                                        modify = true; create = false; select = false">{{ user.firstName + " " +
-                    user.lastName }}</a>
-            </div>
+            <!--Liste filtrée dynamiquement-->
+            {{ user.id + " |" }}
+            <a href="#" v-on:click="newUser = Object(user);
+                                        modify = true; create = false; select = false">{{ user.email + " " +
+                user.role }}</a>
         </div>
         <div>
             <button v-on:click="create = true; modify = false; resetValues()">Ajouter un nouvel utilisateur</button>
         </div>
     </div>
-    <div class="article-form" v-if="create || modify">
-        <div id="client-basics">
-            <h1>Informations du client :</h1>
-            <label for="nom">Nom:</label><input id="nom" size="45" type="text" v-model="newUser.firstName"><br>
-            <label for="prénom">Prénom :</label><input id="prénom" type="text" v-model="newUser.lastName"><br>
-            <label for="contact">N° tel :</label><input id="contact" type="text" v-model="newUser.phone"><br>
-            <label for="email">email :</label><input id="email" type="text" v-model="newUser.email"><br>
+    <div class="user-form" v-if="create || modify">
+        <div class="mb-3">
+            <label class="form-label" for="email">Email</label>
+            <input aria-describedby="emailHelp" class="form-control" id="email" type="email" v-model="newUser.email">
         </div>
-        <div id="client-address">
-            <h2>Addresse complète :</h2> <br>
-            <label for="country">pays :</label><input id="country" type="text"
-                                                      v-model="newUser.address.country"><br>
-            <label for="city">ville :</label><input id="city" type="text" v-model="newUser.address.city">
-            <label for="postal">Code Postal :</label><input id="postal" type="number"
-                                                            v-model="newUser.address.postalCode">
-            <table>
-                <thead>
-                <tr>
-                    <th><label for="way-number">Numéro de voie</label></th>
-                    <th><label for="streetType">type de rue</label></th>
-                    <th><label for="address">addresse</label></th>
-                </tr>
-                <tr>
-                    <td><input id="way-number" type="number" v-model="newUser.address.wayNumber"></td>
-                    <td><input id="streetType" type="text" v-model="newUser.address.wayType"></td>
-                    <td><input id="address" type="text" v-model="newUser.address.wayName"></td>
-                </tr>
-                </thead>
-            </table>
-        </div> <!--client-address END-->
-        <div>
-            <button v-if="create" v-on:click="createUser()">Créer le client</button>
-            <button v-if="modify" v-on:click="modifyUser()">Changer les informations de l'employé</button>
-            <br>
+        <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" type="password" v-model="newUser.password">
         </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" id="role_user" role="role_user" type="checkbox" v-model="role_user">
+            <label class="form-check-label" for="role_user">Rôle utlisateur</label>
+        </div>
+        <div class="form-check form-switch">
+            <input checked class="form-check-input" id="role_comm" role="role_comm" type="checkbox" v-model="role_comm">
+            <label class="form-check-label" for="role_comm">Rôle commercial</label>
+        </div>
+        <hr>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" v-if="create" v-on:click="createUser()">Enregistrer</button>
+        <button class="btn btn-primary" v-if="modify" v-on:click="modifyUser()">Changer les informations de
+            l'utilisateur
+        </button>
+        <br>
     </div>
 </div>
+<script crossorigin="anonymous"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+<script crossorigin="anonymous"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
