@@ -10,10 +10,9 @@ import fr.epsi.rennes.poec.evoli.mspr.service.PanierService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +37,24 @@ public class IndexController {
         this.customerService = customerService;
     }
 
+    @GetMapping("/public/auth")
+    public Response<String> getAuth(String sessionCookie) {
+        Response<String> response = new Response<>();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        logger.warn("%s %s".formatted(auth.getName(), auth.getAuthorities()));
+        boolean isAuth = auth.isAuthenticated();
+        boolean haveAuthority = !auth.getAuthorities().isEmpty();
+        if (!isAuth || !haveAuthority) {
+            SecurityContextHolder.clearContext();
+            response.setSuccess(false);
+        } else {
+            response.setSuccess(true);
+        }
+        response.setData(auth.getName());
+
+
+        return response;
+    }
 
     @GetMapping("/public/article")
     public Response<List<Article>> getAllArticles() {
