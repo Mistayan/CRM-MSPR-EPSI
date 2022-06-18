@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="theme"
+      lang="en"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+>
 <head>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" rel="stylesheet">
+    <link href="/ressources/css/style.css" rel="stylesheet">
+    <link href="/ressources/css/header.css" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/ressources/js/nav.js"></script>
@@ -8,7 +16,6 @@
     <title>Bienvenue sur votre compte</title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" rel="stylesheet">
-    <link href="/ressources/css/style.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-light">
@@ -27,11 +34,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a aria-current="page" class="nav-link " href="/index.html">Aller à l'index</a>
+                    <a aria-current="page" class="nav-link " href="/user/order.html">Faire une commande</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link position-absolute top 0 start-50 " href="{{ link }}">Vous allez être redirigé. Si
-                        vous n'êtes toujours pas redirigé au bout de 5 secondes,
+                    <a class="nav-link position-absolute top 0 start-50 " v-on:click="redirect()">Vous
+                        allez être redirigé.
                         cliquez moi</a>
                 </li>
             </ul>
@@ -39,8 +46,6 @@
         </div>
     </div>
 </nav>
-<div class="theme">
-</div>
 <script crossorigin="anonymous"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

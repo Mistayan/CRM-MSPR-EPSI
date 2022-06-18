@@ -1,5 +1,5 @@
-<html>
-<head class="scripts">
+<html class="theme">
+<head>
 
     <title></title>
     <script
@@ -12,10 +12,10 @@
             $("#scripts").load("/ressources/templates/imports.html");
             $("#header").load("/ressources/templates/header.html");
             $("#footer").load("/ressources/templates/footer.html");
-            $("#pages").load("/" + window.sessionStorage.getItem("nav"))
+            $("#pages").load("" + window.sessionStorage.getItem("nav"))
         });
     </script>
-    <script class="script">
+    <script class="scripts" id="scripts">
 
     </script>
 </head>
