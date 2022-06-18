@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `category`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `category_id_UNIQUE` ON `category` (`category_id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `category_id_UNIQUE` ON `category` (`category_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -91,11 +91,11 @@ CREATE TABLE IF NOT EXISTS `article`
     AUTO_INCREMENT = 5
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `article_article_id_index` ON `article` (`article_id` ASC) VISIBLE;
+CREATE INDEX `article_article_id_index` ON `article` (`article_id` ASC);
 
-CREATE INDEX `fk_article_category1_idx` ON `article` (`category_id` ASC) VISIBLE;
+CREATE INDEX `fk_article_category1_idx` ON `article` (`category_id` ASC);
 
-CREATE INDEX `fk_article_pokemon_properties1_idx` ON `article` (`property_id` ASC) VISIBLE;
+CREATE INDEX `fk_article_pokemon_properties1_idx` ON `article` (`property_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -126,9 +126,9 @@ CREATE TABLE IF NOT EXISTS `customer`
     AUTO_INCREMENT = 7
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `Customers_pk_2` ON `customer` (`first_name` ASC, `last_name` ASC) VISIBLE;
+CREATE UNIQUE INDEX `Customers_pk_2` ON `customer` (`first_name` ASC, `last_name` ASC);
 
-CREATE UNIQUE INDEX `customer_email_uindex` ON `customer` (`email` ASC) VISIBLE;
+CREATE UNIQUE INDEX `customer_email_uindex` ON `customer` (`email` ASC);
 
 
 -- -----------------------------------------------------
@@ -153,9 +153,9 @@ CREATE TABLE IF NOT EXISTS `cart`
     AUTO_INCREMENT = 202
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `cart_cart_id_customer_id_index` ON `cart` (`cart_id` ASC) VISIBLE;
+CREATE INDEX `cart_cart_id_customer_id_index` ON `cart` (`cart_id` ASC);
 
-CREATE INDEX `fk_cart_customer1_idx` ON `cart` (`customer_id` ASC) VISIBLE;
+CREATE INDEX `fk_cart_customer1_idx` ON `cart` (`customer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -177,9 +177,9 @@ CREATE TABLE IF NOT EXISTS `cart_has_article`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `cart_has_article_article_article_id_fk` ON `cart_has_article` (`article_id` ASC) VISIBLE;
+CREATE INDEX `cart_has_article_article_article_id_fk` ON `cart_has_article` (`article_id` ASC);
 
-CREATE INDEX `cart_has_article_cart_cart_id_fk` ON `cart_has_article` (`cart_id` ASC) VISIBLE;
+CREATE INDEX `cart_has_article_cart_cart_id_fk` ON `cart_has_article` (`cart_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `city`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `cities_label_uindex` ON `city` (`label` ASC) VISIBLE;
+CREATE UNIQUE INDEX `cities_label_uindex` ON `city` (`label` ASC);
 
 
 -- -----------------------------------------------------
@@ -215,7 +215,6 @@ CREATE TABLE IF NOT EXISTS `user_role`
     AUTO_INCREMENT = 9
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `id_UNIQUE` ON `user_role` (`role_id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -243,9 +242,9 @@ CREATE TABLE IF NOT EXISTS `user`
     AUTO_INCREMENT = 13
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `email_UNIQUE` ON `user` (`email` ASC) VISIBLE;
+CREATE UNIQUE INDEX `email_UNIQUE` ON `user` (`email` ASC);
 
-CREATE INDEX `fk_user_user_role1_idx` ON `user` (`role_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_user_role1_idx` ON `user` (`role_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -271,9 +270,9 @@ CREATE TABLE IF NOT EXISTS `commercial_has_customer`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `commercial_has_customer_customer_customer_id_fk` ON `commercial_has_customer` (`customer_id` ASC) VISIBLE;
+CREATE INDEX `commercial_has_customer_customer_customer_id_fk` ON `commercial_has_customer` (`customer_id` ASC);
 
-CREATE INDEX `fk_commercial_has_customer_user1_idx` ON `commercial_has_customer` (`user_id` ASC) VISIBLE;
+CREATE INDEX `fk_commercial_has_customer_user1_idx` ON `commercial_has_customer` (`user_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -315,11 +314,11 @@ CREATE TABLE IF NOT EXISTS `order_`
     AUTO_INCREMENT = 35
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `order_id_customer_id_index` ON `order_` (`customer_id` ASC) VISIBLE;
+CREATE INDEX `order_id_customer_id_index` ON `order_` (`customer_id` ASC);
 
-CREATE INDEX `order__status_id_index` ON `order_` (`status_id` ASC) VISIBLE;
+CREATE INDEX `order__status_id_index` ON `order_` (`status_id` ASC);
 
-CREATE INDEX `order_status_status_id_index` ON `order_` (`status_id` ASC) VISIBLE;
+CREATE INDEX `order_status_status_id_index` ON `order_` (`status_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -345,9 +344,9 @@ CREATE TABLE IF NOT EXISTS `customer_has_order`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_customer_has_order_customer1_idx` ON `customer_has_order` (`customer_id` ASC) VISIBLE;
+CREATE INDEX `fk_customer_has_order_customer1_idx` ON `customer_has_order` (`customer_id` ASC);
 
-CREATE INDEX `fk_customer_has_order_order_1_idx` ON `customer_has_order` (`order_id` ASC) VISIBLE;
+CREATE INDEX `fk_customer_has_order_order_1_idx` ON `customer_has_order` (`order_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -365,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `order_status`
     AUTO_INCREMENT = 8
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `order_status_label_uindex` ON `order_status` (`label` ASC) VISIBLE;
+CREATE UNIQUE INDEX `order_status_label_uindex` ON `order_status` (`label` ASC);
 
 
 -- -----------------------------------------------------
@@ -390,7 +389,7 @@ CREATE TABLE IF NOT EXISTS `security_details`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_security_details_user1_idx` ON `security_details` (`user_id` ASC) VISIBLE;
+CREATE INDEX `fk_security_details_user1_idx` ON `security_details` (`user_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -409,7 +408,7 @@ CREATE TABLE IF NOT EXISTS `street_type`
     AUTO_INCREMENT = 12
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE UNIQUE INDEX `street_type_label_uindex` ON `street_type` (`label` ASC) VISIBLE;
+CREATE UNIQUE INDEX `street_type_label_uindex` ON `street_type` (`label` ASC);
 
 
 -- -----------------------------------------------------
@@ -435,9 +434,9 @@ CREATE TABLE IF NOT EXISTS `user_has_customer_rights`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_user_has_customer_rights_user1_idx` ON `user_has_customer_rights` (`user_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_has_customer_rights_user1_idx` ON `user_has_customer_rights` (`user_id` ASC);
 
-CREATE INDEX `fk_user_has_customer_rights_customer1_idx` ON `user_has_customer_rights` (`customer_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_has_customer_rights_customer1_idx` ON `user_has_customer_rights` (`customer_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -463,9 +462,9 @@ CREATE TABLE IF NOT EXISTS `user_has_order`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_user_has_order_user1_idx` ON `user_has_order` (`user_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_has_order_user1_idx` ON `user_has_order` (`user_id` ASC);
 
-CREATE INDEX `fk_user_has_order_order_1_idx` ON `user_has_order` (`order_id` ASC) VISIBLE;
+CREATE INDEX `fk_user_has_order_order_1_idx` ON `user_has_order` (`order_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -510,9 +509,9 @@ CREATE TABLE IF NOT EXISTS `warehouse_has_article`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_warehouse_has_article_warehouse1_idx` ON `warehouse_has_article` (`warehouse_id` ASC) VISIBLE;
+CREATE INDEX `fk_warehouse_has_article_warehouse1_idx` ON `warehouse_has_article` (`warehouse_id` ASC);
 
-CREATE INDEX `fk_warehouse_has_article_article1_idx` ON `warehouse_has_article` (`article_id` ASC) VISIBLE;
+CREATE INDEX `fk_warehouse_has_article_article1_idx` ON `warehouse_has_article` (`article_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -539,9 +538,9 @@ CREATE TABLE IF NOT EXISTS `article_has_props`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_article_has_pokemon_properties_article1_idx` ON `article_has_props` (`article_id` ASC) VISIBLE;
+CREATE INDEX `fk_article_has_pokemon_properties_article1_idx` ON `article_has_props` (`article_id` ASC);
 
-CREATE INDEX `fk_article_has_props_pokemon_properties1_idx` ON `article_has_props` (`property_id` ASC) VISIBLE;
+CREATE INDEX `fk_article_has_props_pokemon_properties1_idx` ON `article_has_props` (`property_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -567,9 +566,9 @@ CREATE TABLE IF NOT EXISTS `order_has_article`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_order__has_article_article1_idx` ON `order_has_article` (`article_id` ASC) VISIBLE;
+CREATE INDEX `fk_order__has_article_article1_idx` ON `order_has_article` (`article_id` ASC);
 
-CREATE INDEX `fk_order__has_article_order_1_idx` ON `order_has_article` (`order_id` ASC) VISIBLE;
+CREATE INDEX `fk_order__has_article_order_1_idx` ON `order_has_article` (`order_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -597,9 +596,9 @@ CREATE TABLE IF NOT EXISTS `order_has_status`
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
-CREATE INDEX `fk_order_status_has_order__order_1_idx` ON `order_has_status` (`order_id` ASC) VISIBLE;
+CREATE INDEX `fk_order_status_has_order__order_1_idx` ON `order_has_status` (`order_id` ASC);
 
-CREATE INDEX `fk_order_status_has_order__order_status1_idx` ON `order_has_status` (`status_id` ASC) VISIBLE;
+CREATE INDEX `fk_order_status_has_order__order_status1_idx` ON `order_has_status` (`status_id` ASC);
 
 USE `acme`;
 
