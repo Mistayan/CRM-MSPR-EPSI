@@ -1300,17 +1300,23 @@ VALUES (5, 'rue', NULL),
 --
 
 INSERT INTO `user` (`user_id`, `email`, `password`, `nickname`, `date_created`, `user_role`)
-VALUES (4, 'user', '$2a$10$O6nD1mex5dzDaO3wco6H4e9lB7ZPI7r9j88MEeXCNZNLvRxFwEcmq', 'Regis', '2022-06-14 20:49:32',
+VALUES (4, 'user@email.com', '$2a$10$O6nD1mex5dzDaO3wco6H4e9lB7ZPI7r9j88MEeXCNZNLvRxFwEcmq', 'Regis',
+        '2022-06-14 20:49:32',
         'ROLE_ADMIN'),
-       (5, 'user1', '$2a$10$A21hBE6ZrS693m4/sRqddOb6yUS7k8UfvpGklS/RnD4sasGkb.4ce', 'Sacha', '2022-06-14 20:49:32',
+       (5, 'user1@email.com', '$2a$10$A21hBE6ZrS693m4/sRqddOb6yUS7k8UfvpGklS/RnD4sasGkb.4ce', 'Sacha',
+        '2022-06-14 20:49:32',
         'ROLE_USER'),
-       (7, 'user2', '$2a$10$9aTXaqbdMI/jPsIIaZtod.WJsDMrg2ATmoxWKHIDKIP2PLA1yRWwe', 'Ondine', '2022-06-14 20:49:32',
+       (7, 'user2@email.com', '$2a$10$9aTXaqbdMI/jPsIIaZtod.WJsDMrg2ATmoxWKHIDKIP2PLA1yRWwe', 'Ondine',
+        '2022-06-14 20:49:32',
         'ROLE_USER'),
-       (8, 'user3', '$2a$10$0sDNBSL.8qOvzis/qwg/Ze5EBBisQi.WDa.W/Vo5d3rCc6eoDXXem', 'Pierre', '2022-06-14 20:49:32',
+       (8, 'user3@email.com', '$2a$10$0sDNBSL.8qOvzis/qwg/Ze5EBBisQi.WDa.W/Vo5d3rCc6eoDXXem', 'Pierre',
+        '2022-06-14 20:49:32',
         'ROLE_USER'),
-       (10, 'user5', '$2a$10$mo.CDF9.nOyTFU46uKERquZ5lzS1F5PQxKnAQDMSagE98rp9lOx1i', 'Marcel', '2022-06-14 20:49:32',
+       (10, 'user5@email.com', '$2a$10$mo.CDF9.nOyTFU46uKERquZ5lzS1F5PQxKnAQDMSagE98rp9lOx1i', 'Marcel',
+        '2022-06-14 20:49:32',
         'ROLE_COMM'),
-       (12, 'user4', '$2a$10$bC/Buy7PpKVSvgpSpMX/punzR9ixRcIRiXO0C8DUm6yBUb9fEgsgm', 'Geanice', '2022-06-14 20:49:32',
+       (12, 'user4@email.com', '$2a$10$bC/Buy7PpKVSvgpSpMX/punzR9ixRcIRiXO0C8DUm6yBUb9fEgsgm', 'Geanice',
+        '2022-06-14 20:49:32',
         'ROLE_COMM');
 
 --
