@@ -5,7 +5,7 @@
 
     <groupId>fr.epsi.rennes.poec.evoli.mspr</groupId>
     <artifactId>acme</artifactId>
-    <version>0.1.1.7</version>
+    <version>0.8.4.2</version>
     <packaging>jar</packaging>
 
     <name>acme</name>
@@ -90,6 +90,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
