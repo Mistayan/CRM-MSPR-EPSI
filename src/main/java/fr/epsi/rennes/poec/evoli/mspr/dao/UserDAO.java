@@ -118,7 +118,7 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
             logger.debug("ok");
             while (rs.next()) {
-                UserRole role = UserRole.valueOf("%s%s".formatted("USER_", rs.getString("label")));
+                UserRole role = UserRole.valueOf("%s%s".formatted("ROLE_", rs.getString("label")));
                 roles.add(role);
             }
             return roles;
