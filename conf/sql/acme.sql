@@ -7,11 +7,11 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
 
 
 -- -----------------------------------------------------
--- Schema test_acme
+-- Schema acme
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `test_acme`;
-CREATE SCHEMA IF NOT EXISTS `test_acme` DEFAULT CHARACTER SET utf8;
-USE `test_acme`;
+DROP SCHEMA IF EXISTS `acme`;
+CREATE SCHEMA IF NOT EXISTS `acme` DEFAULT CHARACTER SET utf8;
+USE `acme`;
 
 -- -----------------------------------------------------
 -- Table `category`
@@ -601,7 +601,7 @@ CREATE INDEX `fk_order_status_has_order__order_1_idx` ON `order_has_status` (`or
 
 CREATE INDEX `fk_order_status_has_order__order_status1_idx` ON `order_has_status` (`status_id` ASC) VISIBLE;
 
-USE `test_acme`;
+USE `acme`;
 
 -- -----------------------------------------------------
 -- Placeholder table for view `Pokemon`
@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `Pokemon`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `Pokemon`;
 DROP VIEW IF EXISTS `Pokemon`;
-USE `test_acme`;
+USE `acme`;
 CREATE OR REPLACE VIEW `Pokemon` AS
 SELECT a.article_id                                                                 as article_id,
        a.label                                                                      as label,
@@ -649,7 +649,7 @@ GROUP BY a.article_id
 ;
 
 --
--- Base de données : `test_acme`
+-- Base de données : `acme`
 --
 
 --
