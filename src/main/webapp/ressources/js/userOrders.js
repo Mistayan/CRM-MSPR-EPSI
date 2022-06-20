@@ -8,6 +8,7 @@ const userOrders = new Vue({
             totalPrixHT: 0.0,
             totalPrixTTC: 0.0,
             userId: 0,
+            search: "",
         }
     },
     mounted() {
@@ -23,22 +24,23 @@ const userOrders = new Vue({
                         window.sessionStorage.setItem("userId", response.data.data)
                     }
                 );
-        } else {
-            axios.get("orders?userId=" + this.userId)
-                .then(response => {
-                    this.orders = Object(response.data.data)
-                    let i = 0;
-                    while (i < this.orders.length) { // pour chaque commande de la liste
-                        let order = this.orders.at(i) // pour l'objet 'order' à l'index en cours
-                        this.totalPrixTTC += order.prixTTC;
-                        this.totalPrixHT += order.prixHT;
-                        this.totalArticles += order.articles.length;
-                        i++
-                    }
-                    this.totalPrixTTC.toFixed(2)
-                    this.totalPrixHT.toFixed(2)
-                });
         }
+
+        axios.get("orders?userId=" + this.userId)
+            .then(response => {
+                this.orders = Object(response.data.data)
+                let i = 0;
+                while (i < this.orders.length) { // pour chaque commande de la liste
+                    let order = this.orders.at(i) // pour l'objet 'order' à l'index en cours
+                    this.totalPrixTTC += order.prixTTC;
+                    this.totalPrixHT += order.prixHT;
+                    this.totalArticles += order.articles.length;
+                    i++
+                }
+                this.totalPrixTTC.toFixed(2)
+                this.totalPrixHT.toFixed(2)
+            });
+
         axios.get("/public/article")
             .then(response => {
                 this.articlesRepo = response.data.data

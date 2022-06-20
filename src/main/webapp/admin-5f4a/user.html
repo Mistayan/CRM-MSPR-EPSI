@@ -52,7 +52,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="password">Password</label>
-            <input class="form-control" id="password" type="password" v-model="newUser.password">
+            <input class="form-control" id="password" minlength="12" type="password" v-model="newUser.password">
         </div>
         <div class="form-check form-switch">
             <input class="form-check-input" id="role_user" role="role_user" type="checkbox" v-model="role_user">

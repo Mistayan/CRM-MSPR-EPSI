@@ -16,7 +16,8 @@ const app = new Vue({
             },
             CustomerId: -1,
             panierId: -1,
-            userId: -1
+            userId: -1,
+            uName: "",
         }
     },
     mounted() {
@@ -67,6 +68,7 @@ const app = new Vue({
                     this.panier = response.data.data;
                     this.setPanier(response)
                 });
+            this.uName = customer.firstName + " " + customer.lastName;
         },
         articleInPanier(article_) {
             return this.countArticleInCart(article_.id) > 0

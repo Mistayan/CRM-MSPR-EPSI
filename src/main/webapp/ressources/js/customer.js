@@ -60,6 +60,10 @@ const customerApp = new Vue({
                     }
                 });
         },
+        selectCustomer(customer) {
+            this.newCustomer = customer;
+            window.sessionStorage.setItem("customerId", customer.id)
+        },
         resetValues: function () {
             this.newCustomer = {
                 firstName: "",
