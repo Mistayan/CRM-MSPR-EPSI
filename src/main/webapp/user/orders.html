@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html class="theme"
+      lang="en"
+>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" rel="stylesheet">
+    <link href="/ressources/css/style.css" rel="stylesheet">
+    <link href="/ressources/css/header.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <script defer src="/ressources/js/userOrders.js"></script>
+    <script defer src="/ressources/js/nav.js"></script>
+
+    <link href="/ressources/css/liste-article.css" rel="stylesheet">
+    <title>Vos Commandes</title>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-light theme">
+    <div class="container-fluid">
+        <!--------------------------------------------------Home------------------------------------------------------------------------------------------------------------------------------------------------>
+
+        <a class="navbar-brand" href="#">
+            <img class="d-inline-block align-text-top" src="../ressources/imgs/nav/evoli.ico" width="80">
+        </a>
+        <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!--------------------------------------------------Def de la barre------------------------------------------------------------------------------------------------------------------------------------------------>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a aria-current="page" class="nav-link " href="#">home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customer/list.html">clients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">commande</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div>
+    <div class="overflow-auto col-md-6 mb-4" id="user-orders">
+        <div class="tg-wrap">
+            <table class="tg">
+                <thead>
+                <tr>
+                    <th class="tg-ih3h"> N° Commande</th>
+                    <th class="tg-ih3h"> Nombre d'articles</th>
+                    <th class="tg-ih3h"> Prix TTC</th>
+                    <th class="tg-ih3h"> Prix HT</th>
+                </tr>
+                <tr v-for="order in orders" v-if="order.orderId && order.articles">
+                    <td class="tg-ih3h"> {{ order.numeroCmd }}</td>
+                    <td class="tg-ih3h"> {{ order.articles.length }}</td>
+                    <td class="tg-ih3h"> {{ displayPrice(order.prixTTC) }}</td>
+                    <td class="tg-ih3h"> {{ displayPrice(order.prixHT) }}</td>
+                    <td class="tg-ih3h">
+                        <details class="tg-wrap" id="order-details" v-if="order.articles">
+                            <table class="tg">
+                                <thead>
+                                <tr>
+                                    <th class="tg-ih3h">Nom article</th>
+                                    <th class="tg-ih3h">Quantité</th>
+                                    <th class="tg-ih3h">Prix</th>
+                                </tr>
+                                <tr v-for="article in articlesRepo" v-if="countArticleInOrder(article.id, order)">
+                                    <td class="tg-0pky"> {{ article.label }}</td>
+                                    <td class="tg-0pky"> {{ countArticleInOrder(article.id, order) }}</td>
+                                    <td class="tg-0pky"> {{ displayPrice(calc_price_articles_order(article, order)) }}
+                                    </td>
+                                </tr>
+                                </thead>
+                            </table>
+                        </details>
+                    </td>
+                </tr>
+                <tr v-if="orders">
+                    <td class="tg-ih3h">TOTAL :</td>
+                    <td class="tg-ih3h">{{ totalArticles }}</td>
+                    <td class="tg-ih3h">{{ displayPrice(totalPrixTTC) }}</td>
+                    <td class="tg-ih3h">{{ displayPrice(totalPrixHT) }}</td>
+                </tr>
+                </thead>
+            </table>
+        </div> <!-- Tg-wrap -->
+        <br>
+    </div>
+</div>
+<!--------------------------------------------------PARTIE SCRIPT------------------------------------------------------------------------------------------------------------------------------------------------>
+
+<script crossorigin="anonymous"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+<script crossorigin="anonymous"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

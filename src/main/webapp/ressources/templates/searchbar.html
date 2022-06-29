@@ -1,0 +1,22 @@
+<template>
+    <label title="Chercher dans les articles">
+        <input placeholder="Trouver un article" type="text" v-model="input"/>
+    </label>
+    <div :key="article" class="item" v-for="article in filteredList()">
+        <p>{{ article }}</p>
+    </div>
+    <div class="item error" v-if="input&&!filteredList().length">
+        <p>No results found!</p>
+    </div>
+</template>
+<script setup>
+    import {ref} from "vue";
+
+    let input = ref("");
+
+    function filteredList() {
+        return articles.filter((article) =>
+            article.label.toLowerCase().includes(input.value.toLowerCase())
+        );
+    }
+</script>

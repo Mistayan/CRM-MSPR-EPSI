@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="theme"
+      lang="en"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/ressources/js/user.js"></script>
+    <script defer src="/ressources/js/article.js"></script>
+    <link href="/ressources/css/style.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Editez la vitrine de ACME</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <!--------------------------------------------------Home------------------------------------------------------------------------------------------------------------------------------------------------>
+
+        <a class="navbar-brand" href="#">
+            <img class="d-inline-block align-text-top" src="../ressources/imgs/nav/evoli.ico" width="80">
+        </a>
+        <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!--------------------------------------------------Def de la barre------------------------------------------------------------------------------------------------------------------------------------------------>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a aria-current="page" class="nav-link " href="/index.html">Retour sur l'index</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<!---->
+<div id="app">
+    <!---->
+    <div class="row">
+        <div class="article-list">
+            <div class="col">
+                <button class="btn btn-success"
+                        v-on:click="create = true; modify = false; resetValues()">
+                    Ajouter un nouvel article
+                </button>
+            </div>
+        </div>
+        <!---->
+        <div class="input-group mb-2 mr-sm-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <div class="col" v-for="article in articles">
+                        <div>
+                            {{ article.id + " : " }}
+                            <a href="#"
+                               v-on:click="newArticle = Object(article); modify = true; create = false; select = false">{{
+                                article.label }}</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---->
+    <div class=" categories-list" id="categories-list" v-if="create">
+        <!-- v-for nous permet de récupérer les catégories d'article-->
+        <label for="category"><h2>catégorie : </h2></label>
+        <select class="form-select" id="category" size="3" v-model="newCat">
+            <option :key="index" v-for="(v, key, index) in categories"
+                    v-on:click="select = v; newArticle.category.id = v.id">{{v.id}} : {{v.label}}
+            </option>
+        </select>
+    </div>
+
+    <!---->
+
+    <!--    <div class="article-form" v-if="(create && select) || modify">-->
+    <div class="article-form" v-if="Object(newArticle.category).id > 0">
+        <!--
+             <div v-if="create">Taux d'imposition : {{Object(select).taxes}}%</div>
+             <div v-if="modify">Taux d'imposition : {{newArticle.category.taxes}}%</div>
+                     -->
+        <!---------------------------------------------------------------------->
+        <div>
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="label">Nom de l'article:</label></div>
+                </div>
+                <input id="label" size="45" type="text" v-model="newArticle.label">
+            </div>
+            <!--  <p>Status: {{newArticle.status}}</p> -->
+
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="prix">Prix :</label></div>
+                </div>
+                <input aria-valuemin="0" id="prix" type="number" v-model="newArticle.prix">
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="description">description :</label></div>
+                </div>
+                <input id="description" type="text" v-model="newArticle.description">
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">taille (m): <label for="taille"> </label></div>
+                </div>
+                <input id="taille" type="number" v-model="newArticle.properties.taille"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">poids (g): <label for="poids"></label></div>
+                </div>
+                <input id="poids" type="number" v-model="newArticle.properties.poids"><br>
+            </div>
+            <!---->
+        </div>
+        <!---->
+        <!---------------------------------------------------------------------->
+        <!--START Pokemons ONLY START-->
+
+        <div v-if="newArticle.category.id === 1">
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="type" style="color: blue;">Element :</label></div>
+                </div>
+                <input id="type" v-model="newArticle.properties.label"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="lvl">Level : </label></div>
+                </div>
+                <input id="lvl" type="number" v-model="newArticle.properties.lvl"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="exp">Exp : </label></div>
+                </div>
+                <input id="exp" type="number" v-model="newArticle.properties.exp"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="pv">points de vie : </label></div>
+                </div>
+                <input id="pv" type="number" v-model="newArticle.stats.pv"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="pp">points de puissance : </label></div>
+                </div>
+                <input id="pp" type="number" v-model="newArticle.stats.pp"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="atk">attaque : </label></div>
+                </div>
+                <input id="atk" type="number" v-model="newArticle.stats.atk"><br>
+
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="def">defense : </label></div>
+                </div>
+                <input id="def" type="number" v-model="newArticle.stats.def"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="spd">vitesse : </label></div>
+                </div>
+                <input id="spd" type="number" v-model="newArticle.stats.spd"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="atkspe">atk spé : </label></div>
+                </div>
+                <input id="atkspe" type="number" v-model="newArticle.stats.atkspe"><br>
+            </div>
+            <!---->
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><label for="defspe">def spé : </label></div>
+                </div>
+                <input id="defspe" type="number" v-model="newArticle.stats.defspe"><br>
+            </div>
+
+        </div>
+        <!----------------------------------------------------------------------------->
+
+        <!--END of Pokemons Only END-->
+        <!---->
+        <div>
+                <span class="badge bg-secondary"> <textarea class="story" cols="140" name="story" rows="20"
+                                                            style="font-size: 1.7em">  {{newArticle}} </textarea> </span>
+            <button class="btn btn-success" v-if="create" v-on:click="createArticle()">Créer l'article</button>
+            <button class="btn btn-success" v-if="modify" v-on:click="modifyArticle()">Changer l'article</button>
+
+            <button class="btn btn-success" v-if="modify" v-on:click="switchArticle(false)">Supprimer l'article (et
+                ses propriétés)
+            </button>
+        </div>
+
+    </div>
+</div>
+<script crossorigin="anonymous"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+<script crossorigin="anonymous"
+        integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
