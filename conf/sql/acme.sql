@@ -529,13 +529,13 @@ CREATE TABLE IF NOT EXISTS `customer`
 
 INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `country`, `city`, `postal_code`,
                         `way_number`, `way_type`, `way_name`, `create_time`, `last_modified`, `enabled`, `added_by`)
-VALUES (2, 'pro', 'ste', 'b.1@G.c', '0708090909', 'FR', 'Rennes', '35000', 107, 'Avenue', 'Artisitde Briand',
+VALUES (2, 'pro', 'ste', 'b.1@G.c', '0708090909', 'FR', 'Rennes', '35000', 42, 'Avenue', 'Artisitde Briand',
         '2022-06-11 20:54:56', '2022-06-11 20:55:08', 1, 10),
        (3, 'Chauveau', 'Manu', 'mau@manu.fr', '0707070707', 'France', 'Saint Malo', '', 123, 'xxx', 'xxx',
         '2022-06-11 20:55:00', '2022-06-11 20:55:10', 1, 10),
        (4, 'la fripouille', 'toto', 'toto@toto.com', '0609109109', 'US', 'New York', '12380', 1, 'sq', 'Time',
         '2022-06-11 20:55:03', '2022-06-11 20:55:13', 1, 10),
-       (5, '\'; TRUNCATE *;', '<%php alert(‘Executed\');%>', 'titi@titi.com', '0909090909', 'France', 'Rennes', '35000',
+       (5, '\'; TRUNCATE *;', '<$ alert(‘Executed\');%>', 'titi@titi.com', '0909090909', 'France', 'Rennes', '35000',
         120, 'Avenue', 'des poneys', '2022-06-11 20:55:04', '2022-06-11 20:55:15', 1, 10),
        (6, 'helix', 'mastaz', 'helixmastaz@gmail.com', '6666666666', 'ANY', 'ANY', '000000', 18, 'Vallée',
         'des hackerzz', '2022-06-11 21:00:02', '2022-06-11 21:00:01', 1, 12);

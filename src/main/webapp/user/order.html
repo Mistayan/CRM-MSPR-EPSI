@@ -18,12 +18,12 @@
     <link href="/ressources/css/header.css" rel="stylesheet">
 </head>
 
-<body id="app">
+<body id="app" class="theme">
 <nav class="navbar navbar-expand-lg bg-light" id="nav">
     <div class="container-fluid">
         <!--------------------------------------------------Home------------------------------------------------------------------------------------------------------------------------------------------------>
 
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/public/login-success.html">
             <img class="d-inline-block align-text-top" src="/ressources/imgs/nav/evoli.ico" width="80"/>
         </a>
         <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
@@ -37,10 +37,10 @@
                 <li class="nav-item">
                     <a aria-current="page" class="nav-link " href="/user/order.html">Faire une nouvelle commande</a>
                 </li>
-                <li class="nav-item" v-if="select">
+                <li class="nav-item app" v-if="select">
                     <a class="nav-link" href=/customer/orders.html>voir les commandes<br> du client</a>
                 </li>
-                <li class="nav-item" v-if="select">
+                <li class="nav-item">
                     <a class="nav-link" href=/user/orders.html>voir mes commandes</a>
                 </li>
             </ul>
@@ -49,20 +49,24 @@
 </nav>
 <!----------------------------------------------------------------------------------------->
 <div id="panier">
-    <div class="customer-select">
-        <!--  BARRE DE RECHERCHE  -->
-        <label title="Chercher dans les clients">
-            <input placeholder="Trouver un client" type="text" v-model="customersSearch"/>
-        </label>
-        <!--  BARRE DE RECHERCHE  -->
-        <div v-for="customer in customers" v-show="filterListCustomers(customer)">
-            <div> {{ customer.id + " : " }}
-                <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " +
-                    customer.lastName }}</a>
-            </div>
-        </div>
-        <span v-if="select"> Actuellement sélectionné : {{uName}} </span>
-    </div>
+    <table class="customer-select" class="tg table table-info table-striped">
+        <thead>
+            <!--  BARRE DE RECHERCHE  -->
+            <label title="Chercher dans les clients">
+                <input placeholder="Trouver un client" type="text" v-model="customersSearch"/>
+            </label>
+            <!--  BARRE DE RECHERCHE  -->
+            <span v-if="select"> Actuellement sélectionné : {{uName}} </span>
+            <tr>
+                <td class="tg-0pky" v-for="customer in customers" v-show="filterListCustomers(customer)">
+                    <div> {{ customer.id + " : " }}
+                        <a href="#" v-on:click="selectCustomer(customer);select = true">{{ customer.firstName + " " +
+                            customer.lastName }}</a><br>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+    </table>
     <div v-if="select">
         <button v-on:click="redirect('/customer/orders.html')">voir les commandes du client</button>
     </div>
@@ -70,8 +74,8 @@
     <!-- Customers-select END-->
     <div v-if="select">
         <!-- Article-select START-->
-        <div class="panier" v-if="panier">
-            Nombre de articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
+        <div class="panier table-info table-striped" v-if="panier">
+            Nombre d'articles dans le panier : {{ panier.articles ? panier.articles.length : 0}} <br>
             Prix du panier : {{ panier ? panier.totalPrix : 0 }} <br>
             <button v-on:click="redirect('/user/panier.html')">voir le panier du client</button>
         </div>
@@ -81,7 +85,7 @@
         </label>
         <!--  BARRE DE RECHERCHE  -->
         <div class="tg-wrap">
-            <table class="tg">
+            <table class="tg table table-info table-striped">
                 <thead>
                 <tr> <!--TABLE HEADER -->
                     <th class="tg-ih3h"> Article</th>
@@ -151,5 +155,6 @@
 <script crossorigin="anonymous"
         integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"></script>
+</div>
 </body>
 </html>

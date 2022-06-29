@@ -5,7 +5,8 @@ const nav = new Vue({
         return {
             auth: null,
             link: null,
-            select: false
+            select: false,
+            title: "AcmeApplication"
         }
     },
     mounted() {
@@ -17,9 +18,10 @@ const nav = new Vue({
             }
             if (window.sessionStorage.getItem('last_status') === 'fail') {
                 window.sessionStorage.removeItem('last_status')
-                window.location.replace(this.link)
+                // window.location.replace(this.link)
+                this.redirect()
             }
-        } else { // Sinon, on enregistre l'addresse actuelle, en cas dé déconnexion
+        } else { // Sinon, on enregistre l'addresse actuelle, en cas déconnection
             window.sessionStorage.setItem('nav', window.location.href)
         }
         axios.get("id")

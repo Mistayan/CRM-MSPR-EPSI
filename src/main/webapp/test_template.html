@@ -1,7 +1,7 @@
 <html class="theme">
 <head>
 
-    <title></title>
+    <title class="nav-item">{{title}}</title>
     <script
             crossorigin="anonymous"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -10,19 +10,20 @@
     <script>
         $(function () {
             $("#scripts").load("/ressources/templates/imports.html");
-            $("#header").load("/ressources/templates/header.html");
+            // $("#header").load("/ressources/templates/header.html");
             $("#footer").load("/ressources/templates/footer.html");
-            $("#pages").load("" + window.sessionStorage.getItem("nav"))
+            $("#page").load("" + window.sessionStorage.getItem("nav"))
         });
     </script>
     <script class="scripts" id="scripts">
 
     </script>
 </head>
-<body>
+<body class="theme">
 <div id="header"></div>
 
 <!-- la page en elle même-->
+<div id="page"></div>
 
 <div id="footer"></div>
 </body>
