@@ -1,16 +1,16 @@
 <html class="theme">
-<head>
+<head class="header" id="header">
 
     <title class="nav-item">{{title}}</title>
-    <script
-            crossorigin="anonymous"
-            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-            src="https://code.jquery.com/jquery-3.3.1.js">
+<script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
     </script>
     <script>
         $(function () {
             $("#scripts").load("/ressources/templates/imports.html");
-            // $("#header").load("/ressources/templates/header.html");
+            $("#header").load("/ressources/templates/header.html");
             $("#footer").load("/ressources/templates/footer.html");
             $("#page").load("" + window.sessionStorage.getItem("nav"))
         });
